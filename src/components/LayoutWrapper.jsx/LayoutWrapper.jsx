@@ -65,7 +65,7 @@ const LayoutWrapper = (props) => {
             />
         </Header>
         <Content>
-
+            {props.children}
         </Content>
         
     </Layout>

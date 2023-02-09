@@ -4,7 +4,7 @@ import axios from "axios";
 const cryptoAdapter = createEntityAdapter();
 
 const initialState = cryptoAdapter.getInitialState({
-    status: "not-loaded",
+    status: "idle",
     ids: [],
     entities: {},
     selectedCryptos: []
@@ -19,6 +19,7 @@ const cryptoSlice = createSlice({
     name: "cryptos",
     initialState,
     reducers: {
+        cryptoAdded: cryptoAdapter.addOne,
         cryptoRemoved: cryptoAdapter.removeOne,
         cryptoSelect: (state, action) => {
             const selectedCrypto = action.payload
@@ -38,11 +39,25 @@ const cryptoSlice = createSlice({
                 state.ids = []
                 state.entities = {}
             })
+            .addCase(fetchCryptos.rejected, (state, action) => {
+                state.status = "failed"
+                state.error = action.error.message
+            })
+            .addCase(fetchCryptos.fulfilled, (state, action) => {
+                const cryptos = action.payload;
+                const cryptoDictionary = {};
+                cryptos.forEach(crypto => {
+                    cryptoDictionary[crypto.id] = crypto;
+                })
+                state.status = "success"
+                state.entities = cryptoDictionary
+                state.ids = Object.keys(cryptoDictionary)
+            })
     }
 })
 
-export const { cryptoRemoved, cryptoSelect, cryptoUnselect } = cryptoSlice.actions;
+export const { cryptoAdded, cryptoRemoved, cryptoSelect, cryptoUnselect } = cryptoSlice.actions;
 
-export const cryptoSelectors = cryptoAdapter.getSelectors(state => state.cryptoReducer)
+export const cryptoSelectors = cryptoAdapter.getSelectors(state => state.cryptoReducers)
 
 export default cryptoSlice.reducer;
