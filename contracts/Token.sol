@@ -13,14 +13,14 @@ contract Token {
     mapping(address => mapping(address => uint)) public allowance;
 
     event Transfer(
-        address from,
-        address to,
+        address indexed from,
+        address indexed to,
         uint amount
     );
 
     event Approval(
-        address from,
-        address to,
+        address indexed from,
+        address indexed to,
         uint amount
     );
 
