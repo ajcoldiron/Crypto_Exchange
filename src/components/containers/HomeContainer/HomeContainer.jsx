@@ -1,12 +1,13 @@
 import { Table, Button, Space } from 'antd';
-import React from 'react'
+import React, { useState } from 'react'
 import { useLoaderData } from 'react-router'
-import { cryptoSelectors, cryptoSelect } from '../../../store/reducers/cryptoReducers';
+import { cryptoSelectors, cryptoSelect, cryptoUnselect } from '../../../store/reducers/cryptoReducers';
 import LayoutWrapper from '../../LayoutWrapper.jsx/LayoutWrapper';
 import { useSelector, useDispatch } from 'react-redux'
 import styles from './HomeContainer.module.css'
 
 const HomeContainer = () => { 
+  const [isGraph, setIsGraph] = useState(false);
   const { pageKey } = useLoaderData();
   const dispatch = useDispatch();
   const cryptoList = useSelector(cryptoSelectors.selectAll)
@@ -14,7 +15,14 @@ const HomeContainer = () => {
 
   const selectHandler = (crypto) => {
     dispatch(cryptoSelect(crypto))
+      setIsGraph(true);
   }
+
+  const unselectHandler = (crypto) => {
+    dispatch(cryptoUnselect(crypto))
+      setIsGraph(false);
+  }
+
   const columns = [
     {
       title: "Crypto Name",
@@ -49,11 +57,12 @@ const HomeContainer = () => {
     },
     {
       title: "View Market",
-      dataIndex: "",
-      key: "x",
+      dataIndex: "market",
+      key: "market",
       render : (record) => (
         <Space size="middle">
-          <Button onClick={() => selectHandler(record)}>Select Market</Button>
+          <Button onClick={() => selectHandler(record)} >Select Market</Button>
+          <Button onClick={() => unselectHandler(record)} >Unselect Market</Button>
         </Space>
       )
     }
@@ -63,7 +72,11 @@ const HomeContainer = () => {
     <LayoutWrapper currentRoute={pageKey}>
       <div>
         <section className={styles.upper_half}>
-          <h1>{selectedCryptos && selectedCryptos[0]}</h1>
+          {isGraph === true ? (
+            <h1>`Show Graph of ${selectedCryptos}`</h1>
+          ) : (
+            <h1>Select a Market</h1>
+          )}
         </section>
         <section className={styles.lower_half}>
           <h3>Markets</h3>

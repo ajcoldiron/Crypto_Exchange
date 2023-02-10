@@ -23,12 +23,14 @@ const cryptoSlice = createSlice({
         cryptoRemoved: cryptoAdapter.removeOne,
         cryptoSelect: (state, action) => {
             const selectedCrypto = action.payload
-            state.selectedCryptos = [...state.selectedCryptos, selectedCrypto]
+            if(!state.selectedCryptos.includes(selectedCrypto)) {
+                state.selectedCryptos = [...state.selectedCryptos, selectedCrypto]
+            }
         },
         cryptoUnselect: (state, action) => {
             const unselectCrypto = action.payload
             if(state.selectedCryptos.includes(unselectCrypto)) {
-                state.selectedCryptos = [...state.selectedCryptos.filter(crypto => crypto !== unselectCrypto)]
+                state.selectedCryptos = [state.selectedCryptos.filter(crypto => crypto !== unselectCrypto)]
             }
         }
     },
