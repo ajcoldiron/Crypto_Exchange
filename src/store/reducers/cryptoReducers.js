@@ -30,7 +30,7 @@ const cryptoSlice = createSlice({
             state.selectedCrypto = null
         }
     },
-    extraReducers: builder => {
+    extraReducers(builder) {
         builder
             .addCase(fetchCryptos.pending, (state) => {
                 state.status = "loading"
