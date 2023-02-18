@@ -5,22 +5,25 @@ import { cryptoSelectors, cryptoSelect, cryptoUnselect } from '../../../store/re
 import LayoutWrapper from '../../LayoutWrapper.jsx/LayoutWrapper';
 import { useSelector, useDispatch } from 'react-redux'
 import styles from './HomeContainer.module.css'
+import CryptoGraph from './CryptoGraph';
 
-const HomeContainer = () => { 
-  const [isGraph, setIsGraph] = useState(false);
+const HomeContainer = () => {
   const { pageKey } = useLoaderData();
   const dispatch = useDispatch();
   const cryptoList = useSelector(cryptoSelectors.selectAll)
-  const selectedCryptos = useSelector(state => state.cryptoReducers.cryptoSelect)
-
+  const selectedCryptos = useSelector(state => state.cryptoReducers.selectedCryptos)
+  const selectedCryptoObject = useSelector(state => state.cryptoReducers.selectedCrypto)
+  const [isGraph, setIsGraph] = useState(false)
+  // console.log(selectedCryptos)
+  console.log(selectedCryptoObject)
   const selectHandler = (crypto) => {
     dispatch(cryptoSelect(crypto))
-      setIsGraph(true);
+    setIsGraph(true)
   }
 
-  const unselectHandler = (crypto) => {
-    dispatch(cryptoUnselect(crypto))
-      setIsGraph(false);
+  const unselectHandler = () => {
+    dispatch(cryptoUnselect())
+    setIsGraph(false)
   }
 
   const columns = [
@@ -29,7 +32,7 @@ const HomeContainer = () => {
       dataIndex: "name",
       key: "name",
       sorter: {
-        compare : (a,b) => b.name - a.name
+        compare: (a, b) => b.name - a.name
       }
     },
     {
@@ -37,7 +40,7 @@ const HomeContainer = () => {
       dataIndex: "current_price",
       key: "current_price",
       sorter: {
-        compare : (a,b) => b.current_price - a.current_price
+        compare: (a, b) => b.current_price - a.current_price
       }
     },
     {
@@ -59,12 +62,14 @@ const HomeContainer = () => {
       title: "View Market",
       dataIndex: "market",
       key: "market",
-      render : (record) => (
-        <Space size="middle">
-          <Button onClick={() => selectHandler(record)} >Select Market</Button>
-          <Button onClick={() => unselectHandler(record)} >Unselect Market</Button>
-        </Space>
-      )
+      render: (notsure, record) => {
+        return (
+          <Space size="middle">
+            <Button onClick={() => selectHandler(record)} >Select Market</Button>
+            <Button onClick={() => unselectHandler()} >Unselect Market</Button>
+          </Space>
+        )
+      }
     }
   ]// high_24h low_24h price_change_24h total_supply market_cap
 
@@ -72,15 +77,26 @@ const HomeContainer = () => {
     <LayoutWrapper currentRoute={pageKey}>
       <div>
         <section className={styles.upper_half}>
-          {isGraph === true ? (
-            <h1>`Show Graph of ${selectedCryptos}`</h1>
+          {isGraph ? (
+            <>
+            <CryptoGraph />
+            <div style={{display:"flex"}}>
+            {selectedCryptoObject ? (
+                <div key={selectedCryptoObject.id}>
+                  <div>{selectedCryptoObject.id}</div>
+                  <img src={selectedCryptoObject.image} width={100} />
+                </div>
+              )
+             : null}
+            </div>
+            </>
           ) : (
             <h1>Select a Market</h1>
           )}
         </section>
         <section className={styles.lower_half}>
           <h3>Markets</h3>
-          <Table dataSource={cryptoList} columns={columns}  />
+          <Table dataSource={cryptoList} columns={columns} rowKey="name" />
         </section>
       </div>
     </LayoutWrapper>

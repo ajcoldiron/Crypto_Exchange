@@ -7,7 +7,8 @@ const initialState = cryptoAdapter.getInitialState({
     status: "idle",
     ids: [],
     entities: {},
-    selectedCryptos: []
+    selectedCryptos: [],
+    selectedCrypto: null
 })
 
 export const fetchCryptos = createAsyncThunk("crypto/fetchCryptos", async () => {
@@ -22,16 +23,11 @@ const cryptoSlice = createSlice({
         cryptoAdded: cryptoAdapter.addOne,
         cryptoRemoved: cryptoAdapter.removeOne,
         cryptoSelect: (state, action) => {
-            const selectedCrypto = action.payload
-            if(!state.selectedCryptos.includes(selectedCrypto)) {
-                state.selectedCryptos = [...state.selectedCryptos, selectedCrypto]
-            }
+            console.log("before")
+            state.selectedCrypto = action.payload
         },
-        cryptoUnselect: (state, action) => {
-            const unselectCrypto = action.payload
-            if(state.selectedCryptos.includes(unselectCrypto)) {
-                state.selectedCryptos = [state.selectedCryptos.filter(crypto => crypto !== unselectCrypto)]
-            }
+        cryptoUnselect: (state) => {
+            state.selectedCrypto = null
         }
     },
     extraReducers: builder => {
