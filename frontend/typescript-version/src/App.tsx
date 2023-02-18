@@ -1,25 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useDispatch } from 'react-redux'
+import { useEffect } from 'react'
+import config from './config.json'
+import { RouterProvider } from "react-router"
+import { router } from './core/router'
 
 function App() {
+  const dispatch = useDispatch()
+
+  // const loadBlockchaindata = async () => {
+  //   const provider = dispatch(providerLoaded())
+  //   const chainId = dispatch(networkLoaded(provider))
+  //   dispatch(accountLoaded(provider))
+
+  //   const Eth = config[chainId].eth
+  //   const Btc = config[chainId].btc
+  //   dispatch(tokenLoaded(provider, [Eth.address, Btc.address]))
+
+  //   const exchange = config[chainId].exchange
+  //   dispatch(exchangeLoaded(provider, exchange.address))
+  // }
+  
+  // useEffect(() => {
+  //   loadBlockchaindata();
+  // })
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <RouterProvider router={router}/>
   );
 }
 
