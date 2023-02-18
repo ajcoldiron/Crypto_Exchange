@@ -18,33 +18,44 @@ const initialState: ConnectionReducerState = {
 
 
 export const initEthersConnection = createAsyncThunk("connection/initConnection", async () => {
+    let connection: any;
+    let chainId: any;
+    let account: any;
+    try{
     // const connection = new ethers.providers.Web3Provider(window.ethereum)
-    const connection = new ethers.BrowserProvider((window as any).ethereum)
+    connection = new ethers.BrowserProvider((window as any).ethereum)
     console.log(connection);
-    const { chainId } = await connection.getNetwork()
-    console.log(chainId);
-    const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts '})
-    console.log(accounts);
-    const account = await ethers.getAddress(accounts[0])
-    console.log(account);
-    const balance = await connection.getBalance(account)
-    console.log(balance);
-    const balanceFormatted = ethers.formatUnits(balance)
-    console.log(balanceFormatted);
+    const {chainId: newChainId} = await connection.getNetwork()
+    chainId = newChainId
+    // console.log(network);
+    // const test  =await connection
+    // console.log(test)
+    // const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts '})
+    // console.log(accounts);
+    // const accounts: any = []
+    // account = await ethers.getAddress("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266")
+    // console.log(account);
+    // const balance = await connection.getBalance(account)
+    // console.log(balance);
+    // const balanceFormatted = ethers.formatUnits(balance)
+    // const balanceFormatted = balance.toString()
+    // console.log(balanceFormatted);
 
     // const token = new ethers.Contract(addresses[0], tokenAbi, provider)
     // const symbol = await token.symbol()
 
     // token = new ethers.Contract(addresses[1], tokenAbi, provider)
     // symbol = await token.symbol()
-
+    } catch(e) {
+        console.log(e)
+    }
     
     // const exchange = new ethers.Contract(address, exchangeAbi, provider)
     return {
-        chainId,
-        accounts,
-        account,
-        balance: balanceFormatted
+        connection: 2,
+        chainId: 3,
+        account: 4,
+        // balance: balanceFormatted
     }
 });
 
@@ -62,15 +73,14 @@ const connectionSlice = createSlice({
                 state.status = "failed"
 
             })
-            .addCase(initEthersConnection.fulfilled, (state,action) => {
-                const {
-                    chainId,
-                    accounts,
-                    account,
-                    balance
-                } = action.payload
+            .addCase(initEthersConnection.fulfilled, (state) => {
+                // const {
+                //     // connection,
+                //     // chainId,
+                //     // account,
+                // } = action.payload
                 state.status = "idle"
-                state.test = action.payload
+                // state.test = chainId
 
             })
     }

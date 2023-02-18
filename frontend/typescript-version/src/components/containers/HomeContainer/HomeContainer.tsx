@@ -1,12 +1,12 @@
 import { Table, Button, Space } from 'antd';
 import React, { useState } from 'react'
 import { useLoaderData } from 'react-router'
-import { cryptoSelectors, cryptoSelect, cryptoUnselect } from '../../../store/reducers/cryptoReducers';
+import { cryptoSelectors, cryptoSelect, cryptoUnselect, fetchCryptoDataWithInterval } from '../../../store/reducers/cryptoReducers';
 import LayoutWrapper from '../../LayoutWrapper/LayoutWrapper';
 import { useSelector, useDispatch } from 'react-redux'
 import styles from './HomeContainer.module.css'
 import CryptoGraph from './CryptoGraph';
-import { RootState } from '../../../core/redux';
+import { RootState, store } from '../../../core/redux';
 import { ICrypto } from '../../../typings/crypto';
 
 const HomeContainer = () => {
@@ -19,6 +19,9 @@ const HomeContainer = () => {
   console.log(selectedCryptoObject)
   const selectHandler = (crypto: ICrypto) => {
     dispatch(cryptoSelect(crypto))
+    store.dispatch(fetchCryptoDataWithInterval({
+      cryptoId: crypto.id
+    }))
     setIsGraph(true)
   }
 

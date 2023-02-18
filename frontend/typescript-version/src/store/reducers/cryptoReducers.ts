@@ -7,7 +7,8 @@ interface CryptoReducerState extends EntityState<ICrypto> {
     status: "not-loaded" | "loading"| "failed"| "idle",
     selectedCryptos: Array<ICrypto>,
     selectedCrypto: ICrypto | null,
-    error: string
+    error: string,
+    currentCryptoData: any
 }
 
 interface ICryptoDictionary {
@@ -21,12 +22,25 @@ const initialState: CryptoReducerState = {
     status: "idle",
     selectedCryptos: [],
     selectedCrypto: null,
-    error: ""
+    error: "",
+    currentCryptoData: null,
 }
 
 export const fetchCryptos = createAsyncThunk("crypto/fetchCryptos", async () => {
     const cryptos = await axios.get("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false")
     return cryptos.data
+})
+
+export const fetchCryptoDataWithInterval = createAsyncThunk("crypto/fetchCryptoIntervalData", async ({cryptoId, days = 365, interval = "biweekly", currency ="usd"}: {
+    cryptoId: string,
+    days?: number,
+    interval?: string,
+    currency?: string
+}) => {
+    console.log(cryptoId)
+    const response = await axios.get(`https://api.coingecko.com/api/v3/coins/${cryptoId}/market_chart?vs_currency=${currency}&days=${days}&interval=${interval}`);
+    console.log(response.data)
+    return response.data;
 })
 
 const cryptoSlice = createSlice({
@@ -63,6 +77,18 @@ const cryptoSlice = createSlice({
                 state.status = "idle"
                 state.entities = cryptoDictionary
                 state.ids = Object.keys(cryptoDictionary)
+            })
+            .addCase(fetchCryptoDataWithInterval.pending, (state) => {
+                state.status = "loading"
+            })
+            .addCase(fetchCryptoDataWithInterval.rejected, (state) => {
+                state.status = "failed"
+
+            })
+            .addCase(fetchCryptoDataWithInterval.fulfilled, (state, action) => {
+                state.status = "idle"
+                state.currentCryptoData = action.payload
+
             })
     }
 })

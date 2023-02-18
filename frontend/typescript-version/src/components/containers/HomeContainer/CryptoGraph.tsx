@@ -1,7 +1,20 @@
 import React, { Component } from 'react';
 import Chart from 'react-apexcharts';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../core/redux';
+
+interface IProps {
+
+}
 
 const CryptoGraph = () => {
+
+  const cryptoDataByInterval = useSelector((state: RootState) => state.cryptoReducers.currentCryptoData)
+  console.log(cryptoDataByInterval)
+  const prices = cryptoDataByInterval?.prices ?? []
+  const minValue = Math.min(...prices.map((p: any) => p[1]))
+  const maxValue = Math.max(...prices.map((p: any) => p[1]))
+  console.log(minValue, maxValue);
   const options = {
     chart: {
       height: 350,
