@@ -1,5 +1,3 @@
-import React from 'react'
-import { useLoaderData } from 'react-router'
 import LayoutWrapper from '../../LayoutWrapper/LayoutWrapper'
 
 const AssetsContainer = () => {

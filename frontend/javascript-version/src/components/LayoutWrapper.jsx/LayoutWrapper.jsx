@@ -1,11 +1,30 @@
 import { Layout, Menu } from 'antd'
 import { Content, Header } from 'antd/es/layout/layout'
-import { useNavigate } from "react-router-dom"
-import React from 'react'
+import { useLocation, useNavigate } from "react-router-dom"
+import { useMemo } from 'react'
 import styles from './LayoutWrapper.module.css'
 
 const LayoutWrapper = (props) => {
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const currentPageKey = useMemo(() => {
+        const currentPath = location.pathname;
+        switch(currentPath) {
+            case "/":
+                return "page-homepage";
+            case "/orders":
+                return "page-orders";
+            case "/purchase":
+                return "page-purchase";
+            case "/sell":
+                return "page-sell";
+            case "/assets":
+                return "page-assets";
+            default: 
+                return "page-homepage";
+        }
+    }, [location.pathname])
 
     const pages = [
         {
@@ -59,7 +78,7 @@ const LayoutWrapper = (props) => {
             <Menu 
                 theme="dark"
                 mode="horizontal"
-                defaultSelectedKeys={['page-homepage']}
+                selectedKeys={[currentPageKey]}
                 items={pages}
                 onSelect={handlePageChange}
             />

@@ -1,64 +1,59 @@
 import { createSlice, createEntityAdapter, createAsyncThunk } from "@reduxjs/toolkit";
 import { ethers } from 'ethers'
-import tokenAbi from '../../abis/Token.json'
-import exchangeAbi from '../../abis/Exchange.json'
 import { RootState } from "../../core/redux";
+import { ExternalProvider } from "@ethersproject/providers";
+
+declare global {
+  interface Window {
+    ethereum?: ExternalProvider;
+  }
+}
 
 interface ConnectionReducerState {
-    ethersConnection: ethers.BrowserProvider | null;
+    ethersConnection: ethers.providers.Web3Provider | null;
     status: "not-loaded" | "loading"| "failed"| "idle";
-    test: any;
+    network: any;
+    account: string;
+    balance: string;
 }
 
 const initialState: ConnectionReducerState = {
     status: "not-loaded",
     ethersConnection: null,
-    test: null
+    network: null,
+    account: "",
+    balance: ""
 }
 
+export const loadProvider = createAsyncThunk("connection/initConnection", () => {
+    const connection = new ethers.providers.Web3Provider((window as any).ethereum)
+    return connection
+})
 
-export const initEthersConnection = createAsyncThunk("connection/initConnection", async () => {
-    let connection: any;
-    let chainId: any;
+export const loadNetwork = createAsyncThunk("network/initNetwork", async (connection : any) => {
+    const network = await connection.getNetwork()
+    return network
+})
+
+export const initAccountConnection = createAsyncThunk("account/initAccount", async (connection : any) => {
     let account: any;
+    let balance: any;
     try{
-    // const connection = new ethers.providers.Web3Provider(window.ethereum)
-    connection = new ethers.BrowserProvider((window as any).ethereum)
-    console.log(connection);
-    const {chainId: newChainId} = await connection.getNetwork()
-    chainId = newChainId
-    // console.log(network);
-    // const test  =await connection
-    // console.log(test)
-    // const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts '})
-    // console.log(accounts);
-    // const accounts: any = []
-    // account = await ethers.getAddress("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266")
-    // console.log(account);
-    // const balance = await connection.getBalance(account)
-    // console.log(balance);
-    // const balanceFormatted = ethers.formatUnits(balance)
-    // const balanceFormatted = balance.toString()
-    // console.log(balanceFormatted);
 
-    // const token = new ethers.Contract(addresses[0], tokenAbi, provider)
-    // const symbol = await token.symbol()
 
-    // token = new ethers.Contract(addresses[1], tokenAbi, provider)
-    // symbol = await token.symbol()
+        const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts '})
+        const account = ethers.utils.getAddress(accounts[0])
+        let balance = await connection.getBalance(account)
+        balance = ethers.utils.formatEther(balance)
+
     } catch(e) {
         console.log(e)
     }
-    
-    // const exchange = new ethers.Contract(address, exchangeAbi, provider)
     return {
-        connection: 2,
-        chainId: 3,
-        account: 4,
-        // balance: balanceFormatted
+        account,
+        balance
     }
 });
-
 
 const connectionSlice = createSlice({
     name: 'connection',
@@ -66,27 +61,43 @@ const connectionSlice = createSlice({
     reducers: {},
     extraReducers(builder) {
         builder
-            .addCase(initEthersConnection.pending, (state) => {
+            .addCase(loadProvider.pending, (state) => {
                 state.status = "loading"
             })
-            .addCase(initEthersConnection.rejected, (state) => {
+            .addCase(loadProvider.rejected, (state) => {
                 state.status = "failed"
 
             })
-            .addCase(initEthersConnection.fulfilled, (state) => {
-                // const {
-                //     // connection,
-                //     // chainId,
-                //     // account,
-                // } = action.payload
+            .addCase(loadProvider.fulfilled, (state, action) => {
+                state.ethersConnection = action.payload
                 state.status = "idle"
-                // state.test = chainId
+            })
+            .addCase(loadNetwork.pending, (state) => {
+                state.status = "loading"
+            })
+            .addCase(loadNetwork.rejected, (state) => {
+                state.status = "failed"
 
+            })
+            .addCase(loadNetwork.fulfilled, (state, action) => {
+                state.network = action.payload
+                state.status = "idle"
+            })
+            .addCase(initAccountConnection.pending, (state) => {
+                state.status = "loading"
+            })
+            .addCase(initAccountConnection.rejected, (state) => {
+                state.status = "failed"
+
+            })
+            .addCase(initAccountConnection.fulfilled, (state, action) => {
+                state.account = action.payload.account
+                state.balance = action.payload.balance
+                state.status = "idle"
             })
     }
 })
 
-// export const { providerLoaded, networkLoaded, accountLoaded, tokenLoaded, exchangeLoaded } = connectionSlice.actions;
 
 // export const connectionSelectors = connectionAdpter.getSelectors((state: RootState) => state.cryptoReducer);
 

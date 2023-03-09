@@ -16,7 +16,6 @@ const HomeContainer = () => {
   const selectedCryptoObject = useSelector((state: RootState) => state.cryptoReducers.selectedCrypto)
   const [isGraph, setIsGraph] = useState(false)
   // console.log(selectedCryptos)
-  console.log(selectedCryptoObject)
   const selectHandler = (crypto: ICrypto) => {
     dispatch(cryptoSelect(crypto))
     store.dispatch(fetchCryptoDataWithInterval({

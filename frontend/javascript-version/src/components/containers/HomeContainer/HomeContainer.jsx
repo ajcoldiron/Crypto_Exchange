@@ -1,23 +1,22 @@
 import { Table, Button, Space } from 'antd';
-import React, { useState } from 'react'
-import { useLoaderData } from 'react-router'
-import { cryptoSelectors, cryptoSelect, cryptoUnselect } from '../../../store/reducers/cryptoReducers';
+import { useState } from 'react'
+import { cryptoSelectors, cryptoSelect, cryptoUnselect, fetchCryptoDataWithInterval } from '../../../store/reducers/cryptoReducers';
 import LayoutWrapper from '../../LayoutWrapper.jsx/LayoutWrapper';
 import { useSelector, useDispatch } from 'react-redux'
 import styles from './HomeContainer.module.css'
 import CryptoGraph from './CryptoGraph';
+import { store } from '../../../core/redux';
 
 const HomeContainer = () => {
-  const { pageKey } = useLoaderData();
   const dispatch = useDispatch();
   const cryptoList = useSelector(cryptoSelectors.selectAll)
-  const selectedCryptos = useSelector(state => state.cryptoReducers.selectedCryptos)
   const selectedCryptoObject = useSelector(state => state.cryptoReducers.selectedCrypto)
   const [isGraph, setIsGraph] = useState(false)
-  // console.log(selectedCryptos)
-  console.log(selectedCryptoObject)
   const selectHandler = (crypto) => {
     dispatch(cryptoSelect(crypto))
+    store.dispatch(fetchCryptoDataWithInterval({
+      cryptoId: crypto.id
+    }))
     setIsGraph(true)
   }
 
@@ -31,9 +30,9 @@ const HomeContainer = () => {
       title: "Crypto Name",
       dataIndex: "name",
       key: "name",
-      sorter: {
-        compare: (a, b) => b.name - a.name
-      }
+      // sorter: {
+      //   compare: (a: ICrypto, b: ICrypto) => b.name - a.name
+      // }
     },
     {
       title: "Price",
@@ -60,8 +59,8 @@ const HomeContainer = () => {
     },
     {
       title: "View Market",
-      dataIndex: "market",
-      key: "market",
+      dataIndex: "",
+      key: "",
       render: (notsure, record) => {
         return (
           <Space size="middle">
@@ -71,10 +70,10 @@ const HomeContainer = () => {
         )
       }
     }
-  ]// high_24h low_24h price_change_24h total_supply market_cap
+  ]
 
   return (
-    <LayoutWrapper currentRoute={pageKey}>
+    <LayoutWrapper>
       <div>
         <section className={styles.upper_half}>
           {isGraph ? (
@@ -84,7 +83,7 @@ const HomeContainer = () => {
             {selectedCryptoObject ? (
                 <div key={selectedCryptoObject.id}>
                   <div>{selectedCryptoObject.id}</div>
-                  <img src={selectedCryptoObject.image} width={100} />
+                  <img src={selectedCryptoObject.image} alt="Logo" width={100} />
                 </div>
               )
              : null}

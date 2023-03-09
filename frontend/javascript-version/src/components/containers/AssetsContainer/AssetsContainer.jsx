@@ -1,13 +1,18 @@
-import React from 'react'
-import { useLoaderData } from 'react-router'
 import LayoutWrapper from '../../LayoutWrapper.jsx/LayoutWrapper'
+import AssetsGraph from './AssetsGraph'
 
 const AssetsContainer = () => {
-  const { pageKey } = useLoaderData();
 
   return (
-    <LayoutWrapper currentRoute={pageKey}>
-      <h1>Assets</h1>
+    <LayoutWrapper>
+      <div>
+        <section>
+          <AssetsGraph />
+        </section>
+        <section>
+
+        </section>
+      </div>
     </LayoutWrapper>
   )
 }

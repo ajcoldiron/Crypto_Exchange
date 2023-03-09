@@ -1,21 +1,11 @@
-import React from 'react'
-import { useLoaderData } from 'react-router';
 import LayoutWrapper from '../../LayoutWrapper.jsx/LayoutWrapper';
 
 const PurchaseContainer = () => {
-  const { pageKey } = useLoaderData();
-
-  
 
   return (
-    <LayoutWrapper currentRoute={pageKey}>
+    <LayoutWrapper>
       <div>
-        <div>
-
-        </div>
-        <div>
-          
-        </div>
+        <h1>Purchases</h1>
       </div>
     </LayoutWrapper>
   )

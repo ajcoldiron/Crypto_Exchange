@@ -3,17 +3,24 @@ import axios from "axios";
 
 const cryptoAdapter = createEntityAdapter();
 
-const initialState = cryptoAdapter.getInitialState({
+const initialState = {
+    ...cryptoAdapter.getInitialState(),
     status: "idle",
-    ids: [],
-    entities: {},
     selectedCryptos: [],
-    selectedCrypto: null
-})
+    selectedCrypto: null,
+    error: "",
+    currentCryptoData: []
+}
 
 export const fetchCryptos = createAsyncThunk("crypto/fetchCryptos", async () => {
     const cryptos = await axios.get("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false")
     return cryptos.data
+})
+
+
+export const fetchCryptoDataWithInterval = createAsyncThunk("crypto/fetchCryptoIntervalData", async ({cryptoId, days = 365, interval = "monthly", currency ="usd"}) => {
+    const response = await axios.get(`https://api.coingecko.com/api/v3/coins/${cryptoId}/market_chart?vs_currency=${currency}&days=${days}&interval=${interval}`);
+    return response.data;
 })
 
 const cryptoSlice = createSlice({
@@ -23,10 +30,9 @@ const cryptoSlice = createSlice({
         cryptoAdded: cryptoAdapter.addOne,
         cryptoRemoved: cryptoAdapter.removeOne,
         cryptoSelect: (state, action) => {
-            console.log("before")
             state.selectedCrypto = action.payload
         },
-        cryptoUnselect: (state) => {
+        cryptoUnselect: (state) => { 
             state.selectedCrypto = null
         }
     },
@@ -47,9 +53,19 @@ const cryptoSlice = createSlice({
                 cryptos.forEach(crypto => {
                     cryptoDictionary[crypto.id] = crypto;
                 })
-                state.status = "success"
+                state.status = "idle"
                 state.entities = cryptoDictionary
-                state.ids = Object.keys(cryptoDictionary)
+                state.ids = Object.keys(cryptoDictionary) 
+            })
+            .addCase(fetchCryptoDataWithInterval.pending, (state) => {
+                state.status = 'pending'
+            })
+            .addCase(fetchCryptoDataWithInterval.rejected, (state) => {
+                state.status = 'failed'
+            })
+            .addCase(fetchCryptoDataWithInterval.fulfilled, (state, action) => {
+                state.status = "idle"
+                state.currentCryptoData = action.payload  
             })
     }
 })

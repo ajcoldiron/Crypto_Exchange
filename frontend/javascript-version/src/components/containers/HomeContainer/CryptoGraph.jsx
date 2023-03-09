@@ -1,25 +1,18 @@
-import React, { Component } from 'react';
 import Chart from 'react-apexcharts';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../../core/redux';
-import { format } from 'date-fns'
-import { Empty } from 'antd';
 
-interface IProps {
-
-}
 
 const CryptoGraph = () => {
-  const cryptoName = useSelector((state : any) => state.cryptoReducers.selectedCrypto.name)
-  const cryptoDataByInterval = useSelector((state: RootState) => state.cryptoReducers.currentCryptoData)
+  const cryptoName = useSelector((state) => state.cryptoReducers.selectedCrypto.name)
+  const cryptoDataByInterval = useSelector((state) => state.cryptoReducers.currentCryptoData)
   const prices = cryptoDataByInterval?.prices ?? []
-  const minValue = Math.min(...prices.map((p: any) => p[1]))
-  const maxValue = Math.max(...prices.map((p: any) => p[1]))
+  const minValue = Math.min(...prices.map((p) => p[1]))
+  const maxValue = Math.max(...prices.map((p) => p[1]))
 
   let intervalAndDate1, intervalAndDate2, intervalAndDate3, intervalAndDate4, intervalAndDate5
   let price1, price2, price3, price4, price5
   let interval1Date, interval2Date, interval3Date, interval4Date, interval5Date
-  const PriceAndDate = (priceDay: any) => {
+  const PriceAndDate = (priceDay) => {
     let price = priceDay[1]
     let dateInUnix = priceDay[0]
     let date = new Date(dateInUnix)
@@ -89,7 +82,7 @@ const CryptoGraph = () => {
   return (
     <div>
       <Chart
-        options={options as any}
+        options={options}
         series={series}
         type='line'
         height='300'

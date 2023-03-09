@@ -31,7 +31,7 @@ export const fetchCryptos = createAsyncThunk("crypto/fetchCryptos", async () => 
     return cryptos.data
 })
 
-export const fetchCryptoDataWithInterval = createAsyncThunk("crypto/fetchCryptoIntervalData", async ({cryptoId, days = 365, interval = "biweekly", currency ="usd"}: {
+export const fetchCryptoDataWithInterval = createAsyncThunk("crypto/fetchCryptoIntervalData", async ({cryptoId, days = 365, interval = "monthly", currency ="usd"}: {
     cryptoId: string,
     days?: number,
     interval?: string,

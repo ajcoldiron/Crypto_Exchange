@@ -1,4 +1,4 @@
-const config = require('../src/config.json') 
+const config = require('../config.json') 
 const { ethers } = require('hardhat')
 
 const tokens = (n) => {
