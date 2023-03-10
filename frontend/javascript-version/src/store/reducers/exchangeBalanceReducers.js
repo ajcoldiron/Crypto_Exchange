@@ -1,4 +1,4 @@
-import { Contract, ethers } from 'ethers'
+import { ethers } from 'ethers'
 import { createSlice, createEntityAdapter, createAsyncThunk } from "@reduxjs/toolkit";
 
 const exchangeAdpter = createEntityAdapter();

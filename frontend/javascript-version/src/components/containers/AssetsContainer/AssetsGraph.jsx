@@ -17,7 +17,7 @@ const AssetsGraph = () => {
 
     useEffect(() => {
       dispatch(loadExchangeBalances({ exchange, tokens, account }))
-    }, [exchange, tokens, account])
+    }, [exchange, tokens, account, dispatch])
 
 
   const options = {

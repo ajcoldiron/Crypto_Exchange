@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { 
   loadProvider,
@@ -10,7 +10,6 @@ import { loadExchange } from './store/reducers/exchangeReducers'
 import config from './config.json'
 import { RouterProvider } from "react-router"
 import { router } from './core/router'
-import { loadExchangeBalances } from './store/reducers/exchangeBalanceReducers'
 
 
 function App() {
@@ -34,7 +33,7 @@ function App() {
   
   useEffect(() => {
     loadBlockchaindata();
-  })
+  }, [loadBlockchaindata])
   return (
     <RouterProvider router={router}/>
   );
