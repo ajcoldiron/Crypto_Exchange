@@ -20,6 +20,18 @@ async function main() {
     await ltc.deployed();
     console.log(`Litecoin deployed to ${ltc.address}`)
 
+    const xrp = await Token.deploy('Ripple', 'XRP', 1000000);
+    await xrp.deployed();
+    console.log(`Ripple deployed to ${xrp.address}`)
+
+    const bnb = await Token.deploy('Binance Coin', 'BNB', 1000000);
+    await bnb.deployed();
+    console.log(`Binance Coin deployed to ${bnb.address}`)
+    
+    const ada = await Token.deploy('Cardano', 'ADA', 1000000);
+    await ada.deployed();
+    console.log(`Cardano deployed to ${ada.address}`)
+
     const exchange = await Exchange.deploy(feeAccount.address, 10)
     await exchange.deployed();
     console.log(`Exchange deployed to ${exchange.address}`)

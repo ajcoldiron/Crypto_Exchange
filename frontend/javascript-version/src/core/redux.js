@@ -4,6 +4,8 @@ import connectionReducers from "../store/reducers/connectionReducers";
 import tokenReducers from "../store/reducers/tokenReducers";
 import exchangeReducers from "../store/reducers/exchangeReducers";
 import exchangeBalanceReducers from "../store/reducers/exchangeBalanceReducers";
+import transferReducers from "../store/reducers/transferReducers";
+import purchaseReducer from "../store/reducers/purchaseReducer";
 
 export const store = configureStore({
     reducer: {
@@ -11,7 +13,9 @@ export const store = configureStore({
         connectionReducers,
         tokenReducers,
         exchangeReducers,
-        exchangeBalanceReducers
+        exchangeBalanceReducers,
+        purchaseReducer,
+        transferReducers
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

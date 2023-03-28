@@ -22,8 +22,13 @@ function App() {
 
     const Eth = config[chainId.payload].eth
     const Btc = config[chainId.payload].btc
+    const Ltc = config[chainId.payload].ltc
+    const Xrp = config[chainId.payload].xrp
+    const Bnb = config[chainId.payload].bnb
+    const Ada = config[chainId.payload].ada
+
     
-    const addresses = [Eth.address, Btc.address]
+    const addresses = [Eth.address, Btc.address, Ltc.address, Xrp.address, Bnb.address, Ada.address]
     await dispatch(loadTokens({ provider: provider.payload, addresses }))
 
     const exchange = config[chainId.payload].exchange 

@@ -4,9 +4,7 @@ import { createSlice, createEntityAdapter, createAsyncThunk } from "@reduxjs/too
 const exchangeAdpter = createEntityAdapter();
 
 const initialState = exchangeAdpter.getInitialState({
-    exchange: {},
-    token1Balance: "",
-    token2Balance: "",
+    exchange: null,
     status: "not-loaded"
 })
 
@@ -14,10 +12,22 @@ export const loadExchangeBalances = createAsyncThunk("balances/initBalances", as
     let exchange = data.exchange
     let tokens = data.tokens
     let account = data.account
-    let balance1 = ethers.utils.formatUnits(await exchange.balanceOf(tokens[0], account), 18)
-    // let balance2 = ethers.utils.formatUnits(await exchange.balanceOf(tokens[1], account), 18)
-
-    return { balance1 }
+    let balance1 = ethers.utils.formatUnits(await exchange.balanceOf(tokens[0].address, account), 18)
+    let balance2 = ethers.utils.formatUnits(await exchange.balanceOf(tokens[1].address, account), 18)
+    let symbol1 = data.symbols[0]
+    let symbol2 = data.symbols[1]
+    const tokenBalances = [
+        {
+          balance: balance1,
+          symbol: symbol1
+        },
+        {
+          balance: balance2,
+          symbol: symbol2
+        }
+      ]
+    
+    return { tokenBalances }
 })
 
 
@@ -30,14 +40,18 @@ const exchangeBalanceSlice = createSlice({
             .addCase(loadExchangeBalances.pending, (state) => {
                 state.status = "loading"
             })
-            .addCase(loadExchangeBalances.rejected, (state, action) => {
-                console.log(action)
+            .addCase(loadExchangeBalances.rejected, (state) => {
                 state.status = "failed"
             })
             .addCase(loadExchangeBalances.fulfilled, (state, action) => {
-                state.token1Balance = action.payload.balance1
-                // state.token2Balance = action.payload.balance2
-                console.log(action)
+                const tokenBalances = action.payload.tokenBalances
+                const balanceDictionary = {}
+                let balanceValues = Object.values(tokenBalances)
+                balanceValues.forEach(balances => {
+                    balanceDictionary[balances.symbol] = balances
+                })
+                // const ids = Object.keys(balanceDictionary)
+                state.entities = balanceDictionary
                 state.status = "idle"
             })
     }

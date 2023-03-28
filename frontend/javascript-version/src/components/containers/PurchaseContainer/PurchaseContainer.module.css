@@ -1,0 +1,7 @@
+.wrapper {
+    display: flex;
+}
+.purchaseInformations { 
+    flex: 1;
+    margin-left: 16px;
+}

@@ -30,9 +30,6 @@ const HomeContainer = () => {
       title: "Crypto Name",
       dataIndex: "name",
       key: "name",
-      // sorter: {
-      //   compare: (a: ICrypto, b: ICrypto) => b.name - a.name
-      // }
     },
     {
       title: "Price",

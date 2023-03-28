@@ -51,7 +51,7 @@ const cryptoSlice = createSlice({
                 const cryptos = action.payload;
                 const cryptoDictionary = {};
                 cryptos.forEach(crypto => {
-                    cryptoDictionary[crypto.id] = crypto;
+                    cryptoDictionary[crypto.symbol] = crypto;
                 })
                 state.status = "idle"
                 state.entities = cryptoDictionary

@@ -25,6 +25,15 @@ async function main() {
 	const ltc = await ethers.getContractAt('Token', config[chainId].ltc.address)
 	console.log(`Litecoin Token fetched: ${ltc.address}\n`)
 
+	const xrp = await ethers.getContractAt('Token', config[chainId].xrp.address)
+	console.log(`Ripple Token fetched: ${xrp.address}\n`)
+
+	const bnb = await ethers.getContractAt('Token', config[chainId].bnb.address)
+	console.log(`Binance Coin fetched: ${bnb.address}\n`)
+
+	const ada = await ethers.getContractAt('Token', config[chainId].ada.address)
+	console.log(`Cardano Token fetched: ${ada.address}\n`)
+
 	const exchange = await ethers.getContractAt('Exchange', config[chainId].exchange.address)
 	console.log(`Exchange Token fetched: ${exchange.address}\n`)
 

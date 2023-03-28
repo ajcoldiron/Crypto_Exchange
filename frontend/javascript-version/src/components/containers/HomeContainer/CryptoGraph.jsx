@@ -6,8 +6,8 @@ const CryptoGraph = () => {
   const cryptoName = useSelector((state) => state.cryptoReducers.selectedCrypto.name)
   const cryptoDataByInterval = useSelector((state) => state.cryptoReducers.currentCryptoData)
   const prices = cryptoDataByInterval?.prices ?? []
-  const minValue = Math.min(...prices.map((p) => p[1]))
-  const maxValue = Math.max(...prices.map((p) => p[1]))
+  // const minValue = Math.min(...prices.map((p) => p[1]))
+  // const maxValue = Math.max(...prices.map((p) => p[1]))
 
   let intervalAndDate1, intervalAndDate2, intervalAndDate3, intervalAndDate4, intervalAndDate5
   let price1, price2, price3, price4, price5

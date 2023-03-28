@@ -5,12 +5,12 @@ import { createSlice, createEntityAdapter, createAsyncThunk } from "@reduxjs/too
 const exchangeAdpter = createEntityAdapter();
 
 const initialState = exchangeAdpter.getInitialState({
-    exchange: {},
+    exchange: null,
     status: "not-loaded"
 })
 
 export const loadExchange = createAsyncThunk("exchange/initExchange", async (data) => {
-    let exchange = new ethers.Contract(data.exchange, exchangeAbi, data.provider)
+    let exchange = new ethers.Contract(data.exchange.address, exchangeAbi, data.provider)
     return exchange
 })
 
