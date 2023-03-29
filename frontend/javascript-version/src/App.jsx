@@ -10,10 +10,13 @@ import { loadExchange } from './store/reducers/exchangeReducers'
 import config from './config.json'
 import { RouterProvider } from "react-router"
 import { router } from './core/router'
+import { subscribeToTransfers } from './store/reducers/transferReducers'
+import { initAllData } from './core/redux'
 
 
 function App() {
   const dispatch = useDispatch()
+  initAllData();
 
   const loadBlockchaindata = async () => {
     const provider = await dispatch(loadProvider())
@@ -33,6 +36,7 @@ function App() {
 
     const exchange = config[chainId.payload].exchange 
     await dispatch(loadExchange({ provider: provider.payload, exchange }))
+    dispatch(subscribeToTransfers())
   }
 
   

@@ -15,14 +15,14 @@ const PurchaseContainer = () => {
   const [coinSellAddress, setCoinSellAddress] = useState("")
   const provider = useSelector(state => state.connectionReducers.ethersConnection)
   const exchange = useSelector(state => state.exchangeReducers.exchange)
-  const token1 = useSelector(state => state.tokenReducers.token1)
-  const token2 = useSelector(state => state.tokenReducers.token2)
+  const token1 = useSelector(state => state.tokenReducers.entities.ETH.token)
+  const token2 = useSelector(state => state.tokenReducers.entities.BTC.token)
+  const token1Symbol = useSelector(state => state.tokenReducers.entities.ETH.symbol)
+  const token2Symbol = useSelector(state => state.tokenReducers.entities.BTC.symbol)
   const tokens = [token1, token2]
   const order = { amount, price }
   const chainId = useSelector(state => state.connectionReducers.network)
   const account = useSelector(state => state.connectionReducers.account)
-  const token1Symbol = useSelector(state => state.tokenReducers.token1Symbol)
-  const token2Symbol = useSelector(state => state.tokenReducers.token2Symbol)
 
   useEffect(() => {
     if (!!exchange && token1 && token2 && account && token1Symbol && token2Symbol) {

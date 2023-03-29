@@ -34,10 +34,28 @@ export const transferTokens = createAsyncThunk("transfer/initTransfer", async (d
     return transferType
 })
 
+export const subscribeToTransfers = createAsyncThunk("transfers/subscribe", (_, thunkAPI) => {
+    const currentReducersState = thunkAPI.getState()
+    const exchange = currentReducersState.exchangeReducers.exchange
+    exchange.on('Deposit', (token, user, amount, balance, event) => {
+        thunkAPI.dispatch(transferSuccess())
+    })
+    exchange.on('Withdraw', (token, user, amount, balance, event) => {
+        thunkAPI.dispatch(transferSuccess())
+    })
+})
+
 const transferSlice = createSlice({
     name: 'exchange',
     initialState,
-    reducers: {},
+    reducers: {
+        transferSuccess: (state, action) => {
+            return {
+                ...state,
+                event: action.event
+            }
+        }
+    },
     extraReducers(builder) {
         builder
             .addCase(transferTokens.pending, (state) => {
@@ -50,7 +68,18 @@ const transferSlice = createSlice({
                 state.transferType = action.payload.transferType
                 state.status = "idle"
             })
+            .addCase(subscribeToTransfers.pending, (state) => {
+                state.status = "loading"
+            })
+            .addCase(subscribeToTransfers.rejected, (state) => {
+                state.status = "failed"
+            })
+            .addCase(subscribeToTransfers.fulfilled, (state, action) => {
+                state.status = "idle"
+            })
     }
 })
+
+export const { transferSuccess } = transferSlice.actions;
 
 export default transferSlice.reducer;

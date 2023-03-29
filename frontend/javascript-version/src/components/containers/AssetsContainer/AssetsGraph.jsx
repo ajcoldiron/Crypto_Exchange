@@ -12,10 +12,10 @@ const AssetsGraph = () => {
   const dispatch = useDispatch()
   const exchange = useSelector(state => state.exchangeReducers.exchange)
 
-  const token1 = useSelector(state => state.tokenReducers.entities.ETH.token)
-  const token2 = useSelector(state => state.tokenReducers.entities.BTC.token)
-  const token1Symbol = useSelector(state => state.tokenReducers.entities.ETH.symbol)
-  const token2Symbol = useSelector(state => state.tokenReducers.entities.BTC.symbol)
+  const token1 = useSelector(state => state.tokenReducers.entities?.ETH?.token)
+  const token2 = useSelector(state => state.tokenReducers.entities?.BTC?.token)
+  const token1Symbol = useSelector(state => state.tokenReducers.entities?.ETH?.symbol)
+  const token2Symbol = useSelector(state => state.tokenReducers.entities?.BTC?.symbol)
   const account = useSelector(state => state.connectionReducers.account)
 
   const exchangeTokens = useSelector(state => state.exchangeBalanceReducers.entities)
