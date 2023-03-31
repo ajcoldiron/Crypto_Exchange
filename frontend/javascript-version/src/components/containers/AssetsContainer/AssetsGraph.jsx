@@ -12,11 +12,21 @@ const AssetsGraph = () => {
   const dispatch = useDispatch()
   const exchange = useSelector(state => state.exchangeReducers.exchange)
 
-  const token1 = useSelector(state => state.tokenReducers.entities?.ETH?.token)
-  const token2 = useSelector(state => state.tokenReducers.entities?.BTC?.token)
-  const token1Symbol = useSelector(state => state.tokenReducers.entities?.ETH?.symbol)
-  const token2Symbol = useSelector(state => state.tokenReducers.entities?.BTC?.symbol)
+  const eth = useSelector(state => state.tokenReducers.entities?.ETH?.token)
+  const btc = useSelector(state => state.tokenReducers.entities?.BTC?.token)
+  const ltc = useSelector(state => state.tokenReducers.entities?.LTC?.token)
+  const xrp = useSelector(state => state.tokenReducers.entities?.XRP?.token)
+  const bnb = useSelector(state => state.tokenReducers.entities?.BNB?.token)
+  const ada = useSelector(state => state.tokenReducers.entities?.ADA?.token)
+  const ethSymbol = useSelector(state => state.tokenReducers.entities?.ETH?.symbol)
+  const btcSymbol = useSelector(state => state.tokenReducers.entities?.BTC?.symbol)
+  const ltcSymbol = useSelector(state => state.tokenReducers.entities?.LTC?.symbol)
+  const xrpSymbol = useSelector(state => state.tokenReducers.entities?.XRP?.symbol)
+  const bnbSymbol = useSelector(state => state.tokenReducers.entities?.BNB?.symbol)
+  const adaSymbol = useSelector(state => state.tokenReducers.entities?.ADA?.symbol)
   const account = useSelector(state => state.connectionReducers.account)
+  const tokens = [eth, btc, ltc, xrp, bnb, ada]
+  const symbols = [ethSymbol, btcSymbol, ltcSymbol, xrpSymbol, bnbSymbol, adaSymbol]
 
   const exchangeTokens = useSelector(state => state.exchangeBalanceReducers.entities)
   const exchangeCryptoSymbols = Object.keys(exchangeTokens)
@@ -24,12 +34,12 @@ const AssetsGraph = () => {
   const allCryptos = useSelector(state => state.cryptoReducers.entities)
   const allCryptoValues = Object.values(allCryptos)
   // const allCryptoPrices = useSelector(state => state.currentCryptoData.prices)
+  //eth && btc && ltc && xrp && bnb && ada && ethSymbol && btcSymbol && ltcSymbol && xrpSymbol && bnbSymbol && adaSymbol
   useEffect(() => {
-    if (!!exchange && token1 && token2 && account && token1Symbol && token2Symbol) {
-      const tokens = [token1, token2]
-      dispatch(loadExchangeBalances({ exchange, tokens, account, symbols: [token1Symbol, token2Symbol] }))
+    if (!!exchange && eth && btc && ltc && xrp && bnb && ada && ethSymbol && btcSymbol && ltcSymbol && xrpSymbol && bnbSymbol && adaSymbol && account) {
+      dispatch(loadExchangeBalances({ exchange, tokens, account, symbols }))
     }
-  }, [dispatch, exchange, token1, token2, account, token1Symbol, token2Symbol])
+  }, [dispatch, exchange, eth, btc, ltc, xrp, bnb, ada, account, ethSymbol, btcSymbol, ltcSymbol, xrpSymbol, bnbSymbol, adaSymbol])
 
 
   const formatter = new Intl.NumberFormat('en-US', {

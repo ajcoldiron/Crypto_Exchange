@@ -27,10 +27,26 @@ export const purchase = createAsyncThunk("purchase/initPurchase", async (data) =
     }
 })
 
+export const subscribeToPurchase = createAsyncThunk("purchase/subscribe", (_, thunkAPI) => {
+    const currentReducersState = thunkAPI.getState()
+    const exchange = currentReducersState.exchangeReducers.exchange
+    exchange.on('Order', (id, user, tokenGet, amountGet, tokenGive, amountGive, timestamp, event) => {
+        const order = event.args
+        thunkAPI.dispatch(purchaseSuccess())
+      })
+})
+
 const purchaseSlice = createSlice({
     name: 'exchange',
     initialState,
-    reducers: {},
+    reducers: {
+        purchaseSuccess: (state, action) => {
+            return {
+                ...state,
+                event: action.event
+            }
+        }
+    },
     extraReducers(builder) {
         builder
             .addCase(purchase.pending, (state) => {
@@ -45,5 +61,7 @@ const purchaseSlice = createSlice({
             })
     }
 })
+
+export const { purchaseSuccess } = purchaseSlice.actions;
 
 export default purchaseSlice.reducer;

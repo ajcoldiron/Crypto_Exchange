@@ -10,7 +10,7 @@ const initialState = exchangeAdpter.getInitialState({
 })
 
 export const loadExchange = createAsyncThunk("exchange/initExchange", async (data) => {
-    let exchange = new ethers.Contract(data.exchange.address, exchangeAbi, data.provider)
+    let exchange = new ethers.Contract(data.exchange, exchangeAbi, data.provider)
     return exchange
 })
 
@@ -24,8 +24,9 @@ const exchangeSlice = createSlice({
             .addCase(loadExchange.pending, (state) => {
                 state.status = "loading"
             })
-            .addCase(loadExchange.rejected, (state) => {
+            .addCase(loadExchange.rejected, (state, action) => {
                 state.status = "failed"
+                console.log(action)
             })
             .addCase(loadExchange.fulfilled, (state, action) => {
                 state.exchange = action.payload

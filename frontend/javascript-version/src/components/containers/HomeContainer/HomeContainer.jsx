@@ -14,7 +14,7 @@ const HomeContainer = () => {
   const [isGraph, setIsGraph] = useState(false)
   const selectHandler = (crypto) => {
     dispatch(cryptoSelect(crypto))
-    store.dispatch(fetchCryptoDataWithInterval({
+    dispatch(fetchCryptoDataWithInterval({
       cryptoId: crypto.id
     }))
     setIsGraph(true)

@@ -12,6 +12,8 @@ import { RouterProvider } from "react-router"
 import { router } from './core/router'
 import { subscribeToTransfers } from './store/reducers/transferReducers'
 import { initAllData } from './core/redux'
+import { subscribeToPurchase } from './store/reducers/purchaseReducer'
+import { loadAllOrders, loadFilledOrders, loadCancelledOrders } from './store/reducers/OrdersReducer'
 
 
 function App() {
@@ -34,9 +36,13 @@ function App() {
     const addresses = [Eth.address, Btc.address, Ltc.address, Xrp.address, Bnb.address, Ada.address]
     await dispatch(loadTokens({ provider: provider.payload, addresses }))
 
-    const exchange = config[chainId.payload].exchange 
-    await dispatch(loadExchange({ provider: provider.payload, exchange }))
+    const exchangeAddress = config[chainId.payload].exchange.address
+    const exchange = await dispatch(loadExchange({ provider: provider.payload, exchange: exchangeAddress }))
     dispatch(subscribeToTransfers())
+    dispatch(subscribeToPurchase())
+    dispatch(loadAllOrders({ exchange, provider }))
+    dispatch(loadFilledOrders({ exchange, provider }))
+    dispatch(loadCancelledOrders({ exchange, provider }))
   }
 
   

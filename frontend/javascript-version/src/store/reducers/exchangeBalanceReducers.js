@@ -14,8 +14,16 @@ export const loadExchangeBalances = createAsyncThunk("balances/initBalances", as
     let account = data.account
     let balance1 = ethers.utils.formatUnits(await exchange.balanceOf(tokens[0].address, account), 18)
     let balance2 = ethers.utils.formatUnits(await exchange.balanceOf(tokens[1].address, account), 18)
+    let balance3 = ethers.utils.formatUnits(await exchange.balanceOf(tokens[2].address, account), 18)
+    let balance4 = ethers.utils.formatUnits(await exchange.balanceOf(tokens[3].address, account), 18)
+    let balance5 = ethers.utils.formatUnits(await exchange.balanceOf(tokens[4].address, account), 18)
+    let balance6 = ethers.utils.formatUnits(await exchange.balanceOf(tokens[5].address, account), 18)
     let symbol1 = data.symbols[0]
     let symbol2 = data.symbols[1]
+    let symbol3 = data.symbols[2]
+    let symbol4 = data.symbols[3]
+    let symbol5 = data.symbols[4]
+    let symbol6 = data.symbols[5]
     const tokenBalances = [
         {
           balance: balance1,
@@ -24,6 +32,22 @@ export const loadExchangeBalances = createAsyncThunk("balances/initBalances", as
         {
           balance: balance2,
           symbol: symbol2
+        },
+        {
+          balance: balance3,
+          symbol: symbol3
+        },
+        {
+          balance: balance4,
+          symbol: symbol4
+        },
+        {
+          balance: balance5,
+          symbol: symbol5
+        },
+        {
+          balance: balance6,
+          symbol: symbol6
         }
       ]
     
