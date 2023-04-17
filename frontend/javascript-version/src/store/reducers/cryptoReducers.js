@@ -9,7 +9,9 @@ const initialState = {
     selectedCryptos: [],
     selectedCrypto: null,
     error: "",
-    currentCryptoData: []
+    currentCryptoData: null,
+    comparedIntervalData: [],
+    cachedIntervalData: {}
 }
 
 export const fetchCryptos = createAsyncThunk("crypto/fetchCryptos", async () => {
@@ -18,9 +20,28 @@ export const fetchCryptos = createAsyncThunk("crypto/fetchCryptos", async () => 
 })
 
 
-export const fetchCryptoDataWithInterval = createAsyncThunk("crypto/fetchCryptoIntervalData", async ({cryptoId, days = 365, interval = "monthly", currency ="usd"}) => {
-    const response = await axios.get(`https://api.coingecko.com/api/v3/coins/${cryptoId}/market_chart?vs_currency=${currency}&days=${days}&interval=${interval}`);
-    return response.data;
+export const fetchCryptoDataWithInterval = createAsyncThunk("crypto/fetchCryptoIntervalData", async ({cryptoId, days = 365, interval = "monthly", currency ="usd"}, thunkAPI) => {
+    const cachedIntervalData = thunkAPI.getState().cryptoReducers.cachedIntervalData;
+    let currentCachedIntervalData = null
+    if(cryptoId in cachedIntervalData) {
+        currentCachedIntervalData = cachedIntervalData[cryptoId]
+    }
+
+    // Calculate if cached data should be queried again
+    const isDataOlderThanOneDay = false;
+   
+    if (currentCachedIntervalData && !isDataOlderThanOneDay) {
+        return {
+            cryptoId,
+            intervalData: currentCachedIntervalData
+        };
+    } else {
+        const response = await axios.get(`https://api.coingecko.com/api/v3/coins/${cryptoId}/market_chart?vs_currency=${currency}&days=${days}&interval=${interval}`);
+        return {
+            cryptoId,
+            intervalData: response.data
+        };
+    }
 })
 
 const cryptoSlice = createSlice({
@@ -34,6 +55,12 @@ const cryptoSlice = createSlice({
         },
         cryptoUnselect: (state) => { 
             state.selectedCrypto = null
+        },
+        selectPurchaseCrypto: (state, action) => {
+            state.purchaseCrypto = action.payload
+        },
+        selectSellCrypto: (state, action) => {
+            state.sellCrypto = action.payload
         }
     },
     extraReducers(builder) {
@@ -65,12 +92,14 @@ const cryptoSlice = createSlice({
             })
             .addCase(fetchCryptoDataWithInterval.fulfilled, (state, action) => {
                 state.status = "idle"
-                state.currentCryptoData = action.payload  
+                const {intervalData, cryptoId} = action.payload;
+                state.cachedIntervalData[cryptoId] = intervalData
+                state.currentCryptoData = intervalData
             })
     }
 })
 
-export const { cryptoAdded, cryptoRemoved, cryptoSelect, cryptoUnselect } = cryptoSlice.actions;
+export const { cryptoAdded, cryptoRemoved, cryptoSelect, cryptoUnselect, selectPurchaseCrypto, selectSellCrypto } = cryptoSlice.actions;
 
 export const cryptoSelectors = cryptoAdapter.getSelectors(state => state.cryptoReducers)
 

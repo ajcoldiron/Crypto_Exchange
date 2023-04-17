@@ -13,7 +13,7 @@ import { router } from './core/router'
 import { subscribeToTransfers } from './store/reducers/transferReducers'
 import { initAllData } from './core/redux'
 import { subscribeToPurchase } from './store/reducers/purchaseReducer'
-import { loadAllOrders, loadFilledOrders, loadCancelledOrders } from './store/reducers/OrdersReducer'
+import { subscribeToCancel, subscribeToFill } from './store/reducers/ordersReducer'
 
 
 function App() {
@@ -40,9 +40,8 @@ function App() {
     const exchange = await dispatch(loadExchange({ provider: provider.payload, exchange: exchangeAddress }))
     dispatch(subscribeToTransfers())
     dispatch(subscribeToPurchase())
-    dispatch(loadAllOrders({ exchange, provider }))
-    dispatch(loadFilledOrders({ exchange, provider }))
-    dispatch(loadCancelledOrders({ exchange, provider }))
+    dispatch(subscribeToFill())
+    dispatch(subscribeToCancel())
   }
 
   

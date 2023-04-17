@@ -8,6 +8,7 @@ import exchangeReducers from "../store/reducers/exchangeReducers";
 import exchangeBalanceReducers from "../store/reducers/exchangeBalanceReducers";
 import transferReducers from "../store/reducers/transferReducers";
 import purchaseReducer from "../store/reducers/purchaseReducer";
+import ordersReducer from "../store/reducers/ordersReducer";
 
 const persistConfig = {
     key: 'root',
@@ -21,6 +22,7 @@ export const store = configureStore({
         tokenReducers,
         exchangeReducers,
         exchangeBalanceReducers,
+        ordersReducer,
         purchaseReducer,
         transferReducers
     },

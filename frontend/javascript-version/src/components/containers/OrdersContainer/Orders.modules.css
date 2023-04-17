@@ -1,0 +1,15 @@
+.openOrders {
+    display: flex;
+}
+
+.cancelledOrders {
+    display: flex;
+}
+
+.filledOrders {
+    display: flex;
+}
+
+.bottomHalf {
+    display: flex;
+}

@@ -21,6 +21,7 @@ const AssetsContainer = () => {
 
   // load crypto from my Exchange
   const exchangeCryptos = useSelector(state => state.exchangeBalanceReducers.entities)
+  console.log(exchangeCryptos)
   const exchangeCryptoSymbols = Object.keys(exchangeCryptos)
 
   const formatter = new Intl.NumberFormat('en-US', {

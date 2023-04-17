@@ -6,6 +6,8 @@ import config from '../../../config.json'
 import { Input, Select, Form, Button, Typography } from 'antd'
 import { loadExchangeBalances } from '../../../store/reducers/exchangeBalanceReducers';
 import styles from "./PurchaseContainer.module.css"
+import PurchaseGraph from './PurchaseGraph';
+import { selectPurchaseCrypto, selectSellCrypto } from '../../../store/reducers/cryptoReducers';
 
 const PurchaseContainer = () => {
   const dispatch = useDispatch()
@@ -14,33 +16,24 @@ const PurchaseContainer = () => {
   const [sellCryptoSymbol, setSellCryptoSymbol] = useState("")
   const provider = useSelector(state => state.connectionReducers.ethersConnection)
   const exchange = useSelector(state => state.exchangeReducers.exchange)
-  const eth = useSelector(state => state.tokenReducers.entities?.ETH?.token)
-  const btc = useSelector(state => state.tokenReducers.entities?.BTC?.token)
-  const ltc = useSelector(state => state.tokenReducers.entities?.LTC?.token)
-  const xrp = useSelector(state => state.tokenReducers.entities?.XRP?.token)
-  const bnb = useSelector(state => state.tokenReducers.entities?.BNB?.token)
-  const ada = useSelector(state => state.tokenReducers.entities?.ADA?.token)
-  const ethSymbol = useSelector(state => state.tokenReducers.entities?.ETH?.symbol)
-  const btcSymbol = useSelector(state => state.tokenReducers.entities?.BTC?.symbol)
-  const ltcSymbol = useSelector(state => state.tokenReducers.entities?.LTC?.symbol)
-  const xrpSymbol = useSelector(state => state.tokenReducers.entities?.XRP?.symbol)
-  const bnbSymbol = useSelector(state => state.tokenReducers.entities?.BNB?.symbol)
-  const adaSymbol = useSelector(state => state.tokenReducers.entities?.ADA?.symbol)
+  const allCryptos = useSelector(state => state.cryptoReducers.entities)
+  const allCryptosTokens = useSelector(state => state.tokenReducers.entities)
+  const allCryptosBalances = useSelector(state => state.exchangeBalanceReducers.entities)
+  const highlightedTokens = ["ETH", "BTC", "LTC", "XRP", "BNB", "ADA"]
+
   const chainId = useSelector(state => state.connectionReducers.network)
   const account = useSelector(state => state.connectionReducers.account)
-  const tokens = [eth, btc, ltc, xrp, bnb, ada]
-  const symbols = [ethSymbol, btcSymbol, ltcSymbol, xrpSymbol, bnbSymbol, adaSymbol]
-  const allCrypto = useSelector(state => state.cryptoReducers.entities)
-  const allCryptoValues = Object.values(allCrypto)
-  useEffect(() => {
-    if (!!exchange && eth && btc && ltc && xrp && bnb && ada && ethSymbol && btcSymbol && ltcSymbol && xrpSymbol && bnbSymbol && adaSymbol && account) {
-      dispatch(loadExchangeBalances({ exchange, tokens, account, symbols }))
-    }
-  }, [dispatch, exchange, eth, btc, ltc, xrp, bnb, ada, account, ethSymbol, btcSymbol, ltcSymbol, xrpSymbol, bnbSymbol, adaSymbol])
+  const allCryptoValues = Object.values(allCryptos)
 
-  
+  useEffect(() => {
+    if (!!exchange && account && allCryptosTokens) {
+      const tokens = Object.values(allCryptosTokens).filter(cryptoToken => highlightedTokens.includes(cryptoToken.symbol)).map(cryptoToken => cryptoToken.token);
+      dispatch(loadExchangeBalances({ exchange, tokens, account, symbols: highlightedTokens }))
+    }
+  }, [dispatch, allCryptosTokens, account])
+
   const purchaseItems = []
-  if (eth && btc && ltc && xrp && bnb && ada) {
+  if (Object.keys(allCryptos).length) {
     purchaseItems.push({
       value: 'BTC',
       label: "Bitcoin",
@@ -72,8 +65,8 @@ const PurchaseContainer = () => {
       key: 6
     })
   }
-  const sellItems = []
-  if (eth && btc && ltc && xrp && bnb && ada) {
+  const sellItems = [] 
+  if (Object.keys(allCryptos).length) {
     sellItems.push({
       value: 'BTC',
       label: "Bitcoin",
@@ -106,83 +99,67 @@ const PurchaseContainer = () => {
     })
   }
 
-  let purchaseCrypto
-  const purchaseCoin = (e) => {
-    if (e === 'BTC') {
-      purchaseCrypto = btc
-      setPurchaseCryptoSymbol(e)
-    } else if (e === 'ETH') {
-      purchaseCrypto = eth
-      setPurchaseCryptoSymbol(e)
-    } else if (e === 'BNB') {
-      purchaseCrypto = bnb
-      setPurchaseCryptoSymbol(e)
-    } else if (e === 'XRP') {
-      purchaseCrypto = xrp
-      setPurchaseCryptoSymbol(e)
-    } else if (e === 'LTC') {
-      purchaseCrypto = ltc
-      setPurchaseCryptoSymbol(e)
-    } else {
-      purchaseCrypto = ada
-      setPurchaseCryptoSymbol(e)
-    }
+  const [purchaseCrypto, setPurchaseCrypto] = useState(null)
+  const purchaseCoin = (symbol, option) => {
+
+    const cryptoInfo = allCryptos[symbol.toLowerCase()]
+    setPurchaseCrypto(option)
+    setPurchaseCryptoSymbol(symbol)
+    dispatch(selectPurchaseCrypto(cryptoInfo))
   }
 
-  let sellCrypto
-  const sellCoin = (e) => {
-    if (e === 'BTC') {
-      sellCrypto = btc
-      setSellCryptoSymbol(e)
-    } else if (e === 'ETH') {
-      sellCrypto = eth
-      setSellCryptoSymbol(e)
-    } else if (e === 'BNB') {
-      sellCrypto = bnb
-      setSellCryptoSymbol(e)
-    } else if (e === 'XRP') {
-      sellCrypto = xrp
-      setSellCryptoSymbol(e)
-    } else if (e === 'LTC') {
-      sellCrypto = ltc
-      setSellCryptoSymbol(e)
-    } else {
-      sellCrypto = ada
-      setSellCryptoSymbol(e)
+  const [sellCrypto, setSellCrypto] = useState(null)
+  const sellCoin = (symbol, option) => {
+    const cryptoInfo = allCryptos[symbol.toLowerCase()]
+    setSellCrypto(option)
+    setSellCryptoSymbol(symbol)
+    dispatch(selectSellCrypto(cryptoInfo))
+  }
+
+  const getCryptoIdFromSymbol = (symbol) => {
+    const symbolKey = symbol.toLowerCase()
+    let cryptoId = ""
+    if (symbolKey in allCryptos) {
+      cryptoId =  allCryptos[symbolKey].id
     }
+    return cryptoId
   }
 
   let purchaseCryptoPrice, sellCryptoPrice
-  if(allCrypto && !!purchaseCryptoSymbol && !!sellCryptoSymbol) {
+  if (allCryptos && !!purchaseCryptoSymbol && !!sellCryptoSymbol) {
     let newPurchaseCryptoSymbol = purchaseCryptoSymbol.toLowerCase()
     let newSellCryptoSymbol = sellCryptoSymbol.toLowerCase()
 
-    const purchaseSymbolLength = newPurchaseCryptoSymbol.length
-    const sellSymbolLength = newSellCryptoSymbol.length
-
     allCryptoValues.forEach(cryptoValue => {
-      const cryptoValueArray = Object.values(cryptoValue)
-      const cryptoValueArraySymbol = cryptoValueArray[1]
+      const isPurchaseCrypto = newPurchaseCryptoSymbol === cryptoValue?.symbol
+      const isSoldCrypto = newSellCryptoSymbol === cryptoValue?.symbol
 
-      if(cryptoValueArraySymbol.includes(newPurchaseCryptoSymbol) && cryptoValueArraySymbol.length === purchaseSymbolLength) {
-        purchaseCryptoPrice = cryptoValueArray[4]
+      if (isPurchaseCrypto) {
+        purchaseCryptoPrice = cryptoValue?.current_price
       }
-      if(cryptoValueArraySymbol.includes(newSellCryptoSymbol) && cryptoValueArraySymbol.length === sellSymbolLength) {
-        sellCryptoPrice = cryptoValueArray[4]
+      if (isSoldCrypto) {
+        sellCryptoPrice = cryptoValue?.current_price
       }
     })
   }
-  let totalPrice
-  if(!!purchaseCryptoPrice && !!sellCryptoPrice) {
-    const conversionRate = (purchaseCryptoPrice / sellCryptoPrice)
-    totalPrice = (amount * conversionRate)
-  }
-  const [price, setPrice] = useState(totalPrice)
+  let totalPrice, conversionRate
+  const [price, setPrice] = useState(0)
+  useEffect(() => {
+    if (!!purchaseCryptoPrice && !!sellCryptoPrice && amount > 0) {
+      conversionRate = (purchaseCryptoPrice / sellCryptoPrice)
+      totalPrice = (amount * conversionRate)
+      console.log(totalPrice)
+      setPrice(conversionRate)
+    }
+  })
   const order = { amount, price }
-  
+
   const buyHandler = (e) => {
     e.preventDefault()
-    dispatch(purchase({ provider, exchange, tokens: [purchaseCrypto, sellCrypto], order }))
+    const purchaseCryptoThing = allCryptosTokens[purchaseCrypto.value].token
+    const sellCryptoThing = allCryptosTokens[sellCrypto.value].token
+    console.log(purchaseCryptoThing, sellCryptoThing)
+    dispatch(purchase({ provider, exchange, tokens: [purchaseCryptoThing, sellCryptoThing], order }))
     setAmount(0)
     setPrice(0)
   }
@@ -191,13 +168,14 @@ const PurchaseContainer = () => {
       <div className={styles.wrapper}>
         <div>
           <h1>Graph of Crypto</h1>
+          {purchaseCrypto && sellCrypto ? <PurchaseGraph purchaseCryptoId={getCryptoIdFromSymbol(purchaseCrypto.value)} sellCryptoId={getCryptoIdFromSymbol(sellCrypto.value)} /> : null}
         </div>
         <Form className={styles.purchaseInformations}>
           <Form.Item label="Select a Currency">
             {chainId && config[chainId] ? (
               <Select
                 style={{ width: 120 }}
-                onChange={(value) => purchaseCoin(value)}
+                onChange={(value, option) => purchaseCoin(value, option)}
                 options={purchaseItems}
                 value={purchaseCrypto}
               />
@@ -218,7 +196,7 @@ const PurchaseContainer = () => {
             {chainId && config[chainId] ? (
               <Select
                 style={{ width: 120 }}
-                onChange={(value) => sellCoin(value)}
+                onChange={(value, option) => sellCoin(value, option)}
                 options={sellItems}
                 value={sellCrypto}
               />
@@ -240,6 +218,15 @@ const PurchaseContainer = () => {
           </Form.Item>
         </Form>
       </div>
+      {highlightedTokens.map((symbol) => {
+        let balance = 0
+        // console.log(symbol, allCryptosBalances)
+        // Verifiy if object have the symbol property (important to avoid crash error)
+        if (symbol in allCryptosBalances) {
+          balance = allCryptosBalances[symbol].balance
+        }
+        return <div key={"crypto-balance-" + symbol}>{symbol} Balance: {balance}</div>
+      })}
     </LayoutWrapper>
   )
 }
