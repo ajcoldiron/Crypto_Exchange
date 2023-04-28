@@ -1,4 +1,4 @@
-import { Table, Button, Space } from 'antd';
+import { Table, Button, Space, Radio } from 'antd';
 import { useState } from 'react'
 import { cryptoSelectors, cryptoSelect, cryptoUnselect, fetchCryptoDataWithInterval } from '../../../store/reducers/cryptoReducers';
 import LayoutWrapper from '../../LayoutWrapper.jsx/LayoutWrapper';
@@ -8,6 +8,7 @@ import CryptoGraph from './CryptoGraph';
 import { persistor } from '../../../core/redux';
 
 const HomeContainer = () => {
+  const [graphTime, setGraphTime] = useState("Year")
   const dispatch = useDispatch();
   const cryptoList = useSelector(cryptoSelectors.selectAll)
   const selectedCryptoObject = useSelector(state => state.cryptoReducers.selectedCrypto)
@@ -23,6 +24,10 @@ const HomeContainer = () => {
   const unselectHandler = () => {
     dispatch(cryptoUnselect())
     setIsGraph(false)
+  }
+
+  const graphTimeHandler = (value) => {
+    setGraphTime(value)
   }
 
   const columns = [
@@ -75,11 +80,18 @@ const HomeContainer = () => {
         <section className={styles.upper_half}>
           {isGraph ? (
             <>
-              <CryptoGraph />
+              <CryptoGraph state={graphTime} />
             </>
           ) : (
             <h1>Select a Market</h1>
           )}
+        </section>
+        <section>
+          <Radio.Group onChange={graphTimeHandler} style={{ marginTop: '100px' }}>
+            <Radio.Button value={"Year"} >Year</Radio.Button>
+            <Radio.Button value={"Month"} >Month</Radio.Button>
+            <Radio.Button value={"Week"} >Week</Radio.Button>
+          </Radio.Group>
         </section>
         <section style={{ display: 'flex', justifyContent: 'flex-end', marginRight: "50px" }}>
           <Button

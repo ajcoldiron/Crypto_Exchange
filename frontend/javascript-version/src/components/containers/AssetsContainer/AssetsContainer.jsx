@@ -21,7 +21,6 @@ const AssetsContainer = () => {
 
   // load crypto from my Exchange
   const exchangeCryptos = useSelector(state => state.exchangeBalanceReducers.entities)
-  console.log(exchangeCryptos)
   const exchangeCryptoSymbols = Object.keys(exchangeCryptos)
 
   const formatter = new Intl.NumberFormat('en-US', {
@@ -32,6 +31,7 @@ const AssetsContainer = () => {
   if (allCryptos && exchangeCryptos) {
     allCryptoValues.forEach(cryptoInformation => {
       // retrieve balance and price for what you have in your exchange
+      let balance = 0
       let currentBalance = 0
       const cryptoSymbol = cryptoInformation.symbol.toUpperCase()
 
@@ -39,21 +39,24 @@ const AssetsContainer = () => {
       if (exchangeCryptoSymbols.includes(cryptoSymbol)) {
         // retrieve exchange crypto using current looped crypto symbol
         const correspondingExchangeCrypto = exchangeCryptos[cryptoSymbol]
-        const balance = Number(correspondingExchangeCrypto.balance) * cryptoInformation.current_price
+        balance = Number(correspondingExchangeCrypto.balance) * cryptoInformation.current_price
         currentBalance = formatter.format(balance)
       }
 
       // build a data object for the table using crypto and Exchange information
       const tableDataObject = {
         name: cryptoInformation.id,
-        current_price: cryptoInformation.current_price,
-        high_24h: cryptoInformation.high_24h,
-        low_24h: cryptoInformation.low_24h,
+        current_price: formatter.format(cryptoInformation.current_price),
+        high_24h: formatter.format(cryptoInformation.high_24h),
+        low_24h: formatter.format(cryptoInformation.low_24h),
         total_supply: cryptoInformation.total_supply,
-        currentBalance: currentBalance
+        currentBalance: currentBalance,
+        unformattedBalance: balance
       }
-
-      data.push(tableDataObject)
+      
+      if(tableDataObject.unformattedBalance > 0) {
+        data.push(tableDataObject)
+      }
     })
   }
   const columns = [
@@ -118,7 +121,7 @@ const AssetsContainer = () => {
                 </Radio.Group>
               </Form.Item>
               <Form.Item label="Transfer Amount">
-                <Input onChange={(e) => amountHandler(e)} />
+                <Input onChange={(e) => amountHandler(e)} style={{ width: 200 }}/>
               </Form.Item>
               <Form.Item>
                 <Space size="middle">
