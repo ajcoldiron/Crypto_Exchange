@@ -12,6 +12,7 @@ import ordersReducer from "../store/reducers/ordersReducer";
 
 const persistConfig = {
     key: 'root',
+    version: 1, //added for purge
     storage,
 }
 

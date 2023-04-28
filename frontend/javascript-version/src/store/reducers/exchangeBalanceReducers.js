@@ -8,8 +8,9 @@ const initialState = exchangeAdpter.getInitialState({
     status: "not-loaded"
 })
 
-export const loadExchangeBalances = createAsyncThunk("balances/initBalances", async (data) => {
+export const loadExchangeBalances = createAsyncThunk("balances/initBalances", async (data, thunkAPI) => {
     let exchange = data.exchange
+    // let exchange = thunkAPI.getState().exchangeReducer.exchange
     let tokens = data.tokens
     let account = data.account
     let balance1 = ethers.utils.formatUnits(await exchange.balanceOf(tokens[0].address, account), 18)

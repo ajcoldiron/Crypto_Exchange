@@ -5,7 +5,7 @@ import LayoutWrapper from '../../LayoutWrapper.jsx/LayoutWrapper';
 import { useSelector, useDispatch } from 'react-redux'
 import styles from './HomeContainer.module.css'
 import CryptoGraph from './CryptoGraph';
-import { store } from '../../../core/redux';
+import { persistor } from '../../../core/redux';
 
 const HomeContainer = () => {
   const dispatch = useDispatch();
@@ -75,20 +75,21 @@ const HomeContainer = () => {
         <section className={styles.upper_half}>
           {isGraph ? (
             <>
-            <CryptoGraph />
-            <div style={{display:"flex"}}>
-            {selectedCryptoObject ? (
-                <div key={selectedCryptoObject.id}>
-                  <div>{selectedCryptoObject.id}</div>
-                  <img src={selectedCryptoObject.image} alt="Logo" width={100} />
-                </div>
-              )
-             : null}
-            </div>
+              <CryptoGraph />
             </>
           ) : (
             <h1>Select a Market</h1>
           )}
+        </section>
+        <section style={{ display: 'flex', justifyContent: 'flex-end', marginRight: "50px" }}>
+          <Button
+            onClick={() => {
+              persistor.purge();
+              window.location.reload();
+            }}
+          >
+            Clear Cache
+          </Button>
         </section>
         <section className={styles.lower_half}>
           <h3>Markets</h3>

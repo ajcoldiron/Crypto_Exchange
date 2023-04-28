@@ -27,13 +27,13 @@ export const loadTokens = createAsyncThunk("tokens/initTokens", async (data) => 
     let token6 = new ethers.Contract(data.addresses[5], tokenAbi, data.provider)
     let symbol6 = await token6.symbol()
 
-    return ({ 
-        token1: [token1, symbol1], 
-        token2: [token2, symbol2], 
-        token3: [token3, symbol3], 
-        token4: [token4, symbol4], 
-        token5: [token5, symbol5], 
-        token6: [token6, symbol6] 
+    return ({
+        token1: [token1, symbol1],
+        token2: [token2, symbol2],
+        token3: [token3, symbol3],
+        token4: [token4, symbol4],
+        token5: [token5, symbol5],
+        token6: [token6, symbol6]
     })
 })
 
@@ -63,14 +63,14 @@ const tokenSlice = createSlice({
 
                 const key = ['token', 'symbol']
                 const result = tokenObject.map(row =>
-                row.reduce((acc, cur, i) =>
-                    (acc[key[i]] = cur, acc), {}))
+                    row.reduce((acc, cur, i) =>
+                        (acc[key[i]] = cur, acc), {}))
 
 
                 result.forEach(cryptoValue => {
                     tokenDictionary[cryptoValue.symbol] = cryptoValue
                 })
-                
+
                 state.entities = tokenDictionary
                 state.status = "idle"
             })

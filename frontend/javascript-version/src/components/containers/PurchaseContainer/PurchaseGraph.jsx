@@ -42,11 +42,12 @@ const PurchaseGraph = ({purchaseCryptoId, sellCryptoId}) => {
       return mergedPrices;
     })
   }
+  const mergedCryptoDatesArray = mergedCryptoPrices.map(mcp => new Date(mcp[0]).toISOString().substring(0,10))
 
    const options = {
         chart: {
           type: 'area',
-          height: 350,
+          height: 400,
           zoom: {
             enabled: false
           }
@@ -55,7 +56,8 @@ const PurchaseGraph = ({purchaseCryptoId, sellCryptoId}) => {
           enabled: false
         },
         stroke: {
-          curve: 'smooth'
+          curve: 'smooth',
+          width: 2
         },
     
         title: {
@@ -66,15 +68,45 @@ const PurchaseGraph = ({purchaseCryptoId, sellCryptoId}) => {
           text: ``,
           align: 'left'
         },
-        labels: 'placeHolder'//switch to dates
-        ,
         xaxis: {
-          // type: 'string'//switch to dateTime
-          // ,
-          categories: mergedCryptoPrices.map(mcp => new Date(mcp[0]).toISOString().substring(0,10))
+          type: 'string',
+          categories: mergedCryptoDatesArray.map((date, index) => {
+            if (index === 0 || index === 60 || index === 120 || index === 180 || index === 240 || index === 300 || index === 360) {
+              return Date.parse(date);
+            }
+            return ""
+          }),
+          // mergedCryptoDatesArray,
+          labels: {
+            // formatter: function (value, index) {
+            //   if (index === 0 || index === 60 || index === 120 || index === 180 || index === 240 || index === 300 || index === 360) {
+            //     const date = new Date(value)
+            //     const options = { month: '2-digit', day: '2-digit', year: 'numeric' }
+            //     return date.toLocaleDateString('en-US', options)
+            //   }
+            //   return ''; // Return empty string for all other dates
+            // },
+            formatter: function (value) {
+              const date = new Date(value)
+              const options = { month: '2-digit', day: '2-digit', year: 'numeric' }
+              return date.toLocaleDateString('en-US', options)
+            },
+            rotate: 60,
+            trim: false,
+            offsetX: 10,
+            offsetY: 50,
+            style: {
+              fontSize: '12px',
+            },
+          },
         },
         yaxis: {
-          opposite: true
+          opposite: true,
+          labels: {
+            formatter: function (value) {
+              return value.toFixed(2);
+            }
+          }
         },
         legend: {
           horizontalAlign: 'left'
@@ -83,16 +115,16 @@ const PurchaseGraph = ({purchaseCryptoId, sellCryptoId}) => {
     
     const series = [{
         name: "Price",
-        data: mergedCryptoPrices.map(mcp => mcp[1])
+        data: mergedCryptoPrices?.map(mcp => mcp[1])
     }]
 
     return (
-        <div style={{width: "600px"}}>
+        <div style={{width: "600px", marginLeft: "20px"}}>
             <Chart
                 options={options}
                 series={series}
                 type='line'
-                height='300'
+                height='400'
                 width='100%'
             />
         </div>

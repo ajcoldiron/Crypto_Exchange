@@ -9,6 +9,8 @@ import styles from "./PurchaseContainer.module.css"
 import PurchaseGraph from './PurchaseGraph';
 import { selectPurchaseCrypto, selectSellCrypto } from '../../../store/reducers/cryptoReducers';
 
+const highlightedTokens = ["ETH", "BTC", "LTC", "XRP", "BNB", "ADA"]
+
 const PurchaseContainer = () => {
   const dispatch = useDispatch()
   const [amount, setAmount] = useState(0)
@@ -19,7 +21,6 @@ const PurchaseContainer = () => {
   const allCryptos = useSelector(state => state.cryptoReducers.entities)
   const allCryptosTokens = useSelector(state => state.tokenReducers.entities)
   const allCryptosBalances = useSelector(state => state.exchangeBalanceReducers.entities)
-  const highlightedTokens = ["ETH", "BTC", "LTC", "XRP", "BNB", "ADA"]
 
   const chainId = useSelector(state => state.connectionReducers.network)
   const account = useSelector(state => state.connectionReducers.account)
@@ -174,7 +175,7 @@ const PurchaseContainer = () => {
           <Form.Item label="Select a Currency">
             {chainId && config[chainId] ? (
               <Select
-                style={{ width: 120 }}
+                style={{ width: 200 }}
                 onChange={(value, option) => purchaseCoin(value, option)}
                 options={purchaseItems}
                 value={purchaseCrypto}
@@ -183,7 +184,7 @@ const PurchaseContainer = () => {
               <p>Not deployed to network</p>
             )}
           </Form.Item>
-          <Form.Item label="Purchase Amount">
+          <Form.Item label="Purchase Amount" className={styles.purchaseInput}>
             <Input
               type="text"
               id='amount'
@@ -195,7 +196,7 @@ const PurchaseContainer = () => {
           <Form.Item label="Purchase With">
             {chainId && config[chainId] ? (
               <Select
-                style={{ width: 120 }}
+                style={{ width: 200 }}
                 onChange={(value, option) => sellCoin(value, option)}
                 options={sellItems}
                 value={sellCrypto}

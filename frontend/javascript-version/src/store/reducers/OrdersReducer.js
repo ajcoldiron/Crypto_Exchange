@@ -43,7 +43,7 @@ export const subscribeToPurchase = createAsyncThunk("loadOrders/subscribe", (_, 
     const currentReducersState = thunkAPI.getState()
     const exchange = currentReducersState.exchangeReducers.exchange
     exchange.on('Order', (id, user, tokenGet, amountGet, tokenGive, amountGive, timestamp, event) => {
-        const order = event.args
+        // const order = event.args
         thunkAPI.dispatch(loadOrderSuccess())
       })
 })
@@ -66,7 +66,7 @@ export const subscribeToFill = createAsyncThunk("fill/subscribe", (_, thunkAPI) 
     const currentReducersState = thunkAPI.getState()
     const exchange = currentReducersState.exchangeReducers.exchange
     exchange.on('Trade', (id, user, tokenGet, amountGet, tokenGive, amountGive, creator, timestamp, event) => {
-        const order = event.args
+        // const order = event.args
         thunkAPI.dispatch(fillOrderSuccess())
     })
 })
@@ -89,7 +89,7 @@ export const subscribeToCancel = createAsyncThunk("cancel/subscribe", (_, thunkA
     const currentReducersState = thunkAPI.getState()
     const exchange = currentReducersState.exchangeReducers.exchange
     exchange.on('Cancel', (id, user, tokenGet, amountGet, tokenGive, amountGive, timestamp, event) => {
-        const order = event.args
+        // const order = event.args
         thunkAPI.dispatch(cancelOrderSuccess())
     })
 })

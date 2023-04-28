@@ -11,7 +11,7 @@ export const purchase = createAsyncThunk("purchase/initPurchase", async (data) =
     let provider = data.provider
     let exchange = data.exchange
     let tokens = data.tokens
-    let order = data.order
+    const order = data.order
     const tokenGet = tokens[0].address
     const amountGet = ethers.utils.parseUnits(order.amount, 18)
     const tokenGive = tokens[1].address
@@ -31,7 +31,7 @@ export const subscribeToPurchase = createAsyncThunk("purchase/subscribe", (_, th
     const currentReducersState = thunkAPI.getState()
     const exchange = currentReducersState.exchangeReducers.exchange
     exchange.on('Order', (id, user, tokenGet, amountGet, tokenGive, amountGive, timestamp, event) => {
-        const order = event.args
+        // const order = event.args
         thunkAPI.dispatch(purchaseSuccess())
       })
 })
