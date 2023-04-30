@@ -1,10 +1,12 @@
 import { ethers } from 'ethers'
 import { createSlice, createEntityAdapter, createAsyncThunk } from "@reduxjs/toolkit";
+import moment from "moment"
 
 const exchangeAdpter = createEntityAdapter();
 
 const initialState = exchangeAdpter.getInitialState({
     exchange: null,
+    balanceUploadTime: null,
     status: "not-loaded"
 })
 
@@ -51,8 +53,8 @@ export const loadExchangeBalances = createAsyncThunk("balances/initBalances", as
           symbol: symbol6
         }
       ]
-    
-    return { tokenBalances }
+    // eslint-disable-next-line
+    return ({ tokenBalances, timestamp: moment(new Date).format("MM/DD/YYYY hh:mm")  })
 })
 
 
@@ -77,6 +79,9 @@ const exchangeBalanceSlice = createSlice({
                 })
                 // const ids = Object.keys(balanceDictionary)
                 state.entities = balanceDictionary
+                if(!state.balanceUploadTime) {
+                  state.balanceUploadTime = action.payload.timestamp
+                }
                 state.status = "idle"
             })
     }

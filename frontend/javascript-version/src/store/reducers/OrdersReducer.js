@@ -1,20 +1,11 @@
 import { createSlice, createEntityAdapter, createAsyncThunk } from "@reduxjs/toolkit";
+import { ethers } from "ethers";
+import moment from "moment";
 
 const loadOrderAdpter = createEntityAdapter();
 
 const initialState = loadOrderAdpter.getInitialState({
     status: "not-loaded"
-})
-
-export const loadAllOrders = createAsyncThunk("loadAllOrders/open", async (data) => {
-    const provider = data.provider
-    const exchange = data.exchange
-    const block = await provider.getBlockNumber()
-
-    const orderStream = await exchange.queryFilter('Order', 0, block)
-    const allOrders = orderStream.map(event => event.args)
-
-    return allOrders
 })
 
 export const loadCancelledOrders = createAsyncThunk("loadCancelledOrders/cancelled", async (data) => {
@@ -39,6 +30,17 @@ export const loadFilledOrders = createAsyncThunk("loadFilledOrders/filled", asyn
     return filledOrders
 })
 
+export const loadAllOrders = createAsyncThunk("loadAllOrders/open", async (data) => {
+    const provider = data.provider
+    const exchange = data.exchange
+    const block = await provider.getBlockNumber()
+
+    const orderStream = await exchange.queryFilter('Order', 0, block)
+    let allOrders = orderStream.map(event => event.args)
+
+    return allOrders
+})
+
 export const subscribeToPurchase = createAsyncThunk("loadOrders/subscribe", (_, thunkAPI) => {
     const currentReducersState = thunkAPI.getState()
     const exchange = currentReducersState.exchangeReducers.exchange
@@ -54,8 +56,10 @@ export const fillOrder = createAsyncThunk("fillOrder/fill", async (data) => {
     const order = data.order
     try {
         const signer = await provider.getSigner()
+        console.log(data)
         const transaction = await exchange.connect(signer).fillOrder(order.id)
         await transaction.wait()
+        console.log(transaction)
     } catch (error) {
         window.alert(error)
     }
@@ -119,16 +123,6 @@ const loadOrderSlice = createSlice({
     },
     extraReducers(builder) {
         builder
-            .addCase(loadAllOrders.pending, (state) => {
-                state.status = "loading"
-            })
-            .addCase(loadAllOrders.rejected, (state) => {
-                state.status = "failed"
-            })
-            .addCase(loadAllOrders.fulfilled, (state, action) => {
-                state.entities.allOrders = action.payload
-                state.status = "idle"
-            })
             .addCase(loadFilledOrders.pending, (state) => {
                 state.status = "loading"
             })
@@ -136,7 +130,22 @@ const loadOrderSlice = createSlice({
                 state.status = "failed"
             })
             .addCase(loadFilledOrders.fulfilled, (state, action) => {
-                state.entities.filledOrders = action.payload
+                const orderDictionary = {}
+
+                const newData = action.payload.map(order => ({
+                    id: order.id,
+                    tokenGet: order.tokenGet,
+                    tokenGive: order.tokenGive,
+                    amountGet: ethers.utils.formatUnits(order.amountGet),
+                    amountGive: ethers.utils.formatUnits(order.amountGive),
+                    user: order.user,
+                    timestamp: moment(order.timestamp).format("MM/DD/YYYY hh:mm")
+                }))
+
+                newData.forEach(order => {
+                    orderDictionary[order.id] = order
+                })
+                state.entities.filledOrders = orderDictionary
                 state.status = "idle"
             })
             .addCase(loadCancelledOrders.pending, (state) => {
@@ -146,7 +155,50 @@ const loadOrderSlice = createSlice({
                 state.status = "failed"
             })
             .addCase(loadCancelledOrders.fulfilled, (state, action) => {
-                state.entities.cancelledOrders = action.payload
+                const orderDictionary = {}
+
+                const newData = action.payload.map(order => ({
+                    id: order.id,
+                    tokenGet: order.tokenGet,
+                    tokenGive: order.tokenGive,
+                    amountGet: ethers.utils.formatUnits(order.amountGet),
+                    amountGive: ethers.utils.formatUnits(order.amountGive),
+                    user: order.user,
+                    timestamp: moment(order.timestamp).format("MM/DD/YYYY hh:mm")
+                }))
+
+                newData.forEach(order => {
+                    orderDictionary[order.id] = order
+                })
+                state.entities.cancelledOrders = orderDictionary
+                state.status = "idle"
+            })
+            .addCase(loadAllOrders.pending, (state) => {
+                state.status = "loading"
+            })
+            .addCase(loadAllOrders.rejected, (state) => {
+                state.status = "failed"
+            })
+            .addCase(loadAllOrders.fulfilled, (state, action) => {
+                const orderDictionary = {}
+
+                const newData = action.payload.map(order => ({
+                    id: order.id,
+                    tokenGet: order.tokenGet,
+                    tokenGive: order.tokenGive,
+                    amountGet: order.amountGet,
+                    amountGive: order.amountGive,
+                    user: order.user,
+                    timestamp: order.timestamp
+                }))
+                // amountGet: ethers.utils.formatUnits(order.amountGet),
+                // amountGive: ethers.utils.formatUnits(order.amountGive),
+                // timestamp: moment(order.timestamp).format("MM/DD/YYYY hh:mm")
+
+                newData.forEach(order => {
+                    orderDictionary[order.id] = order
+                })
+                state.entities.allOrders = orderDictionary
                 state.status = "idle"
             })
             .addCase(fillOrder.pending, (state) => {

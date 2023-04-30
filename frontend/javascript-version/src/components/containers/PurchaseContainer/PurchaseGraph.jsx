@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchCryptoDataWithInterval } from '../../../store/reducers/cryptoReducers';
 
 
-const PurchaseGraph = ({purchaseCryptoId, sellCryptoId}) => {
+const PurchaseGraph = ({purchaseCryptoId, sellCryptoId, state}) => {
   const dispatch = useDispatch()
   const cachedIntervalData = useSelector(state => state.cryptoReducers.cachedIntervalData)
 
@@ -43,6 +43,11 @@ const PurchaseGraph = ({purchaseCryptoId, sellCryptoId}) => {
     })
   }
   const mergedCryptoDatesArray = mergedCryptoPrices.map(mcp => new Date(mcp[0]).toISOString().substring(0,10))
+  const allPrices = mergedCryptoPrices?.map(mcp => mcp[1])
+
+  if (!state.target || !state.target.value) {
+    return <h1>Please Select a Time Frame</h1>;
+  }
 
    const options = {
         chart: {
@@ -70,12 +75,31 @@ const PurchaseGraph = ({purchaseCryptoId, sellCryptoId}) => {
         },
         xaxis: {
           type: 'string',
-          categories: mergedCryptoDatesArray.map((date, index) => {
-            if (index === 0 || index === 60 || index === 120 || index === 180 || index === 240 || index === 300 || index === 360) {
-              return Date.parse(date);
-            }
-            return ""
-          }),
+          categories: state.target?.value === 'Year' ? (
+            mergedCryptoDatesArray?.map((date, index) => {
+              if (index === 0 || index === 45 || index === 90 || index === 135 || index === 180 || index === 225 || index === 270 || index === 315 || index === 360) {
+                return date
+              } else {
+                return ""
+              }
+            })
+          ) : state.target?.value === 'Month' ? (
+            mergedCryptoDatesArray?.map((date, index) => {
+              if (index === 0 || index === 5 || index === 10 || index === 15 || index === 20 || index === 25 || index === 30) {
+                return date
+              } else {
+                return ""
+              }
+            })
+          ) : state.target?.value === 'Week' ? (
+            mergedCryptoDatesArray?.map((date, index) => {
+              if (index === 0 || index === 1 || index === 2 || index === 3 || index === 4 || index === 5 || index === 6 || index === 7) {
+                return date
+              } else {
+                return ""
+              }
+            })
+          ) : "Please Select a Time Frame",
           // mergedCryptoDatesArray,
           labels: {
             // formatter: function (value, index) {
@@ -98,6 +122,10 @@ const PurchaseGraph = ({purchaseCryptoId, sellCryptoId}) => {
             style: {
               fontSize: '12px',
             },
+            showDuplicates: false,
+            hideOverlappingLabels: true,
+            trim: true,
+            rotateAlways: true,
           },
         },
         yaxis: {
@@ -115,7 +143,13 @@ const PurchaseGraph = ({purchaseCryptoId, sellCryptoId}) => {
     
     const series = [{
         name: "Price",
-        data: mergedCryptoPrices?.map(mcp => mcp[1])
+        data: state.target.value === 'Year' ? (
+          allPrices
+        ) : state.target.value === 'Month' ? (
+          allPrices.slice(-31)
+        ) : state.target.value === 'Week' ? (
+          allPrices.slice(-8)
+        ) : null
     }]
 
     return (

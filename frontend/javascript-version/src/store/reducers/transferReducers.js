@@ -1,10 +1,11 @@
 import { ethers } from 'ethers'
 import { createSlice, createEntityAdapter, createAsyncThunk } from "@reduxjs/toolkit";
+import moment from "moment"
+
 
 const transferAdpter = createEntityAdapter();
 
 const initialState = transferAdpter.getInitialState({
-    transferType: null,
     status: "not-loaded"
 })
 
@@ -15,10 +16,10 @@ export const transferTokens = createAsyncThunk("transfer/initTransfer", async (d
     let transferType = data.transferType
     let token = data.token
     let amount = data.amount
-
+    let transferAmount
     try {
         let signer = await provider.getSigner()
-        let transferAmount = ethers.utils.parseUnits(amount.toString(), 18)
+        transferAmount = ethers.utils.parseUnits(amount.toString(), 18)
 
         if (transferType === 'Deposit') {
             transaction = await token.connect(signer).approve(exchange.address, transferAmount)
@@ -30,8 +31,8 @@ export const transferTokens = createAsyncThunk("transfer/initTransfer", async (d
         await transaction.wait()
     } catch(error) {
         window.alert(error)
-    }
-    return transferType
+    }// eslint-disable-next-line
+    return ({ transferType, timestamp: moment(new Date).format("MM/DD/YYYY hh:mm"), transferAmount })
 })
 
 export const subscribeToTransfers = createAsyncThunk("transfers/subscribe", (_, thunkAPI) => {
@@ -61,11 +62,14 @@ const transferSlice = createSlice({
             .addCase(transferTokens.pending, (state) => {
                 state.status = "loading"
             })
-            .addCase(transferTokens.rejected, (state) => {
+            .addCase(transferTokens.rejected, (state, action) => {
+                console.log(action)
                 state.status = "failed"
             })
             .addCase(transferTokens.fulfilled, (state, action) => {
                 state.transferType = action.payload.transferType
+                state.transferTimes = action.payload.timestamp
+                state.transferAmount = action.payload.transferAmount
                 state.status = "idle"
             })
             .addCase(subscribeToTransfers.pending, (state) => {

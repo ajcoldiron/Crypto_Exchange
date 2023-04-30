@@ -1,4 +1,4 @@
-.wrapper {
+.columOne {
     display: flex;
 }
 
@@ -9,4 +9,12 @@
 
 .purchaseInput {
     width: 300px;
+}
+
+.graph-wrapper {
+  flex: 1;
+} 
+
+.radioGroupWrapper {
+    margin-left: 16px;
 }

@@ -11,7 +11,8 @@ const HomeContainer = () => {
   const [graphTime, setGraphTime] = useState("Year")
   const dispatch = useDispatch();
   const cryptoList = useSelector(cryptoSelectors.selectAll)
-  const selectedCryptoObject = useSelector(state => state.cryptoReducers.selectedCrypto)
+  const lastUploadDateTime = useSelector(state => state.cryptoReducers.cacheDataLastUpload)
+  const selectedCrypto = useSelector(state => state.cryptoReducers.selectedCrypto)
   const [isGraph, setIsGraph] = useState(false)
   const selectHandler = (crypto) => {
     dispatch(cryptoSelect(crypto))
@@ -87,12 +88,15 @@ const HomeContainer = () => {
           )}
         </section>
         <section>
-          <Radio.Group onChange={graphTimeHandler} style={{ marginTop: '100px' }}>
+          <Radio.Group onChange={graphTimeHandler} style={{ marginTop: '50px' }}>
             <Radio.Button value={"Year"} >Year</Radio.Button>
             <Radio.Button value={"Month"} >Month</Radio.Button>
             <Radio.Button value={"Week"} >Week</Radio.Button>
           </Radio.Group>
         </section>
+        <div>
+          <h3>Last Uploaded: {lastUploadDateTime[selectedCrypto.id]}</h3>
+        </div>
         <section style={{ display: 'flex', justifyContent: 'flex-end', marginRight: "50px" }}>
           <Button
             onClick={() => {

@@ -33,6 +33,8 @@ const AssetsGraph = () => {
 
   const allCryptos = useSelector(state => state.cryptoReducers.entities)
   const allCryptoValues = Object.values(allCryptos)
+
+  const cachedIntervalData = useSelector(state => state.cryptoReducers?.cachedIntervalData)
   // const allCryptoPrices = useSelector(state => state.currentCryptoData.prices)
   //eth && btc && ltc && xrp && bnb && ada && ethSymbol && btcSymbol && ltcSymbol && xrpSymbol && bnbSymbol && adaSymbol
   useEffect(() => {
@@ -58,23 +60,27 @@ const AssetsGraph = () => {
     allCryptoValues.forEach(cryptoInfo => {
 
       const cryptoSymbol = cryptoInfo.symbol.toUpperCase()
-      // console.log(cryptoInfo)
 
       if(exchangeCryptoSymbols.includes(cryptoSymbol)) {
         const correspondingExchangeCrypto = exchangeTokens[cryptoSymbol]
         currentOwnedCrypto.push(correspondingExchangeCrypto)
         let balance = Number(correspondingExchangeCrypto.balance) * cryptoInfo.current_price
         totalBalance.push(balance)
-        currentOwnedCrypto.forEach(crypto => {
-          // let amount = crypto.balance
-          // let symbol = crypto.symbol.toLowerCase()
-          // const stuff = store.dispatch(fetchCryptoDataWithInterval({
-          //   cryptoId: symbol
-          // }))
-          // console.log(stuff)
-        })
       }
     })
+
+    const pricesById = currentOwnedCrypto.reduce((acc, crypto) => {
+      const symbol = crypto.symbol.toLowerCase();
+      const id = allCryptos[symbol].id;
+      const cachedData = cachedIntervalData[id];
+      const prices = cachedData.prices;
+    
+      return {
+        ...acc,
+        [id]: prices,
+      };
+    }, {});
+    console.log(pricesById)
   }
   totalBalance = totalBalance.reduce((a,b) => a + parseInt(b), 0)
   let totalBalanceFormatted = formatter.format(totalBalance)

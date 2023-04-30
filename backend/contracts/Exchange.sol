@@ -79,7 +79,7 @@ contract Exchange {
     }
 
     function depositTokens(address _token, uint _amount) public {
-        require(Token(_token).transferFrom(msg.sender, address(this), _amount));
+        require(Token(_token).transferFrom(msg.sender, address(this), _amount), "TransferFrom did not happen for this deposit call");
 
         tokens[_token][msg.sender] = tokens[_token][msg.sender] + _amount;
 
@@ -87,7 +87,7 @@ contract Exchange {
     }
 
     function withdrawTokens(address _token, uint _amount) public {
-        require(tokens[_token][msg.sender] >= _amount);
+        require(tokens[_token][msg.sender] >= _amount, "There is not enough tokens");
         
         Token(_token).transfer(msg.sender, _amount);
         
@@ -101,7 +101,7 @@ contract Exchange {
         uint _amountGet, 
         address _tokenGive, 
         uint _amountGive) public {
-            require(balanceOf(_tokenGive, msg.sender) >= _amountGive);
+            require(balanceOf(_tokenGive, msg.sender) >= _amountGive, "There is not enough funds to make this order");
 
             orderCount++;
             orders[orderCount] = _Order(
@@ -127,9 +127,9 @@ contract Exchange {
 
     function cancelOrder(uint _id) public {
         _Order storage order = orders[_id];
-        require(_id == order.id);
-        require(order.user == msg.sender);
-        require(!cancelledOrders[_id]);
+        require(_id == order.id, "The ID of this user does not match the ID of created the order");
+        require(order.user == msg.sender, "The user is not the same user that crated the order");
+        require(!cancelledOrders[_id], "This order has already been cancelled");
 
         emit Cancel(
             order.id, 
@@ -146,9 +146,9 @@ contract Exchange {
 
     function fillOrder(uint _id) public {
         _Order storage order = orders[_id];
-        require(_id > 0 && _id <= orderCount);
-        require(!cancelledOrders[_id]);
-        require(!filledOrders[_id]);
+        require(_id > 0 && _id <= orderCount, "The ID does not exist");
+        require(!cancelledOrders[_id], "This order has already been canceled");
+        require(!filledOrders[_id], "This order has already been filled");
 
         _trade(
             order.id, 

@@ -15,6 +15,10 @@ const CryptoGraph = ({ state }) => {
     return <h1>Please Select a Time Frame</h1>;
   }
 
+  const formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  });
   
   const options = {
     chart: {
@@ -95,7 +99,7 @@ const CryptoGraph = ({ state }) => {
       opposite: false,
       labels: {
         formatter: function (value) {
-          return value.toFixed(2);
+          return formatter.format(value);
         }
       }
     },

@@ -11,7 +11,7 @@ const AssetsContainer = () => {
   const [transfer, setTransfer] = useState("")
   const [amount, setAmount] = useState(0)
 
-  const eth = useSelector(state => state.tokenReducers.token1)
+  const eth = useSelector(state => state.tokenReducers.entities?.ETH?.token)
   const provider = useSelector(state => state.connectionReducers.ethersConnection)
   const exchange = useSelector(state => state.exchangeReducers.exchange)
 
@@ -41,6 +41,7 @@ const AssetsContainer = () => {
         const correspondingExchangeCrypto = exchangeCryptos[cryptoSymbol]
         balance = Number(correspondingExchangeCrypto.balance) * cryptoInformation.current_price
         currentBalance = formatter.format(balance)
+        // console.log(currentBalance / cryptoInformation.current_price)
       }
 
       // build a data object for the table using crypto and Exchange information
@@ -50,7 +51,7 @@ const AssetsContainer = () => {
         high_24h: formatter.format(cryptoInformation.high_24h),
         low_24h: formatter.format(cryptoInformation.low_24h),
         total_supply: cryptoInformation.total_supply,
-        currentBalance: currentBalance,
+        currentBalance: (balance / cryptoInformation.current_price),
         unformattedBalance: balance
       }
       
@@ -103,7 +104,7 @@ const AssetsContainer = () => {
       setAmount(0)
     }
   }
-  
+
   return (
     <LayoutWrapper>
       <div>
@@ -121,7 +122,14 @@ const AssetsContainer = () => {
                 </Radio.Group>
               </Form.Item>
               <Form.Item label="Transfer Amount">
-                <Input onChange={(e) => amountHandler(e)} style={{ width: 200 }}/>
+                <Input
+                  type="text"
+                  id='amount'
+                  placeholder='0'
+                  value={amount === 0 ? '' : amount} 
+                  onChange={(e) => amountHandler(e)} 
+                  style={{ width: 200 }}
+                />
               </Form.Item>
               <Form.Item>
                 <Space size="middle">

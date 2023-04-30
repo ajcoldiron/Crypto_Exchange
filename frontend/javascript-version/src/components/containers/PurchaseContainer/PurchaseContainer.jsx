@@ -3,7 +3,7 @@ import LayoutWrapper from '../../LayoutWrapper.jsx/LayoutWrapper';
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import config from '../../../config.json'
-import { Input, Select, Form, Button, Typography } from 'antd'
+import { Input, Select, Form, Button, Typography, Radio } from 'antd'
 import { loadExchangeBalances } from '../../../store/reducers/exchangeBalanceReducers';
 import styles from "./PurchaseContainer.module.css"
 import PurchaseGraph from './PurchaseGraph';
@@ -13,6 +13,7 @@ const highlightedTokens = ["ETH", "BTC", "LTC", "XRP", "BNB", "ADA"]
 
 const PurchaseContainer = () => {
   const dispatch = useDispatch()
+  const [graphTime, setGraphTime] = useState("Year")
   const [amount, setAmount] = useState(0)
   const [purchaseCryptoSymbol, setPurchaseCryptoSymbol] = useState("")
   const [sellCryptoSymbol, setSellCryptoSymbol] = useState("")
@@ -25,7 +26,7 @@ const PurchaseContainer = () => {
   const chainId = useSelector(state => state.connectionReducers.network)
   const account = useSelector(state => state.connectionReducers.account)
   const allCryptoValues = Object.values(allCryptos)
-
+  
   useEffect(() => {
     if (!!exchange && account && allCryptosTokens) {
       const tokens = Object.values(allCryptosTokens).filter(cryptoToken => highlightedTokens.includes(cryptoToken.symbol)).map(cryptoToken => cryptoToken.token);
@@ -100,6 +101,10 @@ const PurchaseContainer = () => {
     })
   }
 
+  const graphTimeHandler = (value) => {
+    setGraphTime(value)
+  }
+
   const [purchaseCrypto, setPurchaseCrypto] = useState(null)
   const purchaseCoin = (symbol, option) => {
 
@@ -143,13 +148,13 @@ const PurchaseContainer = () => {
       }
     })
   }
-  let totalPrice, conversionRate
+  let conversionRate
   const [price, setPrice] = useState(0)
+  const [totalPrice, setTotalPrice] = useState(0)
   useEffect(() => {
     if (!!purchaseCryptoPrice && !!sellCryptoPrice && amount > 0) {
       conversionRate = (purchaseCryptoPrice / sellCryptoPrice)
-      totalPrice = (amount * conversionRate)
-      console.log(totalPrice)
+      setTotalPrice(Number(amount * conversionRate))
       setPrice(conversionRate)
     }
   })
@@ -159,69 +164,91 @@ const PurchaseContainer = () => {
     e.preventDefault()
     const purchaseCryptoThing = allCryptosTokens[purchaseCrypto.value].token
     const sellCryptoThing = allCryptosTokens[sellCrypto.value].token
-    console.log(purchaseCryptoThing, sellCryptoThing)
     dispatch(purchase({ provider, exchange, tokens: [purchaseCryptoThing, sellCryptoThing], order }))
     setAmount(0)
     setPrice(0)
   }
+
   return (
-    <LayoutWrapper>
-      <div className={styles.wrapper}>
-        <div>
-          <h1>Graph of Crypto</h1>
-          {purchaseCrypto && sellCrypto ? <PurchaseGraph purchaseCryptoId={getCryptoIdFromSymbol(purchaseCrypto.value)} sellCryptoId={getCryptoIdFromSymbol(sellCrypto.value)} /> : null}
-        </div>
-        <Form className={styles.purchaseInformations}>
-          <Form.Item label="Select a Currency">
-            {chainId && config[chainId] ? (
-              <Select
-                style={{ width: 200 }}
-                onChange={(value, option) => purchaseCoin(value, option)}
-                options={purchaseItems}
-                value={purchaseCrypto}
-              />
+    <LayoutWrapper >
+      <div>
+        <section className={styles.columOne}>
+          <div className={styles.graphWrapper}>
+            {!!sellCryptoSymbol && !!purchaseCryptoSymbol ? (
+              <h1>{sellCryptoSymbol}/{purchaseCryptoSymbol}</h1>
             ) : (
-              <p>Not deployed to network</p>
+              <span>Select Currency for Graph</span>
             )}
-          </Form.Item>
-          <Form.Item label="Purchase Amount" className={styles.purchaseInput}>
-            <Input
-              type="text"
-              id='amount'
-              placeholder='0'
-              value={amount === 0 ? '' : amount}
-              onChange={(e) => setAmount(e.target.value)}
-            />
-          </Form.Item>
-          <Form.Item label="Purchase With">
-            {chainId && config[chainId] ? (
-              <Select
-                style={{ width: 200 }}
-                onChange={(value, option) => sellCoin(value, option)}
-                options={sellItems}
-                value={sellCrypto}
-              />
-            ) : (
-              <p>Not deployed to network</p>
-            )}
-          </Form.Item>
-          <Form.Item>
-            <Typography label="Price">
-              {totalPrice ? (
-                <pre>{Math.round(totalPrice * 100) / 100} {sellCryptoSymbol}</pre>
+            {purchaseCrypto && sellCrypto ? 
+              <PurchaseGraph 
+                state={graphTime} 
+                purchaseCryptoId={getCryptoIdFromSymbol(purchaseCrypto.value)} 
+                sellCryptoId={getCryptoIdFromSymbol(sellCrypto.value)} 
+              /> 
+              : null}
+          </div>
+          <Form className={styles.purchaseInformations}>
+            <Form.Item label="Select a Currency">
+              {chainId && config[chainId] ? (
+                <Select
+                  style={{ width: 200 }}
+                  onChange={(value, option) => purchaseCoin(value, option)}
+                  options={purchaseItems}
+                  value={purchaseCrypto}
+                />
               ) : (
-                <span>Select Crypto Currencies</span>
+                <p>Not deployed to network</p>
               )}
-            </Typography>
-          </Form.Item>
-          <Form.Item>
-            <Button onClick={buyHandler}>Purchase</Button>
-          </Form.Item>
-        </Form>
+            </Form.Item>
+            <Form.Item label="Purchase Amount" className={styles.purchaseInput}>
+              <Input
+                type="text"
+                id='amount'
+                placeholder='0'
+                value={amount === 0 ? '' : amount}
+                onChange={(e) => setAmount(e.target.value)}
+              />
+            </Form.Item>
+            <Form.Item label="Purchase With">
+              {chainId && config[chainId] ? (
+                <Select
+                  style={{ width: 200 }}
+                  onChange={(value, option) => sellCoin(value, option)}
+                  options={sellItems}
+                  value={sellCrypto}
+                />
+              ) : (
+                <p>Not deployed to a network</p>
+              )}
+            </Form.Item>
+            <Form.Item>
+              <Typography label="Price">
+                {!!purchaseCrypto && !!sellCrypto && !!amount ? (
+                  <pre style={{ width: 200, marginLeft: "50px" }}>{Math.round(totalPrice * 100) / 100} {sellCryptoSymbol}</pre>
+                ) : !!purchaseCrypto && !!sellCrypto ? (
+                  <b style={{ marginLeft: "50px" }}>Select Purchase Amount</b>
+                ) : !!amount ? (
+                  <b style={{ marginLeft: "50px" }}>Select Crypto Currencies</b>
+                ) : (
+                  <b style={{ marginLeft: "50px" }}>Select Purchase Amount and Crypto Currencies</b>
+                )}
+              </Typography>
+            </Form.Item>
+            <Form.Item>
+              <Button onClick={buyHandler} style={{ width: 150, marginLeft: "70px" }}>Purchase</Button>
+            </Form.Item>
+          </Form>
+        </section>
+        <div className={styles.radioGroupWrapper}>
+          <Radio.Group onChange={graphTimeHandler}>
+            <Radio.Button value={"Year"} >Year</Radio.Button>
+            <Radio.Button value={"Month"} >Month</Radio.Button>
+            <Radio.Button value={"Week"} >Week</Radio.Button>
+          </Radio.Group>
+        </div>
       </div>
       {highlightedTokens.map((symbol) => {
         let balance = 0
-        // console.log(symbol, allCryptosBalances)
         // Verifiy if object have the symbol property (important to avoid crash error)
         if (symbol in allCryptosBalances) {
           balance = allCryptosBalances[symbol].balance
