@@ -3,9 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { loadExchangeBalances } from '../../../store/reducers/exchangeBalanceReducers';
 import { Spin } from "antd"
-// import { store } from '../../../core/redux';
-// import { fetchCryptoDataWithInterval } from '../../../store/reducers/cryptoReducers';
-
 
 
 const AssetsGraph = () => {
@@ -73,14 +70,14 @@ const AssetsGraph = () => {
       const symbol = crypto.symbol.toLowerCase();
       const id = allCryptos[symbol].id;
       const cachedData = cachedIntervalData[id];
-      const prices = cachedData.prices;
+      const prices = cachedData?.prices ?? [];
     
       return {
         ...acc,
         [id]: prices,
       };
     }, {});
-    console.log(pricesById)
+    // console.log(pricesById)
   }
   totalBalance = totalBalance.reduce((a,b) => a + parseInt(b), 0)
   let totalBalanceFormatted = formatter.format(totalBalance)

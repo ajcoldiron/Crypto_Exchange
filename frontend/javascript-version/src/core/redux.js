@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import cryptoReducers, { fetchCryptos } from "../store/reducers/cryptoReducers";
@@ -16,17 +16,19 @@ const persistConfig = {
     storage,
 }
 
+const rootReducer = combineReducers({
+    cryptoReducers,
+    connectionReducers,
+    tokenReducers,
+    exchangeReducers,
+    exchangeBalanceReducers,
+    ordersReducer,
+    purchaseReducer,
+    transferReducers
+})
+
 export const store = configureStore({
-    reducer: {
-        cryptoReducers: persistReducer(persistConfig, cryptoReducers),
-        connectionReducers,
-        tokenReducers,
-        exchangeReducers,
-        exchangeBalanceReducers,
-        ordersReducer,
-        purchaseReducer,
-        transferReducers
-    },
+    reducer: persistReducer(persistConfig, rootReducer),
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: false,

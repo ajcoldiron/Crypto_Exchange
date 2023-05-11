@@ -13,7 +13,7 @@ const highlightedTokens = ["ETH", "BTC", "LTC", "XRP", "BNB", "ADA"]
 
 const PurchaseContainer = () => {
   const dispatch = useDispatch()
-  const [graphTime, setGraphTime] = useState("Year")
+  const [graphTime, setGraphTime] = useState({ target: { value: "Year" } })
   const [amount, setAmount] = useState(0)
   const [purchaseCryptoSymbol, setPurchaseCryptoSymbol] = useState("")
   const [sellCryptoSymbol, setSellCryptoSymbol] = useState("")

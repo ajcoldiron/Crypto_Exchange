@@ -8,7 +8,7 @@ import CryptoGraph from './CryptoGraph';
 import { persistor } from '../../../core/redux';
 
 const HomeContainer = () => {
-  const [graphTime, setGraphTime] = useState("Year")
+  const [graphTime, setGraphTime] = useState({ target: { value: "Year" } })
   const dispatch = useDispatch();
   const cryptoList = useSelector(cryptoSelectors.selectAll)
   const lastUploadDateTime = useSelector(state => state.cryptoReducers.cacheDataLastUpload)
@@ -95,7 +95,7 @@ const HomeContainer = () => {
           </Radio.Group>
         </section>
         <div>
-          <h3>Last Uploaded: {lastUploadDateTime[selectedCrypto.id]}</h3>
+          {/* <h3>Last Uploaded: {lastUploadDateTime[selectedCrypto.id]}</h3> */}
         </div>
         <section style={{ display: 'flex', justifyContent: 'flex-end', marginRight: "50px" }}>
           <Button

@@ -1,5 +1,6 @@
 import { ethers } from 'ethers'
 import { createSlice, createEntityAdapter, createAsyncThunk } from "@reduxjs/toolkit";
+import { loadAllOrders } from './ordersReducer';
 
 const purchaseAdpter = createEntityAdapter();
 
@@ -7,7 +8,7 @@ const initialState = purchaseAdpter.getInitialState({
     status: "not-loaded"
 })
 
-export const purchase = createAsyncThunk("purchase/initPurchase", async (data) => {
+export const purchase = createAsyncThunk("purchase/initiate", async (data) => {
     let provider = data.provider
     let exchange = data.exchange
     let tokens = data.tokens
@@ -16,23 +17,25 @@ export const purchase = createAsyncThunk("purchase/initPurchase", async (data) =
     const amountGet = ethers.utils.parseUnits(order.amount, 18)
     const tokenGive = tokens[1].address
     const amountGive = ethers.utils.parseUnits((order.amount * order.price).toString(), 18)
-    let transaction
-    try{
-        const signer = await provider.getSigner()
-        transaction = await exchange.connect(signer).makeOrder(tokenGet, amountGet, tokenGive, amountGive)
-        await transaction.wait()
-    } catch (error) {
-        window.alert(error)
-    }
+    
+    const signer = await provider.getSigner()
+    let transaction = await exchange.connect(signer).makeOrder(tokenGet, amountGet, tokenGive, amountGive)
+    await transaction.wait()
+    
     return transaction
+})
+
+export const purchaseConfirmed = createAsyncThunk("purchase/confirmed", (arg, thunkAPI) => {
+    // const orderId = arg
+    thunkAPI.dispatch(purchaseSuccess())
 })
 
 export const subscribeToPurchase = createAsyncThunk("purchase/subscribe", (_, thunkAPI) => {
     const currentReducersState = thunkAPI.getState()
     const exchange = currentReducersState.exchangeReducers.exchange
     exchange.on('Order', (id, user, tokenGet, amountGet, tokenGive, amountGive, timestamp, event) => {
-        // const order = event.args
-        thunkAPI.dispatch(purchaseSuccess())
+        const orderId = id.toNumber()
+        thunkAPI.dispatch(loadAllOrders(orderId))
       })
 })
 
@@ -54,6 +57,7 @@ const purchaseSlice = createSlice({
             })
             .addCase(purchase.rejected, (state, action) => {
                 console.log(action)
+                window.alert(action.error.message)
                 state.status = "failed"
             })
             .addCase(purchase.fulfilled, (state, action) => {

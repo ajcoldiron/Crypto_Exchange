@@ -5,7 +5,7 @@ import moment from "moment"
 const exchangeAdpter = createEntityAdapter();
 
 const initialState = exchangeAdpter.getInitialState({
-    exchange: null,
+    startingBalances: null,
     balanceUploadTime: null,
     status: "not-loaded"
 })
@@ -75,9 +75,13 @@ const exchangeBalanceSlice = createSlice({
                 const balanceDictionary = {}
                 let balanceValues = Object.values(tokenBalances)
                 balanceValues.forEach(balances => {
-                    balanceDictionary[balances.symbol] = balances
+                  balanceDictionary[balances.symbol] = balances
                 })
-                // const ids = Object.keys(balanceDictionary)
+
+                if (!state.startingBalances) {
+                  state.startingBalances = balanceDictionary
+                }
+
                 state.entities = balanceDictionary
                 if(!state.balanceUploadTime) {
                   state.balanceUploadTime = action.payload.timestamp

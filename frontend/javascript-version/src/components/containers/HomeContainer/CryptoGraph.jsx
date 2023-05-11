@@ -46,33 +46,26 @@ const CryptoGraph = ({ state }) => {
       },
     },
     xaxis: {
-      categories: state.target?.value === 'Year' ? (
-        dates?.map((date, index) => {
-          if (index === 0 || index === 45 || index === 90 || index === 135 || index === 180 || index === 225 || index === 270 || index === 315 || index === 360) {
-            return date
-          } else {
-            return ""
-          }
-        })
-      ) : state.target?.value === 'Month' ? (
-        dates?.map((date, index) => {
-          if (index === 0 || index === 5 || index === 10 || index === 15 || index === 20 || index === 25 || index === 30) {
-            return date
-          } else {
-            return ""
-          }
-        })
-      ) : state.target?.value === 'Week' ? (
-        dates?.map((date, index) => {
-          if (index === 0 || index === 1 || index === 2 || index === 3 || index === 4 || index === 5 || index === 6 || index === 7) {
-            return date
-          } else {
-            return ""
-          }
-        })
-      ) : "Please Select a Time Frame",
-      
-        
+      categories: state.target?.value === 'Year'
+      ? dates?.map((date, index) => {
+            if (index === 0 || index === 45 || index === 90 || index === 135 || index === 180 || index === 225 || index === 270 || index === 315 || index === 360) {
+              return date
+            } else {
+              return ""
+            }
+          })
+      : state.target?.value === 'Month'
+        ? dates?.slice(-31).map((date, index) => {    
+              if (index === 0 || index === 5 || index === 10 || index === 15 || index === 20 || index === 25 || index === 30) {
+                return date
+              } else {
+                return ""
+              }
+            })
+        : state.target?.value === 'Week'
+          ? dates.slice(-8)
+          : [],
+          
         labels: {
           formatter: (value) => {
             const date = new Date(value)

@@ -1,11 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux'
 import LayoutWrapper from '../../LayoutWrapper.jsx/LayoutWrapper'
-import { loadAllOrders, loadFilledOrders, loadCancelledOrders } from '../../../store/reducers/ordersReducer'
+import { loadAllOrders, cancelOrder, loadFilledOrders, loadCancelledOrders, fillOrderInitiate } from '../../../store/reducers/ordersReducer'
 import { useEffect } from 'react'
 import { Table, Button, Space } from 'antd'
 import { ethers } from 'ethers'
 import styles from './Orders.modules.css'
-import { fillOrder, cancelOrder } from '../../../store/reducers/ordersReducer'
 // import moment from "moment";
 
 
@@ -13,9 +12,9 @@ const OrdersContainer = () => {
   const dispatch = useDispatch()
   const exchange = useSelector(state => state.exchangeReducers.exchange)
   const provider = useSelector(state => state.connectionReducers.ethersConnection)
-  const allOrders = useSelector(state => state.ordersReducer?.entities?.allOrders)
-  const filledOrders = useSelector(state => state.ordersReducer?.entities?.filledOrders)
-  const cancelledOrders = useSelector(state => state.ordersReducer?.entities?.cancelledOrders)
+  const allOrders = useSelector(state => state.ordersReducer?.entities)
+  const filledOrders = useSelector(state => state.ordersReducer?.filledOrders)
+  const cancelledOrders = useSelector(state => state.ordersReducer?.cancelledOrders)
 
   useEffect(() => {
     if (!!exchange && !!provider) {
@@ -26,13 +25,13 @@ const OrdersContainer = () => {
   }, [dispatch, exchange, provider])
 
   const fillHandler = (order) => {
-    const orderToFill = allOrders[order.number]
-    console.log(orderToFill)
-    dispatch(fillOrder({ provider, exchange, order }))
+    const orderToFill = allOrders[order.id]
+    dispatch(fillOrderInitiate({ provider, exchange, order : orderToFill }))
   }
 
   const cancelHandler = (order) => {
-    dispatch(cancelOrder({ provider, exchange, order }))
+    const orderToFill = allOrders[order.id]
+    dispatch(cancelOrder({ provider, exchange, order : orderToFill }))
   }
 
   let openOrdersData = []
@@ -49,13 +48,12 @@ const OrdersContainer = () => {
     openOrderKeys.forEach(key => {
       const openOrder = allOrders[key]
       const orderId = ethers.utils.formatUnits(openOrder.id) * 10**18
-  
       const table = {
         id: orderId,
         tokenGet: openOrder.tokenGet,
-        amountGet: openOrder.amountGet,
+        amountGet: ethers.utils.formatEther(openOrder.amountGet),
         tokenGive: openOrder.tokenGive,
-        amountGive:openOrder.amountGive,
+        amountGive:ethers.utils.formatEther(openOrder.amountGive),
         timestamp: openOrder.timestamp
       }
   

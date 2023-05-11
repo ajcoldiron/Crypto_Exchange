@@ -1,11 +1,14 @@
 import { createSlice, createEntityAdapter, createAsyncThunk } from "@reduxjs/toolkit";
+// import ErrorBoundary from "antd/es/alert/ErrorBoundary";
 import { ethers } from "ethers";
 import moment from "moment";
 
 const loadOrderAdpter = createEntityAdapter();
 
 const initialState = loadOrderAdpter.getInitialState({
-    status: "not-loaded"
+    status: "not-loaded",
+    filledOrders: {},
+    cancelledOrders: {}
 })
 
 export const loadCancelledOrders = createAsyncThunk("loadCancelledOrders/cancelled", async (data) => {
@@ -50,28 +53,35 @@ export const subscribeToPurchase = createAsyncThunk("loadOrders/subscribe", (_, 
       })
 })
 
-export const fillOrder = createAsyncThunk("fillOrder/fill", async (data) => {
+export const fillOrderInitiate = createAsyncThunk("orders/fill/initiate", async (data) => {
     const provider = data.provider
     const exchange = data.exchange
+
     const order = data.order
-    try {
-        const signer = await provider.getSigner()
-        console.log(data)
-        const transaction = await exchange.connect(signer).fillOrder(order.id)
-        await transaction.wait()
-        console.log(transaction)
-    } catch (error) {
-        window.alert(error)
-    }
-    // return data
+    const signer = await provider.getSigner()
+    const transaction = await exchange.connect(signer).fillOrder(order.id)
+    await transaction.wait()
+    return order
 })
 
-export const subscribeToFill = createAsyncThunk("fill/subscribe", (_, thunkAPI) => {
+export const fillOrderConfirm = createAsyncThunk("orders/fill/confirm", (arg, thunkAPI) => {
+    const orderId = arg;
+    const currentReducersState = thunkAPI.getState()
+    const allOrders  = currentReducersState.ordersReducer.entities
+    const filledOrder = allOrders[orderId]
+    thunkAPI.dispatch(fillOrderSuccess(filledOrder))
+})
+
+export const subscribeToFill = createAsyncThunk("orders/fill/subscribe", (_, thunkAPI) => {
     const currentReducersState = thunkAPI.getState()
     const exchange = currentReducersState.exchangeReducers.exchange
+    // Subscribe to "Trade" events
+    // This needs to be only subscribed once at the launch of your app
+    // The code inside this event handler is isolated from the rest of your code, it works standalone, so it cant access the current state of your reducers
+    // You need to dispatch from the event handler to access your code in real-time with your real-time redux state
     exchange.on('Trade', (id, user, tokenGet, amountGet, tokenGive, amountGive, creator, timestamp, event) => {
-        // const order = event.args
-        thunkAPI.dispatch(fillOrderSuccess())
+        const orderId= id.toNumber()
+        thunkAPI.dispatch(fillOrderConfirm(orderId))
     })
 })
 
@@ -79,14 +89,13 @@ export const cancelOrder = createAsyncThunk("cancelOrder/cancel", async (data) =
     const provider = data.provider
     const exchange = data.exchange
     const order = data.order
-    try {
+    // try {
         const signer = await provider.getSigner()
         const transaction = await exchange.connect(signer).cancelOrder(order.id)
         await transaction.wait()
-        console.log(transaction)
-      } catch (error) {
-        window.alert(error)
-    }
+    //  } catch (error) {
+    //     window.alert(error)
+    // }
 })
 
 export const subscribeToCancel = createAsyncThunk("cancel/subscribe", (_, thunkAPI) => {
@@ -109,9 +118,9 @@ const loadOrderSlice = createSlice({
             }
         },
         fillOrderSuccess: (state, action) => {
-            return {
-                ...state,
-                event: action.event
+            const filledOrder = action.payload
+            if (filledOrder) {
+                state.filledOrders[filledOrder.id] = filledOrder
             }
         },
         cancelOrderSuccess: (state, action) => {
@@ -145,7 +154,7 @@ const loadOrderSlice = createSlice({
                 newData.forEach(order => {
                     orderDictionary[order.id] = order
                 })
-                state.entities.filledOrders = orderDictionary
+                state.filledOrders = orderDictionary
                 state.status = "idle"
             })
             .addCase(loadCancelledOrders.pending, (state) => {
@@ -170,7 +179,7 @@ const loadOrderSlice = createSlice({
                 newData.forEach(order => {
                     orderDictionary[order.id] = order
                 })
-                state.entities.cancelledOrders = orderDictionary
+                state.cancelledOrders = orderDictionary
                 state.status = "idle"
             })
             .addCase(loadAllOrders.pending, (state) => {
@@ -198,17 +207,18 @@ const loadOrderSlice = createSlice({
                 newData.forEach(order => {
                     orderDictionary[order.id] = order
                 })
-                state.entities.allOrders = orderDictionary
+                state.entities = orderDictionary
                 state.status = "idle"
             })
-            .addCase(fillOrder.pending, (state) => {
+            .addCase(fillOrderInitiate.pending, (state) => {
                 state.status = "loading"
             })
-            .addCase(fillOrder.rejected, (state) => {
+            .addCase(fillOrderInitiate.rejected, (state, action) => {
+                window.alert(action.error.message)
+                // window.alert(JSON.stringify(action.error))
                 state.status = "failed"
             })
-            .addCase(fillOrder.fulfilled, (state, action) => {
-                // console.log(action)
+            .addCase(fillOrderInitiate.fulfilled, (state, action) => {
                 state.status = "idle"
             })
             .addCase(cancelOrder.pending, (state) => {
@@ -218,6 +228,15 @@ const loadOrderSlice = createSlice({
                 state.status = "failed"
             })
             .addCase(cancelOrder.fulfilled, (state) => {
+                state.status = "idle"
+            })
+            .addCase(fillOrderConfirm.pending, (state) => {
+                state.status = "loading"
+            })
+            .addCase(fillOrderConfirm.rejected, (state) => {
+                state.status = "failed"
+            })
+            .addCase(fillOrderConfirm.fulfilled, (state) => {
                 state.status = "idle"
             })
     }
