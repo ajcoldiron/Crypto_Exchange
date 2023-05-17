@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { loadExchangeBalances } from '../../../store/reducers/exchangeBalanceReducers';
 import { Spin } from "antd"
+import { fetchCryptoDataWithInterval } from '../../../store/reducers/cryptoReducers';
 
 
-const AssetsGraph = () => {
+const AssetsGraph = ({ state }) => {
   const dispatch = useDispatch()
   const exchange = useSelector(state => state.exchangeReducers.exchange)
 
@@ -32,6 +33,11 @@ const AssetsGraph = () => {
   const allCryptoValues = Object.values(allCryptos)
 
   const cachedIntervalData = useSelector(state => state.cryptoReducers?.cachedIntervalData)
+
+  // const startingBalance = useSelector(state => state.exchangeBalanceReducers.startingBalances)
+  const graphStartTime = useSelector(state => state.exchangeBalanceReducers.balanceUploadTime)
+  const graphStartTimeInEpoch = Date.parse(graphStartTime)
+  // console.log(graphStartTimeInEpoch)
   // const allCryptoPrices = useSelector(state => state.currentCryptoData.prices)
   //eth && btc && ltc && xrp && bnb && ada && ethSymbol && btcSymbol && ltcSymbol && xrpSymbol && bnbSymbol && adaSymbol
   useEffect(() => {
@@ -39,6 +45,17 @@ const AssetsGraph = () => {
       dispatch(loadExchangeBalances({ exchange, tokens, account, symbols }))
     }
   }, [dispatch, exchange, eth, btc, ltc, xrp, bnb, ada, account, ethSymbol, btcSymbol, ltcSymbol, xrpSymbol, bnbSymbol, adaSymbol])
+
+  useEffect(() => {
+    if (Object.values(cachedIntervalData).length === 0) {
+      dispatch(fetchCryptoDataWithInterval({cryptoId: 'bitcoin'}))
+      dispatch(fetchCryptoDataWithInterval({cryptoId: 'ethereum'}))
+      dispatch(fetchCryptoDataWithInterval({cryptoId: 'binancecoin'}))
+      dispatch(fetchCryptoDataWithInterval({cryptoId: 'ripple'}))
+      dispatch(fetchCryptoDataWithInterval({cryptoId: 'cardano'}))
+      dispatch(fetchCryptoDataWithInterval({cryptoId: 'litecoin'}))
+    }
+  }, [cachedIntervalData.length])
 
 
   const formatter = new Intl.NumberFormat('en-US', {
@@ -51,6 +68,7 @@ const AssetsGraph = () => {
   }
   let totalBalance = []
   let currentOwnedCrypto = []
+  let pricesById
 
   if (allCryptos && exchangeTokens) {
 
@@ -61,12 +79,12 @@ const AssetsGraph = () => {
       if(exchangeCryptoSymbols.includes(cryptoSymbol)) {
         const correspondingExchangeCrypto = exchangeTokens[cryptoSymbol]
         currentOwnedCrypto.push(correspondingExchangeCrypto)
-        let balance = Number(correspondingExchangeCrypto.balance) * cryptoInfo.current_price
+        let balance = parseFloat(correspondingExchangeCrypto.balance) * cryptoInfo.current_price
         totalBalance.push(balance)
       }
     })
 
-    const pricesById = currentOwnedCrypto.reduce((acc, crypto) => {
+    pricesById = currentOwnedCrypto.reduce((acc, crypto) => {
       const symbol = crypto.symbol.toLowerCase();
       const id = allCryptos[symbol].id;
       const cachedData = cachedIntervalData[id];
@@ -79,13 +97,55 @@ const AssetsGraph = () => {
     }, {});
     // console.log(pricesById)
   }
+
+  const allCryptoDates = pricesById?.ethereum.map(d => d[0]) ??  []
+  // console.log(allCryptoDates)
+  // // const allGraphDates = allCryptoDates.filter(date => {
+  // //   return date > graphStartTimeInEpoch
+  // // })
+  
+  const ethereumAnnualPrices = pricesById?.ethereum.map(d => d[1]) ?? []
+  const ethereumGraphArray = ethereumAnnualPrices.map(price => {
+    return price * parseInt(exchangeTokens.ETH.balance) 
+  })
+
+  const bitcoinAnnualPrices = pricesById?.bitcoin.map(d => d[1])
+  const bitcoinGraphArray = bitcoinAnnualPrices.map(price => {
+    return price * parseInt(exchangeTokens.BTC.balance)
+  })
+  
+  const litecoinAnnualPrices = pricesById?.litecoin.map(d => d[1])
+  const litecoinGraphArray = litecoinAnnualPrices.map(price => {
+    return price * parseInt(exchangeTokens.LTC.balance)
+  })
+  
+  const rippleAnnualPrices = pricesById?.ripple.map(d => d[1])
+  const rippleGraphArray = rippleAnnualPrices.map(price => {
+    return price * parseInt(exchangeTokens.XRP.balance)
+  })
+  
+  const cardanoAnnualPrices = pricesById?.cardano.map(d => d[1])
+  const cardanoGraphArray = cardanoAnnualPrices.map(price => {
+    return price * parseInt(exchangeTokens.ADA.balance)
+  })
+  
+  const binancecoinAnnualPrices = pricesById?.binancecoin.map(d => d[1])
+  const binancecoinGraphArray = binancecoinAnnualPrices.map(price => {
+    return price * parseInt(exchangeTokens.BTC.balance)
+  })
+
+  const totalAnnualPrices = ethereumGraphArray.map((num, index) => 
+    num + bitcoinGraphArray[index] + litecoinGraphArray[index] + rippleGraphArray[index] + cardanoGraphArray[index] + binancecoinGraphArray[index]);
+
+
+
   totalBalance = totalBalance.reduce((a,b) => a + parseInt(b), 0)
   let totalBalanceFormatted = formatter.format(totalBalance)
 
   const options = {
     chart: {
-      type: 'area',
       height: 350,
+      type: 'line',
       zoom: {
         enabled: false
       }
@@ -94,25 +154,69 @@ const AssetsGraph = () => {
       enabled: false
     },
     stroke: {
-      curve: 'smooth'
+      curve: 'smooth',
+      width: 2.5
     },
-
     title: {
-      text: 'My Balance',
+      text: `Total Balance ${totalBalanceFormatted}`,
       align: 'left'
     },
-    subtitle: {
-      text: `${totalBalanceFormatted}`,
-      align: 'left'
+    grid: {
+      row: {
+        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+        opacity: 0.5
+      },
     },
-    labels: 'placeHolder'//switch to dates
-    ,
     xaxis: {
-      type: 'string'//switch to dateTime
-      ,
-    },
+      categories: state.target?.value === 'Year'
+      ? allCryptoDates?.map((date, index) => {
+            if (index === 0 || index === 45 || index === 90 || index === 135 || index === 180 || index === 225 || index === 270 || index === 315 || index === 360) {
+              return date
+            } else {
+              return ""
+            }
+          })
+      : state.target?.value === 'Month'
+        ? allCryptoDates?.slice(-31).map((date, index) => {    
+              if (index === 0 || index === 5 || index === 10 || index === 15 || index === 20 || index === 25 || index === 30) {
+                return date
+              } else {
+                return ""
+              }
+            })
+        : state.target?.value === 'Week'
+          ? allCryptoDates.slice(-8)
+          : [],
+          
+        labels: {
+          formatter: (value) => {
+            const date = new Date(value)
+            const options = { month: '2-digit', day: '2-digit', year: 'numeric' }
+            return date.toLocaleDateString('en-US', options)
+          },
+          rotate: 60,
+          trim: false,
+          offsetX: 3,
+          offsetY: 50,
+          style: {
+            fontSize: '11px',
+          },
+          // show every other label to avoid overlap
+          showDuplicates: false,
+          hideOverlappingLabels: true,
+          trim: true,
+          rotateAlways: true,
+        },
+      },
+      
+      
     yaxis: {
-      opposite: true
+      opposite: false,
+      labels: {
+        formatter: function (value) {
+          return formatter.format(value);
+        }
+      }
     },
     legend: {
       horizontalAlign: 'left'
@@ -121,7 +225,13 @@ const AssetsGraph = () => {
 
   const series = [{
     name: "Price",
-    data: []
+    data: state.target.value === 'Year' ? (
+      totalAnnualPrices
+    ) : state.target.value === 'Month' ? (
+      totalAnnualPrices.slice(-31)
+    ) : state.target.value === 'Week' ? (
+      totalAnnualPrices.slice(-8)
+    ) : null
   }]
 
   return (
@@ -130,8 +240,8 @@ const AssetsGraph = () => {
         options={options}
         series={series}
         type='line'
-        height='300'
-        width='50%'
+        height='350'
+        width='75%'
       />
     </div>
   )

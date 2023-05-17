@@ -1,19 +1,31 @@
 import LayoutWrapper from '../../LayoutWrapper.jsx/LayoutWrapper'
 import AssetsGraph from './AssetsGraph'
-import { Table, Button, Space, Radio, Form, Input } from 'antd';
+import { Table, Button, Space, Radio, Form, Input, Select } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { transferTokens } from '../../../store/reducers/transferReducers';
+import { loadTokensBalances } from '../../../store/reducers/tokenBalanceReducer';
 
 
 const AssetsContainer = () => {
   const dispatch = useDispatch()
   const [transfer, setTransfer] = useState("")
   const [amount, setAmount] = useState(0)
+  const [graphTime, setGraphTime] = useState({ target: { value: "Year" } })
+  
 
   const eth = useSelector(state => state.tokenReducers.entities?.ETH?.token)
+  const btc = useSelector(state => state.tokenReducers.entities?.BTC?.token)
+  const ltc = useSelector(state => state.tokenReducers.entities?.LTC?.token)
+  const ada = useSelector(state => state.tokenReducers.entities?.ADA?.token)
+  const xrp = useSelector(state => state.tokenReducers.entities?.XRP?.token)
+  const bnb = useSelector(state => state.tokenReducers.entities?.BNB?.token)
+
+  const [transferToken, setTransferToken] = useState({})
+
   const provider = useSelector(state => state.connectionReducers.ethersConnection)
   const exchange = useSelector(state => state.exchangeReducers.exchange)
+  const account = useSelector(state => state.connectionReducers.account)
 
   // load crypto from api
   const allCryptos = useSelector(state => state.cryptoReducers.entities)
@@ -22,6 +34,28 @@ const AssetsContainer = () => {
   // load crypto from my Exchange
   const exchangeCryptos = useSelector(state => state.exchangeBalanceReducers.entities)
   const exchangeCryptoSymbols = Object.keys(exchangeCryptos)
+
+  useEffect(() => {
+    console.log("CALLING USE EFFECT")
+    if (eth && btc && ltc && ada && xrp && bnb && account) {
+      dispatch(loadTokensBalances({ tokens: [eth, btc, ltc, ada, xrp, bnb], account }))
+    }
+  }, [loadTokensBalances, eth, btc, ltc, ada, xrp, bnb, account])
+
+  const graphTimeHandler = (value) => {
+    setGraphTime(value)
+  }
+
+  const tokens = {
+    1: ['ETH', 100],
+    2: ['BTC', 50],
+    3: ['XRP', 10]
+  }
+
+  const result = Object.values(tokens).reduce((acc, [value, key]) => {
+    acc[value] = key;
+    return acc;
+  }, {});
 
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -94,13 +128,31 @@ const AssetsContainer = () => {
   const amountHandler = (e) => {
     setAmount(e.target.value)
   }
+
+  const transferTokenHandler = (e) => {
+    if (e === 'eth') {
+      setTransferToken(eth)
+    } else if (e === 'btc') {
+      setTransferToken(btc)
+    } else if (e === 'ltc') {
+      setTransferToken(ltc)
+    } else if (e === 'ada') {
+      setTransferToken(ada)
+    } else if (e === 'bnb') {
+      setTransferToken(bnb)
+    } else if (e === 'xrp') {
+      setTransferToken(xrp)
+    } else {
+      setTransferToken(null)
+    }
+  }
   
   const transferCrypto = () => {
     if (transfer === "Deposit") {
-      dispatch(transferTokens({provider, exchange, transferType: "Deposit", token: eth, amount})) 
+      dispatch(transferTokens({provider, exchange, transferType: "Deposit", token: transferToken, amount})) 
       setAmount(0)
     } else {
-      dispatch(transferTokens({provider, exchange, transferType: "Withdraw", token: eth, amount}))
+      dispatch(transferTokens({provider, exchange, transferType: "Withdraw", token: transferToken, amount}))
       setAmount(0)
     }
   }
@@ -110,11 +162,29 @@ const AssetsContainer = () => {
       <div>
         <div>
           <section>
-            <AssetsGraph />
+            <AssetsGraph state={graphTime}  />
           </section>
+          <div >
+            <Radio.Group onChange={graphTimeHandler}>
+              <Radio.Button value={"Year"} >Year</Radio.Button>
+              <Radio.Button value={"Month"} >Month</Radio.Button>
+              <Radio.Button value={"Week"} >Week</Radio.Button>
+            </Radio.Group>
+          </div>
           <section>
             <h1>Transfers</h1>
             <Form>
+              <Form.Item label="Select">
+                <Select style={{ width: 200 }} onChange={(value) => transferTokenHandler(value)}>
+                  {/* <Select.Option value={JSON.stringify(eth)}>Ethereum</Select.Option> */}
+                  <Select.Option value="eth">Ethereum</Select.Option>
+                  <Select.Option value="btc">Bitcoin</Select.Option>
+                  <Select.Option value="xrp">Ripple</Select.Option>
+                  <Select.Option value="ltc">Litecoin</Select.Option>
+                  <Select.Option value="ada">Cardano</Select.Option>
+                  <Select.Option value="bnb">Binance Coin</Select.Option>
+                </Select>
+              </Form.Item>
               <Form.Item label="Transfer Ethereum" name="layout">
                 <Radio.Group >
                   <Radio.Button value="Deposit" onChange={(value) => handleTransfer(value)}>Deposit</Radio.Button>

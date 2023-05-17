@@ -1,20 +1,37 @@
 import { useDispatch, useSelector } from 'react-redux'
 import LayoutWrapper from '../../LayoutWrapper.jsx/LayoutWrapper'
 import { loadAllOrders, cancelOrder, loadFilledOrders, loadCancelledOrders, fillOrderInitiate } from '../../../store/reducers/ordersReducer'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Table, Button, Space } from 'antd'
 import { ethers } from 'ethers'
 import styles from './Orders.modules.css'
-// import moment from "moment";
+import moment from "moment";
+
+
+const addressMapping = {
+  "0x5FbDB2315678afecb367f032d93F642f64180aa3": "Ethereum",
+  "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512": "Bitcoin",
+  "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0": "Litecoin",
+  "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9": "Ripple",
+  "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9": "Binance Coin",
+  "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707": "Cardano",
+  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266": "User1",
+  "0x70997970C51812dc3A010C7d01b50e0d17dc79C8": "User2",
+  "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC": "User3",
+  "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC": "User4",
+  "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65": "User5"
+}
 
 
 const OrdersContainer = () => {
+  const [reloadFlag, setReloadFlag] = useState(false)
   const dispatch = useDispatch()
   const exchange = useSelector(state => state.exchangeReducers.exchange)
   const provider = useSelector(state => state.connectionReducers.ethersConnection)
   const allOrders = useSelector(state => state.ordersReducer?.entities)
   const filledOrders = useSelector(state => state.ordersReducer?.filledOrders)
   const cancelledOrders = useSelector(state => state.ordersReducer?.cancelledOrders)
+
 
   useEffect(() => {
     if (!!exchange && !!provider) {
@@ -23,6 +40,18 @@ const OrdersContainer = () => {
       dispatch(loadAllOrders({ exchange, provider }))
     }
   }, [dispatch, exchange, provider])
+
+  useEffect(() => {
+    if (allOrders || filledOrders || cancelledOrders) {
+      setReloadFlag(true)
+    }
+  }, [allOrders, filledOrders, cancelledOrders])
+
+  useEffect(() => {
+    if (reloadFlag === true) {
+      window.location.reload()
+    }
+  }, [])
 
   const fillHandler = (order) => {
     const orderToFill = allOrders[order.id]
@@ -48,13 +77,19 @@ const OrdersContainer = () => {
     openOrderKeys.forEach(key => {
       const openOrder = allOrders[key]
       const orderId = ethers.utils.formatUnits(openOrder.id) * 10**18
+
+      const tokenGetToken = addressMapping[openOrder.tokenGet]
+      const tokenGiveToken = addressMapping[openOrder.tokenGive]
+      const user = addressMapping[openOrder.user]
+
       const table = {
         id: orderId,
-        tokenGet: openOrder.tokenGet,
+        tokenGet: tokenGetToken,
         amountGet: ethers.utils.formatEther(openOrder.amountGet),
-        tokenGive: openOrder.tokenGive,
+        tokenGive: tokenGiveToken,
         amountGive:ethers.utils.formatEther(openOrder.amountGive),
-        timestamp: openOrder.timestamp
+        timestamp: moment(openOrder.timestamp).format("MM/DD/YYYY hh:mm"),
+        purchaser: user
       }
   
       openOrdersData.push(table)
@@ -67,14 +102,19 @@ const OrdersContainer = () => {
     filledOrderKeys.forEach(key => {
       const filledOrder = filledOrders[key]
       const orderId = ethers.utils.formatUnits(filledOrder.id) * 10**18
+
+      const tokenGetToken = addressMapping[filledOrder.tokenGet]
+      const tokenGiveToken = addressMapping[filledOrder.tokenGive]
+      const user = addressMapping[filledOrder.user]
       
       const table = {
-        number: orderId,
-        buy_address: filledOrder.tokenGet,
-        buy_amount: filledOrder.amountGet,
-        sell_address: filledOrder.tokenGive,
-        sell_amount: filledOrder.amountGive,
-        date: filledOrder.timestamp
+        id: orderId,
+        tokenGet: tokenGetToken,
+        amountGet: filledOrder.amountGet,
+        tokenGive: tokenGiveToken,
+        amountGive: filledOrder.amountGive,
+        timestamp: filledOrder.timestamp,
+        purchaser: user
       }
   
       filledOrdersData.push(table)
@@ -88,13 +128,18 @@ const OrdersContainer = () => {
       const cancelledOrder = cancelledOrders[key]
       const orderId = ethers.utils.formatUnits(cancelledOrder.id) * 10**18
 
+      const tokenGetToken = addressMapping[cancelledOrder.tokenGet]
+      const tokenGiveToken = addressMapping[cancelledOrder.tokenGive]
+      const user = addressMapping[cancelledOrder.user]
+
       const table = {
-              number: orderId,
-              buy_address: cancelledOrder.tokenGet,
-              buy_amount: cancelledOrder.amountGet,
-              sell_address: cancelledOrder.tokenGive,
-              sell_amount: cancelledOrder.amountGive,
-              date: cancelledOrder.timestamp
+              id: orderId,
+              tokenGet: tokenGetToken,
+              amountGet: cancelledOrder.amountGet,
+              tokenGive: tokenGiveToken,
+              amountGive: cancelledOrder.amountGive,
+              timestamp: cancelledOrder.timestamp,
+              purchaser: user
       }
 
       cancelledOrdersData.push(table)
@@ -108,7 +153,7 @@ const OrdersContainer = () => {
       key: "id",
     },
     {
-      title: "Buy Address",
+      title: "Buy Token",
       dataIndex: "tokenGet",
       key: "tokenGet"
     },
@@ -118,7 +163,7 @@ const OrdersContainer = () => {
       key: "amountGet"
     },
     {
-      title: "Sell Address",
+      title: "Sell Token",
       dataIndex: "tokenGive",
       key: "tokenGive"
     },
@@ -126,6 +171,11 @@ const OrdersContainer = () => {
       title: "Sell Amount",
       dataIndex: "amountGive",
       key: "amountGive"
+    },
+    {
+      title: "Purchaser",
+      dataIndex: "purchaser",
+      key: "purchaser"
     },
     {
       title: "Date & Time",
@@ -150,33 +200,38 @@ const OrdersContainer = () => {
   const otherOrdersTable = [
     {
       title: "Order ID",
-      dataIndex: "number",
-      key: "number",
+      dataIndex: "id",
+      key: "id",
     },
     {
-      title: "Buy Address",
-      dataIndex: "buy_address",
-      key: "buy_address"
+      title: "Buy Token",
+      dataIndex: "tokenGet",
+      key: "tokenGet"
     },
     {
       title: "Buy Amount",
-      dataIndex: "buy_amount",
-      key: "buy_amount"
+      dataIndex: "amountGet",
+      key: "amountGet"
     },
     {
-      title: "Sell Address",
-      dataIndex: "sell_address",
-      key: "sell_address"
+      title: "Sell Token",
+      dataIndex: "tokenGive",
+      key: "tokenGive"
     },
     {
       title: "Sell Amount",
-      dataIndex: "sell_amount",
-      key: "sell_amount"
+      dataIndex: "amountGive",
+      key: "amountGive"
+    },
+    {
+      title: "Purchaser",
+      dataIndex: "purchaser",
+      key: "purchaser"
     },
     {
       title: "Date & Time",
-      dataIndex: "date",
-      key: "date"
+      dataIndex: "timestamp",
+      key: "timestamp"
     }
   ]
   
@@ -187,7 +242,7 @@ const OrdersContainer = () => {
           <h1>Open Orders</h1>
           <span>
             {allOrders ? (
-              <Table dataSource={openOrdersData} columns={openOrdersTable} rowKey="number" />
+              <Table dataSource={openOrdersData} columns={openOrdersTable} rowKey="id" />
             ) : (
               <p>No Open Orders Available</p>
             )}
@@ -198,7 +253,7 @@ const OrdersContainer = () => {
             <h1>Filled Orders</h1>
             <span>
               {filledOrders ? (
-                <Table dataSource={filledOrdersData} columns={otherOrdersTable} rowKey="number" />
+                <Table dataSource={filledOrdersData} columns={otherOrdersTable} rowKey="id" />
               ) : (
                 <p>No Filled Orders Available</p>
               )}
@@ -208,7 +263,7 @@ const OrdersContainer = () => {
             <h1>Cancelled Orders</h1>
             <span>
               {cancelledOrders ? (
-                <Table dataSource={cancelledOrdersData} columns={otherOrdersTable} rowKey="number" />
+                <Table dataSource={cancelledOrdersData} columns={otherOrdersTable} rowKey="id" />
               ) : (
                 <p>No Cancelled Orders Available</p>
               )}

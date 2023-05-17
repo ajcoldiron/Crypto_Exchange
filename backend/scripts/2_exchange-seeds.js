@@ -39,31 +39,47 @@ async function main() {
 
 	const sender = accounts[0]
 	const receiver = accounts[1]
-	let amount = tokens(10000)
+	let amount = tokens(5000)
 
 	let transaction = await btc.connect(sender).transfer(receiver.address, amount)
 	await transaction.wait()
 	console.log(`Transferred ${amount} Bitcoin from ${sender.address} to ${receiver.address}\n`)
+	console.log(await btc.balanceOf(sender.address))
+	console.log(await btc.balanceOf(receiver.address))
+
+	transaction = await eth.connect(sender).transfer(receiver.address, amount)
+	await transaction.wait()
+	console.log(`Transferred ${amount} Ethereum from ${sender.address} to ${receiver.address}\n`)
+	console.log(await eth.balanceOf(sender.address))
+	console.log(await eth.balanceOf(receiver.address))
 
 	transaction = await ltc.connect(sender).transfer(receiver.address, amount)
 	await transaction.wait()
 	console.log(`Transferred ${amount} Litecoin from ${sender.address} to ${receiver.address}\n`)
+	console.log(await ltc.balanceOf(sender.address))
+	console.log(await ltc.balanceOf(receiver.address))
 
 	transaction = await xrp.connect(sender).transfer(receiver.address, amount)
 	await transaction.wait()
 	console.log(`Transferred ${amount} Ripple from ${sender.address} to ${receiver.address}\n`)
+	console.log(await xrp.balanceOf(sender.address))
+	console.log(await xrp.balanceOf(receiver.address))
 
 	transaction = await bnb.connect(sender).transfer(receiver.address, amount)
 	await transaction.wait()
 	console.log(`Transferred ${amount} BNB from ${sender.address} to ${receiver.address}\n`)
+	console.log(await bnb.balanceOf(sender.address))
+	console.log(await bnb.balanceOf(receiver.address))
 
 	transaction = await ada.connect(sender).transfer(receiver.address, amount)
 	await transaction.wait()
 	console.log(`Transferred ${amount} Cardano from ${sender.address} to ${receiver.address}\n`)
+	console.log(await ada.balanceOf(sender.address))
+	console.log(await ada.balanceOf(receiver.address))
 
 	const user1 = accounts[0]
 	const user2 = accounts[1]
-	amount = tokens(10000)
+	amount = tokens(5000)
 
 	transaction = await eth.connect(user1).approve(exchange.address, amount)
 	await transaction.wait()
@@ -73,89 +89,97 @@ async function main() {
 	await transaction.wait()
 	console.log(`Deposited ${amount} Ethereum from ${user1.address}\n`)
 
-	transaction = await btc.connect(user1).approve(exchange.address, tokens(100))
+	transaction = await btc.connect(user1).approve(exchange.address, amount)
 	await transaction.wait()
-	console.log(`Approved 100 Bitcoin from ${user1.address} to the exchange\n`)
+	console.log(`Approved ${amount} Bitcoin from ${user1.address} to the exchange\n`)
 
-	transaction = await exchange.connect(user1).depositTokens(btc.address, tokens(100))
+	transaction = await exchange.connect(user1).depositTokens(btc.address, amount)
 	await transaction.wait()
-	console.log(`Deposited 100 Bitcoin from ${user1.address} to the exchange\n`)
+	console.log(`Deposited ${amount} Bitcoin from ${user1.address} to the exchange\n`)
 
-	transaction = await ltc.connect(user1).approve(exchange.address, tokens(100))
+	transaction = await ltc.connect(user1).approve(exchange.address, amount)
 	await transaction.wait()
-	console.log(`Approved 100 Litecoin from ${user1.address} to the exchange\n`)
+	console.log(`Approved ${amount} Litecoin from ${user1.address} to the exchange\n`)
 
-	transaction = await exchange.connect(user1).depositTokens(ltc.address, tokens(100))
+	transaction = await exchange.connect(user1).depositTokens(ltc.address, amount)
 	await transaction.wait()
-	console.log(`Deposited 100 Litecoin from ${user1.address} to the exchange\n`)
+	console.log(`Deposited ${amount} Litecoin from ${user1.address} to the exchange\n`)
 	
-	transaction = await xrp.connect(user1).approve(exchange.address, tokens(100))
+	transaction = await xrp.connect(user1).approve(exchange.address, amount)
 	await transaction.wait()
-	console.log(`Approved 100 Ripple from ${user1.address} to the exchange\n`)
+	console.log(`Approved ${amount} Ripple from ${user1.address} to the exchange\n`)
 
-	transaction = await exchange.connect(user1).depositTokens(xrp.address, tokens(100))
+	transaction = await exchange.connect(user1).depositTokens(xrp.address, amount)
 	await transaction.wait()
-	console.log(`Deposited 100 Ripple from ${user1.address} to the exchange\n`)
+	console.log(`Deposited ${amount} Ripple from ${user1.address} to the exchange\n`)
 	
-	transaction = await bnb.connect(user1).approve(exchange.address, tokens(100))
+	transaction = await bnb.connect(user1).approve(exchange.address, amount)
 	await transaction.wait()
-	console.log(`Approved 100 BNB from ${user1.address} to the exchange\n`)
+	console.log(`Approved ${amount} BNB from ${user1.address} to the exchange\n`)
 
-	transaction = await exchange.connect(user1).depositTokens(bnb.address, tokens(100))
+	transaction = await exchange.connect(user1).depositTokens(bnb.address, amount)
 	await transaction.wait()
-	console.log(`Deposited 100 BNB from ${user1.address} to the exchange\n`)
+	console.log(`Deposited ${amount} BNB from ${user1.address} to the exchange\n`)
 	
-	transaction = await ada.connect(user1).approve(exchange.address, tokens(100))
+	transaction = await ada.connect(user1).approve(exchange.address, amount)
 	await transaction.wait()
-	console.log(`Approved 100 Cardano from ${user1.address} to the exchange\n`)
+	console.log(`Approved ${amount} Cardano from ${user1.address} to the exchange\n`)
 
-	transaction = await exchange.connect(user1).depositTokens(ada.address, tokens(100))
+	transaction = await exchange.connect(user1).depositTokens(ada.address, amount)
 	await transaction.wait()
-	console.log(`Deposited 100 Cardano from ${user1.address} to the exchange\n`)
+	console.log(`Deposited ${amount} Cardano from ${user1.address} to the exchange\n`)
 
 
 
-	transaction = await btc.connect(user2).approve(exchange.address, tokens(10000))
+	transaction = await btc.connect(user2).approve(exchange.address, amount)
 	await transaction.wait()
 	console.log(`Approved ${amount} Bitcoin from ${user2.address} to the exchange\n`)
 
-	transaction = await exchange.connect(user2).depositTokens(btc.address, tokens(100))
+	transaction = await exchange.connect(user2).depositTokens(btc.address, amount)
 	await transaction.wait()
 	console.log(`Deposited ${amount} Bitcoin from ${user2.address} to the exchange\n`)
 
-	transaction = await ltc.connect(user2).approve(exchange.address, tokens(100))
+	transaction = await eth.connect(user2).approve(exchange.address, amount)
 	await transaction.wait()
-	console.log(`Approved 100 Litecoin from ${user2.address} to the exchange\n`)
+	console.log(`Approved ${amount} Ethereum from ${user2.address} to the exchange\n`)
 
-	transaction = await exchange.connect(user2).depositTokens(ltc.address, tokens(100))
+	transaction = await exchange.connect(user2).depositTokens(eth.address, amount)
 	await transaction.wait()
-	console.log(`Deposited 100 Litecoin from ${user2.address} to the exchange\n`)
+	console.log(`Deposited ${amount} Ethereum from ${user2.address} to the exchange\n`)
+
+	transaction = await ltc.connect(user2).approve(exchange.address, amount)
+	await transaction.wait()
+	console.log(`Approved ${amount} Litecoin from ${user2.address} to the exchange\n`)
+
+	transaction = await exchange.connect(user2).depositTokens(ltc.address, amount)
+	await transaction.wait()
+	console.log(`Deposited ${amount} Litecoin from ${user2.address} to the exchange\n`)
 	
-	transaction = await xrp.connect(user2).approve(exchange.address, tokens(100))
+	transaction = await xrp.connect(user2).approve(exchange.address, amount)
 	await transaction.wait()
-	console.log(`Approved 100 Ripple from ${user2.address} to the exchange\n`)
+	console.log(`Approved ${amount} Ripple from ${user2.address} to the exchange\n`)
 
-	transaction = await exchange.connect(user2).depositTokens(xrp.address, tokens(100))
+	transaction = await exchange.connect(user2).depositTokens(xrp.address, amount)
 	await transaction.wait()
-	console.log(`Deposited 100 Ripple from ${user2.address} to the exchange\n`)
+	console.log(`Deposited ${amount} Ripple from ${user2.address} to the exchange\n`)
 	
-	transaction = await bnb.connect(user2).approve(exchange.address, tokens(100))
+	transaction = await bnb.connect(user2).approve(exchange.address, amount)
 	await transaction.wait()
-	console.log(`Approved 100 BNB from ${user2.address} to the exchange\n`)
+	console.log(`Approved ${amount} BNB from ${user2.address} to the exchange\n`)
 
-	transaction = await exchange.connect(user2).depositTokens(bnb.address, tokens(100))
+	transaction = await exchange.connect(user2).depositTokens(bnb.address, amount)
 	await transaction.wait()
-	console.log(`Deposited 100 BNB from ${user2.address} to the exchange\n`)
+	console.log(`Deposited ${amount} BNB from ${user2.address} to the exchange\n`)
 	
-	transaction = await ada.connect(user2).approve(exchange.address, tokens(100))
+	transaction = await ada.connect(user2).approve(exchange.address, amount)
 	await transaction.wait()
-	console.log(`Approved 100 Cardano from ${user2.address} to the exchange\n`)
+	console.log(`Approved ${amount} Cardano from ${user2.address} to the exchange\n`)
 
-	transaction = await exchange.connect(user2).depositTokens(ada.address, tokens(100))
+	transaction = await exchange.connect(user2).depositTokens(ada.address, amount)
 	await transaction.wait()
-	console.log(`Deposited 100 Cardano from ${user2.address} to the exchange\n`)
+	console.log(`Deposited ${amount} Cardano from ${user2.address} to the exchange\n`)
 
-	//Order 1
+	// Order 1
 	let result
 	transaction = await exchange.connect(user1).makeOrder(btc.address, tokens(10), eth.address, tokens(5))
 	result = await transaction.wait()
@@ -169,7 +193,7 @@ async function main() {
 
 	await wait(1)
 
-	//Order 2
+	// Order 2
 	transaction = await exchange.connect(user1).makeOrder(btc.address, tokens(10), eth.address, tokens(10))
 	result = await transaction.wait()
 	console.log(`Order made from ${user1.address}\n`)
@@ -204,7 +228,7 @@ async function main() {
 	console.log(`Order filled by ${user2.address}`)
 
 	for(let i = 1; i <= 5; i++) {
-		transaction = await exchange.connect(user1).makeOrder(btc.address, tokens(10 * i), eth.address, tokens(10))
+		transaction = await exchange.connect(user1).makeOrder(btc.address, tokens(i), eth.address, tokens(10))
 		result = await transaction.wait()
 		console.log(`Made order from ${user1.address}`)
 

@@ -37,13 +37,6 @@ export const loadTokens = createAsyncThunk("tokens/initTokens", async (data) => 
     })
 })
 
-export const loadTokenBalances = createAsyncThunk("balances/initBalances", async (data) => {
-    let balance1 = ethers.utils.formatUnits(await data.tokens[0].balanceOf(data.account.address), 18)
-    let balance2 = ethers.utils.formatUnits(await data.tokens[1].balanceOf(data.account.address), 18)
-
-    return { balance1, balance2 }
-})
-
 const tokenSlice = createSlice({
     name: 'token',
     initialState,
@@ -72,18 +65,6 @@ const tokenSlice = createSlice({
                 })
 
                 state.entities = tokenDictionary
-                state.status = "idle"
-            })
-            .addCase(loadTokenBalances.pending, (state) => {
-                state.status = "loading"
-            })
-            .addCase(loadTokenBalances.rejected, (state) => {
-                state.status = "failed"
-            })
-            .addCase(loadTokenBalances.fulfilled, (state, action) => {
-                // state.entities.token1.token1Balance = action.payload.balance1
-                // state.token1Balance = action.payload.balance1
-                // state.token2Balance = action.payload.balance2
                 state.status = "idle"
             })
     }

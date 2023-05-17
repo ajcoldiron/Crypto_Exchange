@@ -8,7 +8,12 @@ const loadOrderAdpter = createEntityAdapter();
 const initialState = loadOrderAdpter.getInitialState({
     status: "not-loaded",
     filledOrders: {},
-    cancelledOrders: {}
+    cancelledOrders: {},
+    orderTime: [],
+    tokenSold: [],
+    tokenSoldAmount: [],
+    tokenReceived: [],
+    tokenReceivedAmount: [],
 })
 
 export const loadCancelledOrders = createAsyncThunk("loadCancelledOrders/cancelled", async (data) => {
@@ -64,8 +69,7 @@ export const fillOrderInitiate = createAsyncThunk("orders/fill/initiate", async 
     return order
 })
 
-export const fillOrderConfirm = createAsyncThunk("orders/fill/confirm", (arg, thunkAPI) => {
-    const orderId = arg;
+export const fillOrderConfirm = createAsyncThunk("orders/fill/confirm", (orderId, thunkAPI) => {
     const currentReducersState = thunkAPI.getState()
     const allOrders  = currentReducersState.ordersReducer.entities
     const filledOrder = allOrders[orderId]
@@ -85,17 +89,24 @@ export const subscribeToFill = createAsyncThunk("orders/fill/subscribe", (_, thu
     })
 })
 
-export const cancelOrder = createAsyncThunk("cancelOrder/cancel", async (data) => {
+export const cancelOrder = createAsyncThunk("cancelOrder/initiate", async (data) => {
     const provider = data.provider
     const exchange = data.exchange
     const order = data.order
-    // try {
-        const signer = await provider.getSigner()
-        const transaction = await exchange.connect(signer).cancelOrder(order.id)
-        await transaction.wait()
-    //  } catch (error) {
-    //     window.alert(error)
-    // }
+    
+    const signer = await provider.getSigner()
+    const transaction = await exchange.connect(signer).cancelOrder(order.id)
+    await transaction.wait()
+
+    return order
+})
+
+export const cancelOrderConfirm = createAsyncThunk("cancel/confirm", async (orderId, thunkAPI) => {
+    const currentReducersState = thunkAPI.getState()
+    const allOrders = currentReducersState.ordersReducer.entities
+    const cancelledOrder = allOrders[orderId]
+    thunkAPI.dispatch(cancelOrderSuccess(cancelledOrder))
+
 })
 
 export const subscribeToCancel = createAsyncThunk("cancel/subscribe", (_, thunkAPI) => {
@@ -103,7 +114,7 @@ export const subscribeToCancel = createAsyncThunk("cancel/subscribe", (_, thunkA
     const exchange = currentReducersState.exchangeReducers.exchange
     exchange.on('Cancel', (id, user, tokenGet, amountGet, tokenGive, amountGive, timestamp, event) => {
         // const order = event.args
-        thunkAPI.dispatch(cancelOrderSuccess())
+        thunkAPI.dispatch(cancelOrderConfirm())
     })
 })
 
@@ -121,12 +132,17 @@ const loadOrderSlice = createSlice({
             const filledOrder = action.payload
             if (filledOrder) {
                 state.filledOrders[filledOrder.id] = filledOrder
+                // state.orderTime[filledOrder.id] = Date.now()
+                // state.tokenSold[filledOrder.id] = filledOrder.tokenGet
+                // state.tokenSoldAmount[filledOrder.id] = (filledOrder.amountGet * 0.9)
+                // state.tokenReceived[filledOrder.id] = filledOrder.tokenGive
+                // state.tokenReceivedAmount[filledOrder.id] = filledOrder.amountGive
             }
         },
         cancelOrderSuccess: (state, action) => {
-            return {
-                ...state,
-                event: action.event
+            const cancelledOrder = action.payload
+            if (cancelledOrder) {
+                state.cancelledOrders[cancelledOrder.id] = cancelledOrder
             }
         }
     },
@@ -215,19 +231,29 @@ const loadOrderSlice = createSlice({
             })
             .addCase(fillOrderInitiate.rejected, (state, action) => {
                 window.alert(action.error.message)
-                // window.alert(JSON.stringify(action.error))
                 state.status = "failed"
             })
-            .addCase(fillOrderInitiate.fulfilled, (state, action) => {
+            .addCase(fillOrderInitiate.fulfilled, (state) => {
                 state.status = "idle"
             })
             .addCase(cancelOrder.pending, (state) => {
                 state.status = "loading"
             })
-            .addCase(cancelOrder.rejected, (state) => {
+            .addCase(cancelOrder.rejected, (state, action) => {
+                window.alert(action.error.message)
                 state.status = "failed"
             })
             .addCase(cancelOrder.fulfilled, (state) => {
+                state.status = "idle"
+            })
+            .addCase(cancelOrderConfirm.pending, (state) => {
+                state.status = "loading"
+            })
+            .addCase(cancelOrderConfirm.rejected, (state, action) => {
+                window.alert(action.error.message)
+                state.status = "failed"
+            })
+            .addCase(cancelOrderConfirm.fulfilled, (state) => {
                 state.status = "idle"
             })
             .addCase(fillOrderConfirm.pending, (state) => {

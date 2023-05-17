@@ -9,29 +9,39 @@ import exchangeBalanceReducers from "../store/reducers/exchangeBalanceReducers";
 import transferReducers from "../store/reducers/transferReducers";
 import purchaseReducer from "../store/reducers/purchaseReducer";
 import ordersReducer from "../store/reducers/ordersReducer";
+import tokenBalanceReducer from "../store/reducers/tokenBalanceReducer"
 
 const persistConfig = {
     key: 'root',
     version: 1, //added for purge
+    blacklist: [
+        "connectionReducers",
+        "tokenReducers",
+        "exchangeReducers"
+    ],
     storage,
 }
 
 const rootReducer = combineReducers({
     cryptoReducers,
-    connectionReducers,
     tokenReducers,
+    tokenBalanceReducer,
     exchangeReducers,
     exchangeBalanceReducers,
     ordersReducer,
     purchaseReducer,
-    transferReducers
+    transferReducers,
+    connectionReducers
 })
+
+
 
 export const store = configureStore({
     reducer: persistReducer(persistConfig, rootReducer),
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: false,
+            immutableCheck: false
         }),
 })
 

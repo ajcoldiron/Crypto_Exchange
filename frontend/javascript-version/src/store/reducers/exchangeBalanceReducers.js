@@ -1,16 +1,13 @@
 import { ethers } from 'ethers'
 import { createSlice, createEntityAdapter, createAsyncThunk } from "@reduxjs/toolkit";
-import moment from "moment"
 
-const exchangeAdpter = createEntityAdapter();
+const exchangeBalanceAdpter = createEntityAdapter();
 
-const initialState = exchangeAdpter.getInitialState({
-    startingBalances: null,
-    balanceUploadTime: null,
+const initialState = exchangeBalanceAdpter.getInitialState({
     status: "not-loaded"
 })
 
-export const loadExchangeBalances = createAsyncThunk("balances/initBalances", async (data, thunkAPI) => {
+export const loadExchangeBalances = createAsyncThunk("exchangeBalances/initBalances", async (data, thunkAPI) => {
     let exchange = data.exchange
     // let exchange = thunkAPI.getState().exchangeReducer.exchange
     let tokens = data.tokens
@@ -27,7 +24,7 @@ export const loadExchangeBalances = createAsyncThunk("balances/initBalances", as
     let symbol4 = data.symbols[3]
     let symbol5 = data.symbols[4]
     let symbol6 = data.symbols[5]
-    const tokenBalances = [
+    const exchangeBalances = [
         {
           balance: balance1,
           symbol: symbol1
@@ -53,8 +50,7 @@ export const loadExchangeBalances = createAsyncThunk("balances/initBalances", as
           symbol: symbol6
         }
       ]
-    // eslint-disable-next-line
-    return ({ tokenBalances, timestamp: moment(new Date).format("MM/DD/YYYY hh:mm")  })
+    return ({ exchangeBalances })
 })
 
 
@@ -71,21 +67,21 @@ const exchangeBalanceSlice = createSlice({
                 state.status = "failed"
             })
             .addCase(loadExchangeBalances.fulfilled, (state, action) => {
-                const tokenBalances = action.payload.tokenBalances
+                const exchangeBalances = action.payload.exchangeBalances
                 const balanceDictionary = {}
-                let balanceValues = Object.values(tokenBalances)
+                let balanceValues = Object.values(exchangeBalances)
                 balanceValues.forEach(balances => {
                   balanceDictionary[balances.symbol] = balances
                 })
 
-                if (!state.startingBalances) {
-                  state.startingBalances = balanceDictionary
-                }
+                // if (!state.startingBalances) {
+                //   state.startingBalances = balanceDictionary
+                // }
 
                 state.entities = balanceDictionary
-                if(!state.balanceUploadTime) {
-                  state.balanceUploadTime = action.payload.timestamp
-                }
+                // if(!state.balanceUploadTime) {
+                //   state.balanceUploadTime = action.payload.timestamp
+                // }
                 state.status = "idle"
             })
     }

@@ -49,12 +49,6 @@ const PurchaseGraph = ({purchaseCryptoId, sellCryptoId, state}) => {
   );
   const allPrices = mergedCryptoPrices?.map(mcp => mcp[1])
 
-  // console.log(mergedCryptoDatesArray)
-  // console.log(mergedCryptoDatesArray[365])
-
-  if (!state.target || !state.target.value) {
-    return <h1>Please Select a Time Frame</h1>;
-  }
 
    const options = {
         chart: {

@@ -107,7 +107,6 @@ const PurchaseContainer = () => {
 
   const [purchaseCrypto, setPurchaseCrypto] = useState(null)
   const purchaseCoin = (symbol, option) => {
-
     const cryptoInfo = allCryptos[symbol.toLowerCase()]
     setPurchaseCrypto(option)
     setPurchaseCryptoSymbol(symbol)

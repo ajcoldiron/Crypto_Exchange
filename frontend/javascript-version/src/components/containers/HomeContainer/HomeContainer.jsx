@@ -1,5 +1,5 @@
 import { Table, Button, Space, Radio } from 'antd';
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { cryptoSelectors, cryptoSelect, cryptoUnselect, fetchCryptoDataWithInterval } from '../../../store/reducers/cryptoReducers';
 import LayoutWrapper from '../../LayoutWrapper.jsx/LayoutWrapper';
 import { useSelector, useDispatch } from 'react-redux'
@@ -11,8 +11,10 @@ const HomeContainer = () => {
   const [graphTime, setGraphTime] = useState({ target: { value: "Year" } })
   const dispatch = useDispatch();
   const cryptoList = useSelector(cryptoSelectors.selectAll)
-  const lastUploadDateTime = useSelector(state => state.cryptoReducers.cacheDataLastUpload)
+  // const lastUploadDateTime = useSelector(state => state.cryptoReducers.cacheDataLastUpload)
   const selectedCrypto = useSelector(state => state.cryptoReducers.selectedCrypto)
+  const cachedIntervalData = useSelector(state => state.cryptoReducers.cachedIntervalData)
+  // const specificCrypto = useSelector(state => state.cryptoReducers.entities)
   const [isGraph, setIsGraph] = useState(false)
   const selectHandler = (crypto) => {
     dispatch(cryptoSelect(crypto))
@@ -21,6 +23,16 @@ const HomeContainer = () => {
     }))
     setIsGraph(true)
   }
+  useEffect(() => {
+    if (Object.values(cachedIntervalData).length === 0) {
+      dispatch(fetchCryptoDataWithInterval({cryptoId: 'bitcoin'}))
+      dispatch(fetchCryptoDataWithInterval({cryptoId: 'ethereum'}))
+      dispatch(fetchCryptoDataWithInterval({cryptoId: 'binancecoin'}))
+      dispatch(fetchCryptoDataWithInterval({cryptoId: 'ripple'}))
+      dispatch(fetchCryptoDataWithInterval({cryptoId: 'cardano'}))
+      dispatch(fetchCryptoDataWithInterval({cryptoId: 'litecoin'}))
+    }
+  }, [cachedIntervalData.length])
 
   const unselectHandler = () => {
     dispatch(cryptoUnselect())

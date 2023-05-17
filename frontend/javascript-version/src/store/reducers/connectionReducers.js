@@ -23,15 +23,12 @@ export const loadNetwork = createAsyncThunk("network/initNetwork", async (provid
 
 export const initAccountConnection = createAsyncThunk("account/initAccount", async (provider) => {
     let account, balance
-    try{
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
-        account = ethers.utils.getAddress(accounts[0])
-        balance = await provider.getBalance(account)
-        balance = ethers.utils.formatEther(balance)
-
-    } catch(e) {
-        console.log(e)
-    }
+    
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+    account = ethers.utils.getAddress(accounts[0])
+    balance = await provider.getBalance(account)
+    balance = ethers.utils.formatEther(balance)
+    
     return ({
         account,
         balance
