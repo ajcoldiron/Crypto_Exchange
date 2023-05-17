@@ -250,7 +250,7 @@ const PurchaseContainer = () => {
         let balance = 0
         // Verifiy if object have the symbol property (important to avoid crash error)
         if (symbol in allCryptosBalances) {
-          balance = allCryptosBalances[symbol].balance
+          balance = allCryptosBalances[symbol]
         }
         return <div key={"crypto-balance-" + symbol}>{symbol} Balance: {balance}</div>
       })}

@@ -27,6 +27,8 @@ const AssetsContainer = () => {
   const exchange = useSelector(state => state.exchangeReducers.exchange)
   const account = useSelector(state => state.connectionReducers.account)
 
+  const tokenBalances = useSelector(state => state.tokenBalanceReducer.entities)
+
   // load crypto from api
   const allCryptos = useSelector(state => state.cryptoReducers.entities)
   const allCryptoValues = Object.values(allCryptos)
@@ -36,7 +38,6 @@ const AssetsContainer = () => {
   const exchangeCryptoSymbols = Object.keys(exchangeCryptos)
 
   useEffect(() => {
-    console.log("CALLING USE EFFECT")
     if (eth && btc && ltc && ada && xrp && bnb && account) {
       dispatch(loadTokensBalances({ tokens: [eth, btc, ltc, ada, xrp, bnb], account }))
     }
@@ -45,17 +46,6 @@ const AssetsContainer = () => {
   const graphTimeHandler = (value) => {
     setGraphTime(value)
   }
-
-  const tokens = {
-    1: ['ETH', 100],
-    2: ['BTC', 50],
-    3: ['XRP', 10]
-  }
-
-  const result = Object.values(tokens).reduce((acc, [value, key]) => {
-    acc[value] = key;
-    return acc;
-  }, {});
 
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -73,9 +63,8 @@ const AssetsContainer = () => {
       if (exchangeCryptoSymbols.includes(cryptoSymbol)) {
         // retrieve exchange crypto using current looped crypto symbol
         const correspondingExchangeCrypto = exchangeCryptos[cryptoSymbol]
-        balance = Number(correspondingExchangeCrypto.balance) * cryptoInformation.current_price
+        balance = Number(correspondingExchangeCrypto) * cryptoInformation.current_price
         currentBalance = formatter.format(balance)
-        // console.log(currentBalance / cryptoInformation.current_price)
       }
 
       // build a data object for the table using crypto and Exchange information
@@ -86,7 +75,8 @@ const AssetsContainer = () => {
         low_24h: formatter.format(cryptoInformation.low_24h),
         total_supply: cryptoInformation.total_supply,
         currentBalance: (balance / cryptoInformation.current_price),
-        unformattedBalance: balance
+        unformattedBalance: balance,
+        balanceInDollars: formatter.format(balance)
       }
       
       if(tableDataObject.unformattedBalance > 0) {
@@ -106,6 +96,11 @@ const AssetsContainer = () => {
       key: "currentBalance",
     },
     {
+      title: "Balance in Dollars",
+      dataIndex: "balanceInDollars",
+      key: "balanceInDollars",
+    },
+    {
       title: "Price",
       dataIndex: "current_price",
       key: "current_price"
@@ -119,6 +114,11 @@ const AssetsContainer = () => {
       title: "24 Hour High",
       dataIndex: "high_24h",
       key: "high_24h"
+    },
+    {
+      title: "Total Supply",
+      dataIndex: "total_supply",
+      key: "total_supply",
     }
   ]
   const handleTransfer = (e) => {
@@ -208,6 +208,16 @@ const AssetsContainer = () => {
               </Form.Item>
             </Form>
           </section>
+        </div>
+        <div>
+        <h3>Token Balances</h3>
+        <ul>
+          {Object.entries(tokenBalances).map(([key, value]) => (
+            <li key={key}>
+              {key}: {value}
+            </li>
+          ))}
+        </ul>
         </div>
         <section>
           <h3>My Crypto</h3>

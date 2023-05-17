@@ -16,15 +16,8 @@ const AssetsGraph = ({ state }) => {
   const xrp = useSelector(state => state.tokenReducers.entities?.XRP?.token)
   const bnb = useSelector(state => state.tokenReducers.entities?.BNB?.token)
   const ada = useSelector(state => state.tokenReducers.entities?.ADA?.token)
-  const ethSymbol = useSelector(state => state.tokenReducers.entities?.ETH?.symbol)
-  const btcSymbol = useSelector(state => state.tokenReducers.entities?.BTC?.symbol)
-  const ltcSymbol = useSelector(state => state.tokenReducers.entities?.LTC?.symbol)
-  const xrpSymbol = useSelector(state => state.tokenReducers.entities?.XRP?.symbol)
-  const bnbSymbol = useSelector(state => state.tokenReducers.entities?.BNB?.symbol)
-  const adaSymbol = useSelector(state => state.tokenReducers.entities?.ADA?.symbol)
   const account = useSelector(state => state.connectionReducers.account)
   const tokens = [eth, btc, ltc, xrp, bnb, ada]
-  const symbols = [ethSymbol, btcSymbol, ltcSymbol, xrpSymbol, bnbSymbol, adaSymbol]
 
   const exchangeTokens = useSelector(state => state.exchangeBalanceReducers.entities)
   const exchangeCryptoSymbols = Object.keys(exchangeTokens)
@@ -34,17 +27,11 @@ const AssetsGraph = ({ state }) => {
 
   const cachedIntervalData = useSelector(state => state.cryptoReducers?.cachedIntervalData)
 
-  // const startingBalance = useSelector(state => state.exchangeBalanceReducers.startingBalances)
-  const graphStartTime = useSelector(state => state.exchangeBalanceReducers.balanceUploadTime)
-  const graphStartTimeInEpoch = Date.parse(graphStartTime)
-  // console.log(graphStartTimeInEpoch)
-  // const allCryptoPrices = useSelector(state => state.currentCryptoData.prices)
-  //eth && btc && ltc && xrp && bnb && ada && ethSymbol && btcSymbol && ltcSymbol && xrpSymbol && bnbSymbol && adaSymbol
   useEffect(() => {
-    if (!!exchange && eth && btc && ltc && xrp && bnb && ada && ethSymbol && btcSymbol && ltcSymbol && xrpSymbol && bnbSymbol && adaSymbol && account) {
-      dispatch(loadExchangeBalances({ exchange, tokens, account, symbols }))
+    if (!!exchange && eth && btc && ltc && xrp && bnb && ada && account) {
+      dispatch(loadExchangeBalances({ exchange, tokens, account }))
     }
-  }, [dispatch, exchange, eth, btc, ltc, xrp, bnb, ada, account, ethSymbol, btcSymbol, ltcSymbol, xrpSymbol, bnbSymbol, adaSymbol])
+  }, [dispatch, exchange, eth, btc, ltc, xrp, bnb, ada, account])
 
   useEffect(() => {
     if (Object.values(cachedIntervalData).length === 0) {
@@ -79,13 +66,13 @@ const AssetsGraph = ({ state }) => {
       if(exchangeCryptoSymbols.includes(cryptoSymbol)) {
         const correspondingExchangeCrypto = exchangeTokens[cryptoSymbol]
         currentOwnedCrypto.push(correspondingExchangeCrypto)
-        let balance = parseFloat(correspondingExchangeCrypto.balance) * cryptoInfo.current_price
+        let balance = parseFloat(correspondingExchangeCrypto) * cryptoInfo.current_price
         totalBalance.push(balance)
       }
     })
 
-    pricesById = currentOwnedCrypto.reduce((acc, crypto) => {
-      const symbol = crypto.symbol.toLowerCase();
+    pricesById = exchangeCryptoSymbols.reduce((acc, crypto) => {
+      const symbol = crypto.toLowerCase()
       const id = allCryptos[symbol].id;
       const cachedData = cachedIntervalData[id];
       const prices = cachedData?.prices ?? [];
@@ -99,39 +86,35 @@ const AssetsGraph = ({ state }) => {
   }
 
   const allCryptoDates = pricesById?.ethereum.map(d => d[0]) ??  []
-  // console.log(allCryptoDates)
-  // // const allGraphDates = allCryptoDates.filter(date => {
-  // //   return date > graphStartTimeInEpoch
-  // // })
   
   const ethereumAnnualPrices = pricesById?.ethereum.map(d => d[1]) ?? []
   const ethereumGraphArray = ethereumAnnualPrices.map(price => {
-    return price * parseInt(exchangeTokens.ETH.balance) 
+    return price * parseInt(exchangeTokens.ETH) 
   })
 
   const bitcoinAnnualPrices = pricesById?.bitcoin.map(d => d[1])
   const bitcoinGraphArray = bitcoinAnnualPrices.map(price => {
-    return price * parseInt(exchangeTokens.BTC.balance)
+    return price * parseInt(exchangeTokens.BTC)
   })
   
   const litecoinAnnualPrices = pricesById?.litecoin.map(d => d[1])
   const litecoinGraphArray = litecoinAnnualPrices.map(price => {
-    return price * parseInt(exchangeTokens.LTC.balance)
+    return price * parseInt(exchangeTokens.LTC)
   })
   
   const rippleAnnualPrices = pricesById?.ripple.map(d => d[1])
   const rippleGraphArray = rippleAnnualPrices.map(price => {
-    return price * parseInt(exchangeTokens.XRP.balance)
+    return price * parseInt(exchangeTokens.XRP)
   })
   
   const cardanoAnnualPrices = pricesById?.cardano.map(d => d[1])
   const cardanoGraphArray = cardanoAnnualPrices.map(price => {
-    return price * parseInt(exchangeTokens.ADA.balance)
+    return price * parseInt(exchangeTokens.ADA)
   })
   
   const binancecoinAnnualPrices = pricesById?.binancecoin.map(d => d[1])
   const binancecoinGraphArray = binancecoinAnnualPrices.map(price => {
-    return price * parseInt(exchangeTokens.BTC.balance)
+    return price * parseInt(exchangeTokens.BTC)
   })
 
   const totalAnnualPrices = ethereumGraphArray.map((num, index) => 
