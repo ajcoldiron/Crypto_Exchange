@@ -12,7 +12,6 @@ export const loadTokensBalances = createAsyncThunk("tokensBalances/initBalances"
     const account = data.account
     const token1 = data.tokens[0]
     const symbol1 = await token1.symbol()
-
     const token2 = data.tokens[1]
     const symbol2 = await token2.symbol()
 

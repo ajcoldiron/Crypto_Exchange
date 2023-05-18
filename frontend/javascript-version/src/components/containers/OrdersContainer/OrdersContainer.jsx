@@ -24,13 +24,21 @@ const addressMapping = {
 
 
 const OrdersContainer = () => {
-  const [reloadFlag, setReloadFlag] = useState(false)
   const dispatch = useDispatch()
   const exchange = useSelector(state => state.exchangeReducers.exchange)
   const provider = useSelector(state => state.connectionReducers.ethersConnection)
   const allOrders = useSelector(state => state.ordersReducer?.entities)
   const filledOrders = useSelector(state => state.ordersReducer?.filledOrders)
   const cancelledOrders = useSelector(state => state.ordersReducer?.cancelledOrders)
+
+  const [function1CallFlag, setFunction1CallFlag] = useState(false);
+  // const [function2CallFlag, setFunction2CallFlag] = useState(false);
+
+  useEffect(() => {
+    if (function1CallFlag) {
+      window.location.reload();
+    }
+  }, [function1CallFlag]);
 
 
   useEffect(() => {
@@ -41,26 +49,18 @@ const OrdersContainer = () => {
     }
   }, [dispatch, exchange, provider])
 
-  useEffect(() => {
-    if (allOrders || filledOrders || cancelledOrders) {
-      setReloadFlag(true)
-    }
-  }, [allOrders, filledOrders, cancelledOrders])
-
-  useEffect(() => {
-    if (reloadFlag === true) {
-      window.location.reload()
-    }
-  }, [])
-
   const fillHandler = (order) => {
+    setFunction1CallFlag(true);
     const orderToFill = allOrders[order.id]
     dispatch(fillOrderInitiate({ provider, exchange, order : orderToFill }))
+    setFunction1CallFlag(false);
   }
 
   const cancelHandler = (order) => {
+    setFunction1CallFlag(true);
     const orderToFill = allOrders[order.id]
     dispatch(cancelOrder({ provider, exchange, order : orderToFill }))
+    setFunction1CallFlag(false);
   }
 
   let openOrdersData = []
@@ -85,10 +85,10 @@ const OrdersContainer = () => {
       const table = {
         id: orderId,
         tokenGet: tokenGetToken,
-        amountGet: ethers.utils.formatEther(openOrder.amountGet),
+        amountGet: openOrder.amountGet,
         tokenGive: tokenGiveToken,
-        amountGive:ethers.utils.formatEther(openOrder.amountGive),
-        timestamp: moment(openOrder.timestamp).format("MM/DD/YYYY hh:mm"),
+        amountGive: openOrder.amountGive,
+        timestamp: openOrder.timestamp,
         purchaser: user
       }
   

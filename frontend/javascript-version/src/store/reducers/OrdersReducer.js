@@ -9,11 +9,6 @@ const initialState = loadOrderAdpter.getInitialState({
     status: "not-loaded",
     filledOrders: {},
     cancelledOrders: {},
-    orderTime: [],
-    tokenSold: [],
-    tokenSoldAmount: [],
-    tokenReceived: [],
-    tokenReceivedAmount: [],
 })
 
 export const loadCancelledOrders = createAsyncThunk("loadCancelledOrders/cancelled", async (data) => {
@@ -132,11 +127,6 @@ const loadOrderSlice = createSlice({
             const filledOrder = action.payload
             if (filledOrder) {
                 state.filledOrders[filledOrder.id] = filledOrder
-                // state.orderTime[filledOrder.id] = Date.now()
-                // state.tokenSold[filledOrder.id] = filledOrder.tokenGet
-                // state.tokenSoldAmount[filledOrder.id] = (filledOrder.amountGet * 0.9)
-                // state.tokenReceived[filledOrder.id] = filledOrder.tokenGive
-                // state.tokenReceivedAmount[filledOrder.id] = filledOrder.amountGive
             }
         },
         cancelOrderSuccess: (state, action) => {
@@ -211,10 +201,10 @@ const loadOrderSlice = createSlice({
                     id: order.id,
                     tokenGet: order.tokenGet,
                     tokenGive: order.tokenGive,
-                    amountGet: order.amountGet,
-                    amountGive: order.amountGive,
+                    amountGet: ethers.utils.formatUnits(order.amountGet),
+                    amountGive: ethers.utils.formatUnits(order.amountGive),
                     user: order.user,
-                    timestamp: order.timestamp
+                    timestamp: moment(order.timestamp).format("MM/DD/YYYY hh:mm")
                 }))
                 // amountGet: ethers.utils.formatUnits(order.amountGet),
                 // amountGive: ethers.utils.formatUnits(order.amountGive),

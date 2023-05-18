@@ -82,7 +82,6 @@ const AssetsGraph = ({ state }) => {
         [id]: prices,
       };
     }, {});
-    // console.log(pricesById)
   }
 
   const allCryptoDates = pricesById?.ethereum.map(d => d[0]) ??  []

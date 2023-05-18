@@ -101,7 +101,7 @@ const cryptoSlice = createSlice({
             })
             .addCase(fetchCryptoDataWithInterval.rejected, (state, action) => {
                 state.status = 'failed'
-                console.log(action)
+                window.alert(action.error.message)
             })
             .addCase(fetchCryptoDataWithInterval.fulfilled, (state, action) => {
                 state.status = "idle"

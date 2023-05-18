@@ -32,6 +32,14 @@ function App() {
     const Bnb = config[chainId.payload].bnb
     const Ada = config[chainId.payload].ada
 
+    window.ethereum.on('chainChanged', () => {
+      window.location.reload()
+    })
+
+    window.ethereum.on('accountsChanged', () => {
+      window.location.reload()
+    })
+
     
     const addresses = [Eth.address, Btc.address, Ltc.address, Xrp.address, Bnb.address, Ada.address]
     await dispatch(loadTokens({ provider: provider.payload, addresses }))

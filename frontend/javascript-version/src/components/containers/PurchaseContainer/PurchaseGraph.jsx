@@ -39,7 +39,7 @@ const PurchaseGraph = ({purchaseCryptoId, sellCryptoId, state}) => {
   if (purchaseCryptoPrices.length && sellCryptoPrices.length) {
     mergedCryptoPrices = purchaseCryptoPrices.map((purchaseCryptoPrice, indexCurrentDay) => {
       const associatedSoldPriceForThisDay = sellCryptoPrices[indexCurrentDay]
-      const mergedPrices = [purchaseCryptoPrice[0], purchaseCryptoPrice[1]/associatedSoldPriceForThisDay[1]]
+      const mergedPrices = [purchaseCryptoPrice[0], associatedSoldPriceForThisDay[1]/purchaseCryptoPrice[1]]
       return mergedPrices;
     })
   }
@@ -127,7 +127,7 @@ const PurchaseGraph = ({purchaseCryptoId, sellCryptoId, state}) => {
           opposite: true,
           labels: {
             formatter: function (value) {
-              return value.toFixed(2);
+              return value.toFixed(4);
             }
           }
         },

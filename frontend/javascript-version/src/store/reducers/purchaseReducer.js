@@ -26,7 +26,6 @@ export const purchase = createAsyncThunk("purchase/initiate", async (data) => {
 })
 
 export const purchaseConfirmed = createAsyncThunk("purchase/confirmed", (arg, thunkAPI) => {
-    // const orderId = arg
     thunkAPI.dispatch(purchaseSuccess())
 })
 
@@ -56,12 +55,10 @@ const purchaseSlice = createSlice({
                 state.status = "loading"
             })
             .addCase(purchase.rejected, (state, action) => {
-                console.log(action)
                 window.alert(action.error.message)
                 state.status = "failed"
             })
             .addCase(purchase.fulfilled, (state, action) => {
-                console.log(action)
                 state.entities.orders = action.payload
                 state.status = "idle"
             })

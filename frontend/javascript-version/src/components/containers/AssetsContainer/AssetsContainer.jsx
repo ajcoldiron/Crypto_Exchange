@@ -74,7 +74,7 @@ const AssetsContainer = () => {
         high_24h: formatter.format(cryptoInformation.high_24h),
         low_24h: formatter.format(cryptoInformation.low_24h),
         total_supply: cryptoInformation.total_supply,
-        currentBalance: (balance / cryptoInformation.current_price),
+        currentBalance: (balance / cryptoInformation.current_price).toFixed(2),
         unformattedBalance: balance,
         balanceInDollars: formatter.format(balance)
       }
@@ -155,6 +155,7 @@ const AssetsContainer = () => {
       dispatch(transferTokens({provider, exchange, transferType: "Withdraw", token: transferToken, amount}))
       setAmount(0)
     }
+    dispatch(loadTokensBalances({ tokens: [eth, btc, ltc, ada, xrp, bnb], account }));
   }
 
   return (
@@ -176,7 +177,6 @@ const AssetsContainer = () => {
             <Form>
               <Form.Item label="Select">
                 <Select style={{ width: 200 }} onChange={(value) => transferTokenHandler(value)}>
-                  {/* <Select.Option value={JSON.stringify(eth)}>Ethereum</Select.Option> */}
                   <Select.Option value="eth">Ethereum</Select.Option>
                   <Select.Option value="btc">Bitcoin</Select.Option>
                   <Select.Option value="xrp">Ripple</Select.Option>
@@ -185,7 +185,7 @@ const AssetsContainer = () => {
                   <Select.Option value="bnb">Binance Coin</Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="Transfer Ethereum" name="layout">
+              <Form.Item label="Transfer Type" name="layout">
                 <Radio.Group >
                   <Radio.Button value="Deposit" onChange={(value) => handleTransfer(value)}>Deposit</Radio.Button>
                   <Radio.Button value="Withdraw" onChange={(value) => handleTransfer(value)}>Withdraw</Radio.Button>

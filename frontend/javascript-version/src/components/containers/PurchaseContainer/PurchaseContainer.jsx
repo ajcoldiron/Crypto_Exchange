@@ -113,6 +113,7 @@ const PurchaseContainer = () => {
     dispatch(selectPurchaseCrypto(cryptoInfo))
   }
 
+
   const [sellCrypto, setSellCrypto] = useState(null)
   const sellCoin = (symbol, option) => {
     const cryptoInfo = allCryptos[symbol.toLowerCase()]
@@ -120,6 +121,7 @@ const PurchaseContainer = () => {
     setSellCryptoSymbol(symbol)
     dispatch(selectSellCrypto(cryptoInfo))
   }
+
 
   const getCryptoIdFromSymbol = (symbol) => {
     const symbolKey = symbol.toLowerCase()
@@ -186,7 +188,7 @@ const PurchaseContainer = () => {
               /> 
               : null}
           </div>
-          <Form className={styles.purchaseInformations}>
+          <Form className={styles.purchaseInformation}>
             <Form.Item label="Select a Currency">
               {chainId && config[chainId] ? (
                 <Select

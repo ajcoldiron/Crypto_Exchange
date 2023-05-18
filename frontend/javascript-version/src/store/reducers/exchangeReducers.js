@@ -26,7 +26,7 @@ const exchangeSlice = createSlice({
             })
             .addCase(loadExchange.rejected, (state, action) => {
                 state.status = "failed"
-                console.log(action)
+                window.alert(action.error.message)
             })
             .addCase(loadExchange.fulfilled, (state, action) => {
                 state.exchange = action.payload
