@@ -21,5 +21,53 @@
 		"ada": {
 			"address": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
 		}
+	},
+	"5": {
+		"exchange": {
+			"address": "0x3D6E032d3D751a706aA6dE7bAC20BAd7c281e203"
+		},
+		"eth": {
+			"address": "0x9fB22Ec6536cC0aC66E98c9Bf92b17a0d85181c2"
+		},
+		"btc": {
+			"address": "0x2Be09D67610fC3aB969d2b5c2A1A63de9D792927"
+		},
+		"ltc": {
+			"address": "0x2CaeB265F5FCBcC6ac042824a636c257336FFAb7"
+		},
+		"xrp": {
+			"address": "0x02a97c4c281cF42a6a31Ab290Eed3E8d851edbcE"
+		},
+		"bnb": {
+			"address": "0x00cFEd87F248c8dFe9e90853aC8B477f53df3690"
+		},
+		"ada": {
+			"address": "0xBc344ED83A5F09D9dD72805735A1eAAc9Db32dFf"
+		},
+		"exploreURL": "https://goerli.etherscan.io/"
+	},
+	"11155111": {
+		"exchange": {
+			"address": "0xBc344ED83A5F09D9dD72805735A1eAAc9Db32dFf"
+		},
+		"eth": {
+			"address": "0xb93A2a89A5fFe8d0472ACE43eB815e1EE0A8b388"
+		},
+		"btc": {
+			"address": "0x9fB22Ec6536cC0aC66E98c9Bf92b17a0d85181c2"
+		},
+		"ltc": {
+			"address": "0x2Be09D67610fC3aB969d2b5c2A1A63de9D792927"
+		},
+		"xrp": {
+			"address": "0x2CaeB265F5FCBcC6ac042824a636c257336FFAb7"
+		},
+		"bnb": {
+			"address": "0x02a97c4c281cF42a6a31Ab290Eed3E8d851edbcE"
+		},
+		"ada": {
+			"address": "0x00cFEd87F248c8dFe9e90853aC8B477f53df3690"
+		},
+		"exploreURL": "https://sepolia.etherscan.io/"
 	}
 }

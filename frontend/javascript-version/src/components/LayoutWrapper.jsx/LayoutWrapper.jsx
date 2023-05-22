@@ -1,22 +1,34 @@
-import { Layout, Menu } from 'antd'
+import { Layout, Menu, Select } from 'antd'
 import { Content, Header } from 'antd/es/layout/layout'
 import { useLocation, useNavigate } from "react-router-dom"
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import styles from './LayoutWrapper.module.css'
 import { useSelector } from 'react-redux'
+import config from  '../../config.json'
 
 const LayoutWrapper = (props) => {
     const navigate = useNavigate();
     const location = useLocation();
-    const account = useSelector(state => state.connectionReducers.account)
-
+    const account = useSelector(state => state.connectionReducers?.account)
+    const chainId = useSelector(state => state.connectionReducers.network)
+    
     const addressMapping = {
-        "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266": "User1",
-        "0x70997970C51812dc3A010C7d01b50e0d17dc79C8": "User2",
-        "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC": "User3",
-        "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC": "User4",
-        "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65": "User5"
+        "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266": "Local Host User1",
+        "0x70997970C51812dc3A010C7d01b50e0d17dc79C8": "Local Host User2",
+        "0x34a685bD5366D48BF53d4C91F621A250769DC641": "Sepolia User1",
+        "0x24fC0A7B9620994d1B5211b36A841a1089ebaF66": "Sepolia User2",
     }
+
+    window.ethereum.on('chainChanged', () => {
+        window.location.reload()
+    })
+
+    const networkHandler = async (e) => {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: e }],
+        })
+      }
 
     const currentPageKey = useMemo(() => {
         const currentPath = location.pathname;
@@ -87,7 +99,7 @@ const LayoutWrapper = (props) => {
             label: page.label
         }
     })
-    if( account) {
+    if(account) {
         items.push(
             {
                 key: "page-account",
@@ -99,7 +111,21 @@ const LayoutWrapper = (props) => {
   return (
     <Layout>
       <Header className={styles.header}>
-        <Menu theme="dark" mode="horizontal" selectedKeys={[currentPageKey]} onClick={handlePageChange} items={items} />
+      <Menu theme="dark" mode="horizontal" selectedKeys={[currentPageKey]} onClick={handlePageChange} items={items} />
+            {chainId && (
+                <div className={styles.networkSelectWrapper}>
+                <span className={styles.networkSelectLabel}>Select Network</span>
+                <div className={styles.selectContainer}>
+                  <Select name="networks" id="networks" value={chainId} onChange={networkHandler}>
+                    <Select.Option value="" disabled hidden>
+                      Select Network
+                    </Select.Option>
+                    <Select.Option value="0x7A69">Localhost</Select.Option>
+                    <Select.Option value="0xaa36a7">Sepolia</Select.Option>
+                  </Select>
+                </div>
+              </div>
+            )}
       </Header>
       <Content>{props.children}</Content>
     </Layout>

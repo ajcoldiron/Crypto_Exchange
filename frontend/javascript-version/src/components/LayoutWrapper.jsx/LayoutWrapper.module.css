@@ -1,6 +1,31 @@
+/* .header {
+    position: relative;
+  } */
+
 .header {
     position: sticky;
     top: 0;
     z-index: 1;
     width: '100px';
 }
+
+  
+  .networkSelectWrapper {
+    position: absolute;
+    top: 0;
+    right: 40px; /* Adjust the value according to your preference */
+    margin-top: 5px; /* Adjust the margin according to your preference */
+  }
+  
+  .networkSelectLabel {
+    color: #fff; /* Adjust the color according to your preference */
+  }
+  
+  .selectContainer {
+    display: inline-block;
+    margin-left: 10px; /* Adjust the margin according to your preference */
+  }
+
+  selectedNetwork {
+    color:#fff;
+  }

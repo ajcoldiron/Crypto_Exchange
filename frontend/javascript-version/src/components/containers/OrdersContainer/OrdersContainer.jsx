@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { Table, Button, Space } from 'antd'
 import { ethers } from 'ethers'
 import styles from './Orders.modules.css'
-import moment from "moment";
+// import moment from "moment";
 
 
 const addressMapping = {
@@ -15,11 +15,10 @@ const addressMapping = {
   "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9": "Ripple",
   "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9": "Binance Coin",
   "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707": "Cardano",
-  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266": "User1",
-  "0x70997970C51812dc3A010C7d01b50e0d17dc79C8": "User2",
-  "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC": "User3",
-  "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC": "User4",
-  "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65": "User5"
+  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266": "Local Host User1",
+  "0x70997970C51812dc3A010C7d01b50e0d17dc79C8": "Local Host User2",
+  "0x34a685bD5366D48BF53d4C91F621A250769DC641": "Sepolia User1",
+  "0x24fC0A7B9620994d1B5211b36A841a1089ebaF66": "Sepolia User2",
 }
 
 

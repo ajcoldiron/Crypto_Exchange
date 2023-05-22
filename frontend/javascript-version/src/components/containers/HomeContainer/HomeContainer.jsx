@@ -11,7 +11,7 @@ const HomeContainer = () => {
   const [graphTime, setGraphTime] = useState({ target: { value: "Year" } })
   const dispatch = useDispatch();
   const cryptoList = useSelector(cryptoSelectors.selectAll)
-  // const lastUploadDateTime = useSelector(state => state.cryptoReducers.cacheDataLastUpload)
+  const lastUploadDateTime = useSelector(state => state.cryptoReducers?.cacheDataLastUpload)
   const selectedCrypto = useSelector(state => state.cryptoReducers.selectedCrypto)
   const cachedIntervalData = useSelector(state => state.cryptoReducers.cachedIntervalData)
   // const specificCrypto = useSelector(state => state.cryptoReducers.entities)
@@ -107,7 +107,12 @@ const HomeContainer = () => {
           </Radio.Group>
         </section>
         <div>
-          {/* <h3>Last Uploaded: {lastUploadDateTime[selectedCrypto.id]}</h3> */}
+          {selectedCrypto ? (
+            <h3>Last Uploaded: {lastUploadDateTime ? lastUploadDateTime[selectedCrypto.id] : ""}</h3>
+          ) : (
+            <span></span>
+          )}
+          
         </div>
         <section style={{ display: 'flex', justifyContent: 'flex-end', marginRight: "50px" }}>
           <Button
