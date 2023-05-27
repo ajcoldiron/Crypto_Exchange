@@ -1,10 +1,9 @@
-import LayoutWrapper from '../../LayoutWrapper.jsx/LayoutWrapper'
 import AssetsGraph from './AssetsGraph'
 import { Table, Button, Space, Radio, Form, Input, Select } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { transferTokens } from '../../../store/reducers/transferReducers';
-import { loadTokensBalances } from '../../../store/reducers/tokenBalanceReducer';
+import { transferTokens } from '../../store/reducers/transferReducers';
+import { loadTokensBalances } from '../../store/reducers/tokenBalanceReducer';
 
 
 const AssetsContainer = () => {

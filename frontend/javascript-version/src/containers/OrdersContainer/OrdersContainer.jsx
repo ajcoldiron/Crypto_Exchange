@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import LayoutWrapper from '../../LayoutWrapper.jsx/LayoutWrapper'
-import { loadAllOrders, cancelOrder, loadFilledOrders, loadCancelledOrders, fillOrderInitiate } from '../../../store/reducers/ordersReducer'
+import { loadAllOrders, cancelOrder, loadFilledOrders, loadCancelledOrders, fillOrderInitiate } from '../../store/reducers/ordersReducer'
 import { useEffect, useState } from 'react'
 import { Table, Button, Space } from 'antd'
 import { ethers } from 'ethers'

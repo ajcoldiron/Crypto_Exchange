@@ -1,11 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
-import HomeContainer from "../components/containers/HomeContainer/HomeContainer";
-import OrdersContainer from "../components/containers/OrdersContainer/OrdersContainer";
-import PurchaseContainer from "../components/containers/PurchaseContainer/PurchaseContainer";
-import SellContainer from "../components/containers/SellContainer/SellContainer";
-import AssetsContainer from "../components/containers/AssetsContainer/AssetsContainer"
+import HomeContainer from "../containers/HomeContainer/HomeContainer";
+import OrdersContainer from "../containers/OrdersContainer/OrdersContainer";
+import PurchaseContainer from "../containers/PurchaseContainer/PurchaseContainer";
+import SellContainer from "../containers/SellContainer/SellContainer";
+import AssetsContainer from "../containers/AssetsContainer/AssetsContainer"
 import Layout from "antd/es/layout/layout";
-import LayoutWrapper from "../components/LayoutWrapper.jsx/LayoutWrapper";
+import LayoutWrapper from "../components/LayoutWrapper/LayoutWrapper.jsx";
 
 const homepageLoader = () => {
     return {

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import Chart from 'react-apexcharts';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCryptoDataWithInterval } from '../../../store/reducers/cryptoReducers';
+import { fetchCryptoDataWithInterval } from '../../store/reducers/cryptoReducers';
 import { DateTime } from 'luxon';
 
 

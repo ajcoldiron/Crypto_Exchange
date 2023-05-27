@@ -1,11 +1,10 @@
 import { Table, Button, Space, Radio } from 'antd';
 import { useEffect, useState } from 'react'
-import { cryptoSelectors, cryptoSelect, cryptoUnselect, fetchCryptoDataWithInterval } from '../../../store/reducers/cryptoReducers';
-import LayoutWrapper from '../../LayoutWrapper.jsx/LayoutWrapper';
+import { cryptoSelectors, cryptoSelect, cryptoUnselect, fetchCryptoDataWithInterval } from '../../store/reducers/cryptoReducers';
 import { useSelector, useDispatch } from 'react-redux'
 import styles from './HomeContainer.module.css'
 import CryptoGraph from './CryptoGraph';
-import { persistor } from '../../../core/redux';
+import { persistor } from '../../core/redux';
 
 const HomeContainer = () => {
   const [graphTime, setGraphTime] = useState({ target: { value: "Year" } })

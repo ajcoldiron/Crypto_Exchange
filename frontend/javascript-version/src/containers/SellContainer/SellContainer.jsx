@@ -1,13 +1,12 @@
-import { purchase } from '../../../store/reducers/purchaseReducer';
-import LayoutWrapper from '../../LayoutWrapper.jsx/LayoutWrapper';
+import { purchase } from '../../store/reducers/purchaseReducer';
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import config from '../../../config.json'
+import config from '../../config.json'
 import { Input, Select, Form, Button, Typography, Radio } from 'antd'
-import { loadExchangeBalances } from '../../../store/reducers/exchangeBalanceReducers';
+import { loadExchangeBalances } from '../../store/reducers/exchangeBalanceReducers';
 import styles from "./Sell.module.css"
 import SellGraph from './SellGraph';
-import { selectPurchaseCrypto, selectSellCrypto } from '../../../store/reducers/cryptoReducers';
+import { selectPurchaseCrypto, selectSellCrypto } from '../../store/reducers/cryptoReducers';
 
 const highlightedTokens = ["ETH", "BTC", "LTC", "XRP", "BNB", "ADA"]
 

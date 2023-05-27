@@ -1,9 +1,9 @@
 import Chart from 'react-apexcharts';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { loadExchangeBalances } from '../../../store/reducers/exchangeBalanceReducers';
+import { loadExchangeBalances } from '../../store/reducers/exchangeBalanceReducers';
 import { Spin } from "antd"
-import { fetchCryptoDataWithInterval } from '../../../store/reducers/cryptoReducers';
+import { fetchCryptoDataWithInterval } from '../../store/reducers/cryptoReducers';
 
 
 const AssetsGraph = ({ state }) => {

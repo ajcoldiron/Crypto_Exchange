@@ -127,7 +127,7 @@ const LayoutWrapper = () => {
               </div>
             )}
       </Header>
-      <Content><Outlet /></Content>
+      <Content className={styles.content}><Outlet /></Content>
     </Layout>
   )
 }

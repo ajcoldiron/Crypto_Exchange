@@ -9,6 +9,9 @@
     width: '100px';
 }
 
+.content {
+  margin: 25px 50px;
+}
   
   .networkSelectWrapper {
     position: absolute;
