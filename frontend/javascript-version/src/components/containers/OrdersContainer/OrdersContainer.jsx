@@ -235,7 +235,6 @@ const OrdersContainer = () => {
   ]
   
   return (
-    <LayoutWrapper>
       <div>
         <div className={styles.openOrders}>
           <h1>Open Orders</h1>
@@ -270,7 +269,6 @@ const OrdersContainer = () => {
           </div>
         </div>
       </div>
-    </LayoutWrapper>
   )
 }
 

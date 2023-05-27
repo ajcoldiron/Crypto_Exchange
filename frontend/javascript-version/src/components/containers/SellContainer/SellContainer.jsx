@@ -169,7 +169,7 @@ const SellContainer = () => {
   }
 
   return (
-    <LayoutWrapper >
+    <>
       <div>
         <section className={styles.columOne}>
           <div className={styles.graphWrapper}>
@@ -261,7 +261,7 @@ const SellContainer = () => {
         }
         return <div key={"crypto-balance-" + symbol}>{symbol} Balance: {balance}</div>
       })}
-    </LayoutWrapper>
+    </>
   )
 }
 

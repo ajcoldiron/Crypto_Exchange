@@ -88,7 +88,6 @@ const HomeContainer = () => {
   ]
 
   return (
-    <LayoutWrapper>
       <div>
         <section className={styles.upper_half}>
           {isGraph ? (
@@ -129,7 +128,6 @@ const HomeContainer = () => {
           <Table dataSource={cryptoList} columns={columns} rowKey="name" />
         </section>
       </div>
-    </LayoutWrapper>
   )
 }
 

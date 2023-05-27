@@ -159,7 +159,7 @@ const AssetsContainer = () => {
   }
 
   return (
-    <LayoutWrapper>
+    <>
       <div>
         <div>
           <section>
@@ -224,7 +224,7 @@ const AssetsContainer = () => {
           <Table dataSource={data} columns={columns} rowKey="name" />
         </section>
       </div>
-    </LayoutWrapper>
+    </>
   )
 }
 

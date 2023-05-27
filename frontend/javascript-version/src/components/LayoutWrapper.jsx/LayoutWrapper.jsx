@@ -1,12 +1,12 @@
 import { Layout, Menu, Select } from 'antd'
 import { Content, Header } from 'antd/es/layout/layout'
-import { useLocation, useNavigate } from "react-router-dom"
+import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useEffect, useMemo, useState } from 'react'
 import styles from './LayoutWrapper.module.css'
 import { useSelector } from 'react-redux'
 import config from  '../../config.json'
 
-const LayoutWrapper = (props) => {
+const LayoutWrapper = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const account = useSelector(state => state.connectionReducers?.account)
@@ -127,7 +127,7 @@ const LayoutWrapper = (props) => {
               </div>
             )}
       </Header>
-      <Content>{props.children}</Content>
+      <Content><Outlet /></Content>
     </Layout>
   )
 }

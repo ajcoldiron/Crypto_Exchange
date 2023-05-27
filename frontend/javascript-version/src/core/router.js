@@ -4,6 +4,8 @@ import OrdersContainer from "../components/containers/OrdersContainer/OrdersCont
 import PurchaseContainer from "../components/containers/PurchaseContainer/PurchaseContainer";
 import SellContainer from "../components/containers/SellContainer/SellContainer";
 import AssetsContainer from "../components/containers/AssetsContainer/AssetsContainer"
+import Layout from "antd/es/layout/layout";
+import LayoutWrapper from "../components/LayoutWrapper.jsx/LayoutWrapper";
 
 const homepageLoader = () => {
     return {
@@ -37,28 +39,33 @@ const assetsLoader = () => {
 
 export const router = createBrowserRouter([
     {
-        path: "/",
-        loader: homepageLoader,
-        element: <HomeContainer />,
+        element: <LayoutWrapper />,
+        children: [
+            {
+                path: "/",
+                element: <HomeContainer/>,
+                loader: homepageLoader,
+            },
+            {
+                path: "/orders",
+                loader: ordersLoader,
+                element: <OrdersContainer />
+            },
+            {
+                path: "/purchase",
+                loader: purchaseLoader,
+                element: <PurchaseContainer />
+            },
+            {
+                path: "/sell",
+                loader: sellLoader,
+                element: <SellContainer />
+            },
+            {
+                path: "/assets",
+                loader: assetsLoader,
+                element: <AssetsContainer />
+            }
+        ]
     },
-    {
-        path: "/orders",
-        loader: ordersLoader,
-        element: <OrdersContainer />
-    },
-    {
-        path: "/purchase",
-        loader: purchaseLoader,
-        element: <PurchaseContainer />
-    },
-    {
-        path: "/sell",
-        loader: sellLoader,
-        element: <SellContainer />
-    },
-    {
-        path: "/assets",
-        loader: assetsLoader,
-        element: <AssetsContainer />
-    }
 ]);
