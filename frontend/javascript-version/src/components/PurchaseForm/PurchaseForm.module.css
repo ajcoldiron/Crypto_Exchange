@@ -1,0 +1,9 @@
+
+.purchaseInformation { 
+  flex: 1;
+  margin-left: 16px;
+}
+
+.purchaseInput {
+  width: 300px;
+}

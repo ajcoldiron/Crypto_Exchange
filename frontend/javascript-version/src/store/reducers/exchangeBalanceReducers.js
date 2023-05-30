@@ -32,7 +32,7 @@ export const loadExchangeBalances = createAsyncThunk("exchangeBalances/initBalan
       token4: [symbol4, balance4],
       token5: [symbol5, balance5],
       token6: [symbol6, balance6]
-  }
+    }
 })
 
 
@@ -49,14 +49,6 @@ const exchangeBalanceSlice = createSlice({
                 state.status = "failed"
             })
             .addCase(loadExchangeBalances.fulfilled, (state, action) => {
-                // const exchangeBalances = action.payload.exchangeBalances
-                // const balanceDictionary = {}
-                // let balanceValues = Object.values(exchangeBalances)
-                // balanceValues.forEach(balances => {
-                //   balanceDictionary[balances.symbol] = balances
-                // })
-
-                // state.entities = balanceDictionary
                 const tokens = action.payload
 
                 const result = Object.values(tokens).reduce((acc, [value, key]) => {

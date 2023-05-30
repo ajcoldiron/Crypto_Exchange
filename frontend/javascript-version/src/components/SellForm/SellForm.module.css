@@ -1,0 +1,8 @@
+.sellInformation { 
+  flex: 1;
+  margin-left: 16px;
+}
+
+.sellInput {
+  width: 300px;
+}

@@ -1,0 +1,8 @@
+:root {
+  --primaryColor: red;
+  --primaryColorLight: #ff7070;
+  --secondaryColor: rgb(0, 0, 255);
+  --textColor: white;
+  --backgroundColor: black;
+  --baseUnit: 8px;
+}

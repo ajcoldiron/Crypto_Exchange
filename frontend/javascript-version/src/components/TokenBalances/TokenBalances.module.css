@@ -1,0 +1,3 @@
+.balance {
+  width: calc(var(--baseUnit) * 40)
+}

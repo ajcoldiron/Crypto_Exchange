@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { Table, Button, Space } from 'antd'
 import { ethers } from 'ethers'
 import styles from './Orders.modules.css'
-// import moment from "moment";
 
 
 const addressMapping = {
@@ -30,7 +29,6 @@ const OrdersContainer = () => {
   const cancelledOrders = useSelector(state => state.ordersReducer?.cancelledOrders)
 
   const [function1CallFlag, setFunction1CallFlag] = useState(false);
-  // const [function2CallFlag, setFunction2CallFlag] = useState(false);
 
   useEffect(() => {
     if (function1CallFlag) {

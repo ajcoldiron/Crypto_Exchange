@@ -1,19 +1,17 @@
-import { Table, Button, Space, Radio } from 'antd';
+import { Table, Button, Space } from 'antd';
 import { useEffect, useState } from 'react'
 import { cryptoSelectors, cryptoSelect, cryptoUnselect, fetchCryptoDataWithInterval } from '../../store/reducers/cryptoReducers';
 import { useSelector, useDispatch } from 'react-redux'
 import styles from './HomeContainer.module.css'
-import CryptoGraph from './CryptoGraph';
+import CryptoGraph from '../../components/CryptoGraph/CryptoGraph';
 import { persistor } from '../../core/redux';
 
 const HomeContainer = () => {
-  const [graphTime, setGraphTime] = useState({ target: { value: "Year" } })
   const dispatch = useDispatch();
   const cryptoList = useSelector(cryptoSelectors.selectAll)
   const lastUploadDateTime = useSelector(state => state.cryptoReducers?.cacheDataLastUpload)
   const selectedCrypto = useSelector(state => state.cryptoReducers.selectedCrypto)
   const cachedIntervalData = useSelector(state => state.cryptoReducers.cachedIntervalData)
-  // const specificCrypto = useSelector(state => state.cryptoReducers.entities)
   const [isGraph, setIsGraph] = useState(false)
   const selectHandler = (crypto) => {
     dispatch(cryptoSelect(crypto))
@@ -31,16 +29,13 @@ const HomeContainer = () => {
       dispatch(fetchCryptoDataWithInterval({cryptoId: 'cardano'}))
       dispatch(fetchCryptoDataWithInterval({cryptoId: 'litecoin'}))
     }
-  }, [cachedIntervalData.length])
+  }, [cachedIntervalData, dispatch])
 
   const unselectHandler = () => {
     dispatch(cryptoUnselect())
     setIsGraph(false)
   }
 
-  const graphTimeHandler = (value) => {
-    setGraphTime(value)
-  }
 
   const columns = [
     {
@@ -91,20 +86,13 @@ const HomeContainer = () => {
         <section className={styles.upper_half}>
           {isGraph ? (
             <>
-              <CryptoGraph state={graphTime} />
+              <CryptoGraph/>
             </>
           ) : (
             <h1>Select a Market</h1>
           )}
         </section>
-        <section>
-          <Radio.Group onChange={graphTimeHandler} style={{ marginTop: '50px' }}>
-            <Radio.Button value={"Year"} >Year</Radio.Button>
-            <Radio.Button value={"Month"} >Month</Radio.Button>
-            <Radio.Button value={"Week"} >Week</Radio.Button>
-          </Radio.Group>
-        </section>
-        <div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginRight: "50px" }}>
           {selectedCrypto ? (
             <h3>Last Uploaded: {lastUploadDateTime ? lastUploadDateTime[selectedCrypto.id] : ""}</h3>
           ) : (

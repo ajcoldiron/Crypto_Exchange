@@ -1,20 +1,25 @@
-.columOne {
-    display: flex;
-}
 
-.sellInformation { 
-    flex: 1;
-    margin-left: 16px;
-}
-
-.sellInput {
-    width: 300px;
-}
-
-.graph-wrapper {
-  flex: 1;
+.graphWrapper {
+    flex-basis: 33.33%; 
+    padding: 10px; 
+    box-sizing: border-box; 
 } 
 
-.radioGroupWrapper {
-    margin-left: 16px;
+.formWrapper {
+    flex-basis: 33.33%; 
+    padding: 10px; 
+    box-sizing: border-box; 
+    margin-top: calc(var(--baseUnit) * 10);
+    margin-left: calc(var(--baseUnit) * 8);
 }
+
+.parentContainer {
+    display: flex;
+    width: 100%;
+  }
+  
+  .ExchangeBalances {
+    flex-basis: 33.33%; 
+    padding: 10px; 
+    box-sizing: border-box; 
+  }

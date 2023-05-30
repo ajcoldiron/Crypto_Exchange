@@ -1,12 +1,11 @@
-/* @media only screen and (min-height: 1000px) {
-    
-} */
-
-.upper_half {
-    flex: 1;
-    height: 300px;
+.uploadTime {
+    display: 'flex'; 
+    justify-content: 'flex-end'; 
+    margin-right: "50px";
 }
 
-.lower_half {
-    flex: 1;
+.clearCache {
+    display: 'flex'; 
+    justify-content: 'flex-end'; 
+    margin-right: "50px";
 }

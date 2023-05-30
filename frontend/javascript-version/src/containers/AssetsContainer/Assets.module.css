@@ -1,0 +1,19 @@
+.transferForm {
+  flex-basis: 50%; 
+  margin-left:  calc(var(--baseUnit) * 30);
+  margin-top:  calc(var(--baseUnit) * 4);
+}
+
+.tokenBalances {
+  flex-basis: 50%; 
+}
+
+.parentContainer {
+  display: flex;
+  width: 100%;
+}
+
+.assetsGraph {
+  margin-left:  calc(var(--baseUnit) * 15);
+  width: 100%;
+}

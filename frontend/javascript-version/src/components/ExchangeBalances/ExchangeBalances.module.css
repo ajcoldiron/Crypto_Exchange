@@ -1,0 +1,8 @@
+
+.balance {
+  /* background-color: var(--backgroundColor);
+  color: var(--textColor);
+  margin-top: var(--baseUnit); 
+  margin-bottom: calc(var(--baseUnit) * 2) */
+  width: calc(var(--baseUnit) * 40)
+}
