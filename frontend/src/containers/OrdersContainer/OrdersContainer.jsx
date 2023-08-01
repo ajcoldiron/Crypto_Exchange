@@ -230,7 +230,7 @@ const OrdersContainer = () => {
       key: "timestamp"
     }
   ]
-  
+
   return (
       <div>
         <div className={styles.openOrders}>

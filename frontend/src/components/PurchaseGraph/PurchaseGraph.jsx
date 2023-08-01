@@ -13,7 +13,7 @@ const PurchaseGraph = ({ purchaseCryptoId, sellCryptoId }) => {
 
   useEffect(() => {
     if (purchaseCryptoId && sellCryptoId) {
-      dispatch(fetchCryptoDataWithInterval({
+      dispatch(fetchCryptoDataWithInterval({   
         cryptoId: purchaseCryptoId
       }))
       dispatch(fetchCryptoDataWithInterval({
@@ -54,7 +54,6 @@ const PurchaseGraph = ({ purchaseCryptoId, sellCryptoId }) => {
   );
   const allPrices = mergedCryptoPrices?.map(mcp => mcp[1])
 
-console.log(graphTime)
   const options = {
     chart: {
       type: 'area',

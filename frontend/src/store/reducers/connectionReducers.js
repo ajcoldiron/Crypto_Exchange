@@ -1,59 +1,39 @@
 import { createSlice, createEntityAdapter, createAsyncThunk } from "@reduxjs/toolkit";
 import { ethers } from 'ethers'
-import { RootState } from "../../core/redux";
-import { ExternalProvider } from "@ethersproject/providers";
 
-declare global {
-  interface Window {
-    ethereum?: ExternalProvider;
-  }
-}
+const connectionAdpter = createEntityAdapter();
 
-interface ConnectionReducerState {
-    ethersConnection: ethers.providers.Web3Provider | null;
-    status: "not-loaded" | "loading"| "failed"| "idle";
-    network: any;
-    account: string;
-    balance: string;
-}
-
-const initialState: ConnectionReducerState = {
-    status: "not-loaded",
+const initialState = connectionAdpter.getInitialState({
+    status: 'idle',
     ethersConnection: null,
-    network: null,
+    network: {},
     account: "",
-    balance: ""
-}
+    balance: {}
+})
 
 export const loadProvider = createAsyncThunk("connection/initConnection", () => {
-    const connection = new ethers.providers.Web3Provider((window as any).ethereum)
+    const connection = new ethers.providers.Web3Provider(window.ethereum)
     return connection
 })
 
-export const loadNetwork = createAsyncThunk("network/initNetwork", async (connection : any) => {
-    const network = await connection.getNetwork()
-    return network
+export const loadNetwork = createAsyncThunk("network/initNetwork", async (provider) => {
+    const { chainId } = await provider.getNetwork()
+    return chainId
 })
 
-export const initAccountConnection = createAsyncThunk("account/initAccount", async (connection : any) => {
-    let account: any;
-    let balance: any;
-    try{
-
-
-        const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts '})
-        const account = ethers.utils.getAddress(accounts[0])
-        let balance = await connection.getBalance(account)
-        balance = ethers.utils.formatEther(balance)
-
-    } catch(e) {
-        console.log(e)
-    }
-    return {
+export const initAccountConnection = createAsyncThunk("account/initAccount", async (provider) => {
+    let account, balance
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+    account = ethers.utils.getAddress(accounts[0])
+    balance = await provider.getBalance(account)
+    balance = ethers.utils.formatEther(balance)
+    
+    return ({
         account,
         balance
-    }
+    })
 });
+
 
 const connectionSlice = createSlice({
     name: 'connection',
@@ -98,7 +78,6 @@ const connectionSlice = createSlice({
     }
 })
 
-
-// export const connectionSelectors = connectionAdpter.getSelectors((state: RootState) => state.cryptoReducer);
+export const connectionSelectors = connectionAdpter.getSelectors(state => state.cryptoReduce);
 
 export default connectionSlice.reducer;

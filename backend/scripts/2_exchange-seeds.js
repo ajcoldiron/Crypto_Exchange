@@ -16,25 +16,25 @@ async function main() {
 	const { chainId } = await ethers.provider.getNetwork()
 	console.log("Using chainId", chainId)
 
-	const eth = await ethers.getContractAt('Token', config[chainId].eth.address)
+	const eth = await ethers.getContractAt('Token', config[1337].eth.address)
 	console.log(`Ethereum Token fetched: ${eth.address}\n`)
 
-	const btc = await ethers.getContractAt('Token', config[chainId].btc.address)
+	const btc = await ethers.getContractAt('Token', config[1337].btc.address)
 	console.log(`Bitcoin Token fetched: ${btc.address}\n`)
 
-	const ltc = await ethers.getContractAt('Token', config[chainId].ltc.address)
+	const ltc = await ethers.getContractAt('Token', config[1337].ltc.address)
 	console.log(`Litecoin Token fetched: ${ltc.address}\n`)
 
-	const xrp = await ethers.getContractAt('Token', config[chainId].xrp.address)
+	const xrp = await ethers.getContractAt('Token', config[1337].xrp.address)
 	console.log(`Ripple Token fetched: ${xrp.address}\n`)
 
-	const bnb = await ethers.getContractAt('Token', config[chainId].bnb.address)
+	const bnb = await ethers.getContractAt('Token', config[1337].bnb.address)
 	console.log(`Binance Coin fetched: ${bnb.address}\n`)
 
-	const ada = await ethers.getContractAt('Token', config[chainId].ada.address)
+	const ada = await ethers.getContractAt('Token', config[1337].ada.address)
 	console.log(`Cardano Token fetched: ${ada.address}\n`)
 
-	const exchange = await ethers.getContractAt('Exchange', config[chainId].exchange.address)
+	const exchange = await ethers.getContractAt('Exchange', config[1337].exchange.address)
 	console.log(`Exchange Token fetched: ${exchange.address}\n`)
 
 	const sender = accounts[0]
@@ -242,6 +242,8 @@ async function main() {
 
 		await wait(1)
 	}
+
+	console.log("Orders Complete")
 }
 
 main().catch((error) => {
