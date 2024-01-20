@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { Divider, Table } from 'antd';
 import styles from "./TokenBalances.module.css"
 
-const highlightedTokens = ["ETH", "BTC", "LTC", "XRP", "BNB", "ADA"]
+const highlightedTokens = ["ETH", "BTC", "LTC", "XRP", "BNB"]
 
 export default function ExchangeBalances() {
   const allCryptosBalances = useSelector(state => state.tokenBalanceReducer.entities)
@@ -55,11 +55,6 @@ const data = [
     key: '5',
     name: `${balanceSymbols[4]}`,
     balance: balance[4],
-  },
-  {
-    key: '6',
-    name: `${balanceSymbols[5]}`,
-    balance: balance[5],
   },
 ];
 

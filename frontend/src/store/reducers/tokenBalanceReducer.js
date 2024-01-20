@@ -24,15 +24,11 @@ export const loadTokensBalances = createAsyncThunk("tokensBalances/initBalances"
     const token5 = data.tokens[4]
     const symbol5 = await token5.symbol()
 
-    const token6 = data.tokens[5]
-    const symbol6 = await token6.symbol()
-
     let balance1 = ethers.utils.formatUnits(await token1.balanceOf(account), 18)
     let balance2 = ethers.utils.formatUnits(await token2.balanceOf(account), 18)
     let balance3 = ethers.utils.formatUnits(await token3.balanceOf(account), 18)
     let balance5 = ethers.utils.formatUnits(await token5.balanceOf(account), 18)
     let balance4 = ethers.utils.formatUnits(await token4.balanceOf(account), 18)
-    let balance6 = ethers.utils.formatUnits(await token6.balanceOf(account), 18)
 
     return {
         token1: [symbol1, balance1],
@@ -40,7 +36,6 @@ export const loadTokensBalances = createAsyncThunk("tokensBalances/initBalances"
         token3: [symbol3, balance3],
         token4: [symbol4, balance4],
         token5: [symbol5, balance5],
-        token6: [symbol6, balance6]
     }
 })
 
@@ -53,7 +48,7 @@ const tokenBalanceSlice = createSlice({
             .addCase(loadTokensBalances.pending, (state) => {
                 state.status = "loading"
             })
-            .addCase(loadTokensBalances.rejected, (state, action) => {
+            .addCase(loadTokensBalances.rejected, (state) => {
                 state.status = "failed"
             })
             .addCase(loadTokensBalances.fulfilled, (state, action) => {

@@ -37,10 +37,15 @@ export const loadAllOrders = createAsyncThunk("loadAllOrders/open", async (data)
     const provider = data.provider
     const exchange = data.exchange
     const block = await provider.getBlockNumber()
+    console.log(provider)
+    console.log(exchange)
+    console.log(block)
+
 
     const orderStream = await exchange.queryFilter('Order', 0, block)
+    console.log(orderStream)
     let allOrders = orderStream.map(event => event.args)
-
+    console.log(allOrders)
     return allOrders
 })
 

@@ -7,7 +7,7 @@ import { selectPurchaseCrypto, selectSellCrypto } from '../../store/reducers/cry
 import ExchangeBalances from '../../components/ExchangeBalances/ExchangeBalances';
 import PurchaseForm from '../../components/PurchaseForm/PurchaseForm';
 
-const highlightedTokens = ["ETH", "BTC", "LTC", "XRP", "BNB", "ADA"]
+const highlightedTokens = ["ETH", "BTC", "LTC", "XRP", "BNB"]
 
 const PurchaseContainer = () => {
   const dispatch = useDispatch()

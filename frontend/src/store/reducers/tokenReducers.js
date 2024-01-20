@@ -24,16 +24,12 @@ export const loadTokens = createAsyncThunk("tokens/initTokens", async (data) => 
     let token5 = new ethers.Contract(data.addresses[4], tokenAbi, data.provider)
     let symbol5 = await token5.symbol()
 
-    let token6 = new ethers.Contract(data.addresses[5], tokenAbi, data.provider)
-    let symbol6 = await token6.symbol()
-
     return ({
         token1: [token1, symbol1],
         token2: [token2, symbol2],
         token3: [token3, symbol3],
         token4: [token4, symbol4],
         token5: [token5, symbol5],
-        token6: [token6, symbol6]
     })
 })
 

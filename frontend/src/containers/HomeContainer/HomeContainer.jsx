@@ -26,10 +26,10 @@ const HomeContainer = () => {
       dispatch(fetchCryptoDataWithInterval({cryptoId: 'ethereum'}))
       dispatch(fetchCryptoDataWithInterval({cryptoId: 'binancecoin'}))
       dispatch(fetchCryptoDataWithInterval({cryptoId: 'ripple'}))
-      dispatch(fetchCryptoDataWithInterval({cryptoId: 'cardano'}))
       dispatch(fetchCryptoDataWithInterval({cryptoId: 'litecoin'}))
     }
   }, [cachedIntervalData, dispatch])
+
 
   const unselectHandler = () => {
     dispatch(cryptoUnselect())

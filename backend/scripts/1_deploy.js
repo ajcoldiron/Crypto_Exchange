@@ -27,10 +27,6 @@ async function main() {
     const bnb = await Token.deploy('Binance Coin', 'BNB', 1000000);
     await bnb.deployed();
     console.log(`Binance Coin deployed to ${bnb.address}`)
-    
-    const ada = await Token.deploy('Cardano', 'ADA', 1000000);
-    await ada.deployed();
-    console.log(`Cardano deployed to ${ada.address}`)
 
     const exchange = await Exchange.deploy(feeAccount.address, 10)
     await exchange.deployed();

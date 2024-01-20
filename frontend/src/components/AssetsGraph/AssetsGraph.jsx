@@ -18,9 +18,8 @@ const AssetsGraph = () => {
   const ltc = useSelector(state => state.tokenReducers.entities?.LTC?.token)
   const xrp = useSelector(state => state.tokenReducers.entities?.XRP?.token)
   const bnb = useSelector(state => state.tokenReducers.entities?.BNB?.token)
-  const ada = useSelector(state => state.tokenReducers.entities?.ADA?.token)
   const account = useSelector(state => state.connectionReducers.account)
-  const tokens = [eth, btc, ltc, xrp, bnb, ada]
+  const tokens = [eth, btc, ltc, xrp, bnb]
 
   const exchangeTokens = useSelector(state => state.exchangeBalanceReducers.entities)
   const exchangeCryptoSymbols = Object.keys(exchangeTokens)
@@ -31,10 +30,10 @@ const AssetsGraph = () => {
   const cachedIntervalData = useSelector(state => state.cryptoReducers?.cachedIntervalData)
 
   useEffect(() => {
-    if (!!exchange && eth && btc && ltc && xrp && bnb && ada && account) {
+    if (!!exchange && eth && btc && ltc && xrp && bnb && account) {
       dispatch(loadExchangeBalances({ exchange, tokens, account }))
     }
-  }, [dispatch, exchange, eth, btc, ltc, xrp, bnb, ada, account])
+  }, [dispatch, exchange, eth, btc, ltc, xrp, bnb, account])
 
   useEffect(() => {
     if (Object.values(cachedIntervalData).length === 0) {
@@ -42,7 +41,6 @@ const AssetsGraph = () => {
       dispatch(fetchCryptoDataWithInterval({cryptoId: 'ethereum'}))
       dispatch(fetchCryptoDataWithInterval({cryptoId: 'binancecoin'}))
       dispatch(fetchCryptoDataWithInterval({cryptoId: 'ripple'}))
-      dispatch(fetchCryptoDataWithInterval({cryptoId: 'cardano'}))
       dispatch(fetchCryptoDataWithInterval({cryptoId: 'litecoin'}))
     }
   }, [dispatch, cachedIntervalData])
@@ -91,7 +89,6 @@ const AssetsGraph = () => {
   }
 
   const allCryptoDates = pricesById?.ethereum.map(d => d[0]) ??  []
-  
   const ethereumAnnualPrices = pricesById?.ethereum.map(d => d[1]) ?? []
   const ethereumGraphArray = ethereumAnnualPrices.map(price => {
     return price * parseInt(exchangeTokens.ETH) 
@@ -112,18 +109,13 @@ const AssetsGraph = () => {
     return price * parseInt(exchangeTokens.XRP)
   })
   
-  const cardanoAnnualPrices = pricesById?.cardano.map(d => d[1])
-  const cardanoGraphArray = cardanoAnnualPrices.map(price => {
-    return price * parseInt(exchangeTokens.ADA)
-  })
-  
   const binancecoinAnnualPrices = pricesById?.binancecoin.map(d => d[1])
   const binancecoinGraphArray = binancecoinAnnualPrices.map(price => {
     return price * parseInt(exchangeTokens.BTC)
   })
 
   const totalAnnualPrices = ethereumGraphArray.map((num, index) => 
-    num + bitcoinGraphArray[index] + litecoinGraphArray[index] + rippleGraphArray[index] + cardanoGraphArray[index] + binancecoinGraphArray[index]);
+    num + bitcoinGraphArray[index] + litecoinGraphArray[index] + rippleGraphArray[index] + binancecoinGraphArray[index]);
 
   totalBalance = totalBalance.reduce((a,b) => a + parseInt(b), 0)
   let totalBalanceFormatted = formatter.format(totalBalance)

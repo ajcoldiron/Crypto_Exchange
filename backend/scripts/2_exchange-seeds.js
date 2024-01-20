@@ -16,25 +16,22 @@ async function main() {
 	const { chainId } = await ethers.provider.getNetwork()
 	console.log("Using chainId", chainId)
 
-	const eth = await ethers.getContractAt('Token', config[1337].eth.address)
+	const eth = await ethers.getContractAt('Token', config[chainId].eth.address)
 	console.log(`Ethereum Token fetched: ${eth.address}\n`)
 
-	const btc = await ethers.getContractAt('Token', config[1337].btc.address)
+	const btc = await ethers.getContractAt('Token', config[chainId].btc.address)
 	console.log(`Bitcoin Token fetched: ${btc.address}\n`)
 
-	const ltc = await ethers.getContractAt('Token', config[1337].ltc.address)
+	const ltc = await ethers.getContractAt('Token', config[chainId].ltc.address)
 	console.log(`Litecoin Token fetched: ${ltc.address}\n`)
 
-	const xrp = await ethers.getContractAt('Token', config[1337].xrp.address)
+	const xrp = await ethers.getContractAt('Token', config[chainId].xrp.address)
 	console.log(`Ripple Token fetched: ${xrp.address}\n`)
 
-	const bnb = await ethers.getContractAt('Token', config[1337].bnb.address)
+	const bnb = await ethers.getContractAt('Token', config[chainId].bnb.address)
 	console.log(`Binance Coin fetched: ${bnb.address}\n`)
 
-	const ada = await ethers.getContractAt('Token', config[1337].ada.address)
-	console.log(`Cardano Token fetched: ${ada.address}\n`)
-
-	const exchange = await ethers.getContractAt('Exchange', config[1337].exchange.address)
+	const exchange = await ethers.getContractAt('Exchange', config[chainId].exchange.address)
 	console.log(`Exchange Token fetched: ${exchange.address}\n`)
 
 	const sender = accounts[0]
@@ -70,12 +67,6 @@ async function main() {
 	console.log(`Transferred ${amount} BNB from ${sender.address} to ${receiver.address}\n`)
 	console.log(await bnb.balanceOf(sender.address))
 	console.log(await bnb.balanceOf(receiver.address))
-
-	transaction = await ada.connect(sender).transfer(receiver.address, amount)
-	await transaction.wait()
-	console.log(`Transferred ${amount} Cardano from ${sender.address} to ${receiver.address}\n`)
-	console.log(await ada.balanceOf(sender.address))
-	console.log(await ada.balanceOf(receiver.address))
 
 	const user1 = accounts[0]
 	const user2 = accounts[1]
@@ -120,14 +111,6 @@ async function main() {
 	transaction = await exchange.connect(user1).depositTokens(bnb.address, amount)
 	await transaction.wait()
 	console.log(`Deposited ${amount} BNB from ${user1.address} to the exchange\n`)
-	
-	transaction = await ada.connect(user1).approve(exchange.address, amount)
-	await transaction.wait()
-	console.log(`Approved ${amount} Cardano from ${user1.address} to the exchange\n`)
-
-	transaction = await exchange.connect(user1).depositTokens(ada.address, amount)
-	await transaction.wait()
-	console.log(`Deposited ${amount} Cardano from ${user1.address} to the exchange\n`)
 
 
 
@@ -170,14 +153,6 @@ async function main() {
 	transaction = await exchange.connect(user2).depositTokens(bnb.address, amount)
 	await transaction.wait()
 	console.log(`Deposited ${amount} BNB from ${user2.address} to the exchange\n`)
-	
-	transaction = await ada.connect(user2).approve(exchange.address, amount)
-	await transaction.wait()
-	console.log(`Approved ${amount} Cardano from ${user2.address} to the exchange\n`)
-
-	transaction = await exchange.connect(user2).depositTokens(ada.address, amount)
-	await transaction.wait()
-	console.log(`Deposited ${amount} Cardano from ${user2.address} to the exchange\n`)
 
 	// Order 1
 	let result
@@ -189,7 +164,7 @@ async function main() {
 	orderId = await result.events[0].args.id
 	transaction = await exchange.connect(user1).cancelOrder(orderId)
 	result = await transaction.wait()
-	console.log(`Order cancelled from ${user1.address}\n`)
+	console.log(`Order 1 cancelled from ${user1.address}\n`)
 
 	await wait(1)
 
@@ -201,7 +176,7 @@ async function main() {
 	orderId = await result.events[0].args.id
 	transaction = await exchange.connect(user2).fillOrder(orderId)
 	await transaction.wait()
-	console.log(`Order filled by ${user2.address}\n`)
+	console.log(`Order 2 filled by ${user2.address}\n`)
 
 	await wait(1)
 
@@ -213,7 +188,7 @@ async function main() {
 	orderId = await result.events[0].args.id
 	transaction = await exchange.connect(user2).fillOrder(orderId)
 	result = await transaction.wait()
-	console.log(`Order filled by ${user2.address}`)
+	console.log(`Order 3 filled by ${user2.address}`)
 
 	await wait(1)
 

@@ -47,11 +47,6 @@ export default function PurchaseForm({
       label: "Litecoin",
       key: 5
     })
-    purchaseItems.push({
-      value: 'ADA',
-      label: "Cardano",
-      key: 6
-    })
   }
 
   const sellItems = []
@@ -59,32 +54,27 @@ export default function PurchaseForm({
     sellItems.push({
       value: 'BTC',
       label: "Bitcoin",
-      key: 7
+      key: 6
     })
     sellItems.push({
       value: 'ETH',
       label: "Ethereum",
-      key: 8
+      key: 7
     })
     sellItems.push({
       value: 'BNB',
       label: "Binanace Coin",
-      key: 9
+      key: 8
     })
     sellItems.push({
       value: 'XRP',
       label: "Ripple",
-      key: 10
+      key: 9
     })
     sellItems.push({
       value: 'LTC',
       label: "Litecoin",
-      key: 11
-    })
-    sellItems.push({
-      value: 'ADA',
-      label: "Cardano",
-      key: 12
+      key: 10
     })
   }
   

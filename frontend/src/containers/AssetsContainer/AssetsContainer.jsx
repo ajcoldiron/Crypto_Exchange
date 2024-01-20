@@ -16,7 +16,6 @@ const AssetsContainer = () => {
   const eth = useSelector(state => state.tokenReducers.entities?.ETH?.token)
   const btc = useSelector(state => state.tokenReducers.entities?.BTC?.token)
   const ltc = useSelector(state => state.tokenReducers.entities?.LTC?.token)
-  const ada = useSelector(state => state.tokenReducers.entities?.ADA?.token)
   const xrp = useSelector(state => state.tokenReducers.entities?.XRP?.token)
   const bnb = useSelector(state => state.tokenReducers.entities?.BNB?.token)
 
@@ -33,10 +32,10 @@ const AssetsContainer = () => {
   const exchangeCryptoSymbols = Object.keys(exchangeCryptos)
 
   useEffect(() => {
-    if (eth && btc && ltc && ada && xrp && bnb && account) {
-      dispatch(loadTokensBalances({ tokens: [eth, btc, ltc, ada, xrp, bnb], account }))
+    if (eth && btc && ltc && xrp && bnb && account) {
+      dispatch(loadTokensBalances({ tokens: [eth, btc, ltc, xrp, bnb], account }))
     }
-  }, [dispatch, loadTokensBalances, eth, btc, ltc, ada, xrp, bnb, account])
+  }, [dispatch, loadTokensBalances, eth, btc, ltc, xrp, bnb, account])
 
 
   const formatter = new Intl.NumberFormat('en-US', {
@@ -122,8 +121,6 @@ const AssetsContainer = () => {
       setTransferToken(btc)
     } else if (e === 'ltc') {
       setTransferToken(ltc)
-    } else if (e === 'ada') {
-      setTransferToken(ada)
     } else if (e === 'bnb') {
       setTransferToken(bnb)
     } else if (e === 'xrp') {
@@ -141,7 +138,7 @@ const AssetsContainer = () => {
       dispatch(transferTokens({ provider, exchange, transferType: "Withdraw", token: transferToken, amount }))
       setAmount(0)
     }
-    dispatch(loadTokensBalances({ tokens: [eth, btc, ltc, ada, xrp, bnb], account }));
+    dispatch(loadTokensBalances({ tokens: [eth, btc, ltc, xrp, bnb], account }));
   }
 
   return (
@@ -161,7 +158,6 @@ const AssetsContainer = () => {
                     <Select.Option value="btc">Bitcoin</Select.Option>
                     <Select.Option value="xrp">Ripple</Select.Option>
                     <Select.Option value="ltc">Litecoin</Select.Option>
-                    <Select.Option value="ada">Cardano</Select.Option>
                     <Select.Option value="bnb">Binance Coin</Select.Option>
                   </Select>
                 </Form.Item>

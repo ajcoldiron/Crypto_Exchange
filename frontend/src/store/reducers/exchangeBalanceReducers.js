@@ -17,13 +17,11 @@ export const loadExchangeBalances = createAsyncThunk("exchangeBalances/initBalan
     const balance3 = ethers.utils.formatUnits(await exchange.balanceOf(tokens[2].address, account), 18)
     const balance4 = ethers.utils.formatUnits(await exchange.balanceOf(tokens[3].address, account), 18)
     const balance5 = ethers.utils.formatUnits(await exchange.balanceOf(tokens[4].address, account), 18)
-    const balance6 = ethers.utils.formatUnits(await exchange.balanceOf(tokens[5].address, account), 18)
     const symbol1 = await tokens[0].symbol()
     const symbol2 = await tokens[1].symbol()
     const symbol3 = await tokens[2].symbol()
     const symbol4 = await tokens[3].symbol()
     const symbol5 = await tokens[4].symbol()
-    const symbol6 = await tokens[5].symbol()
     
     return {
       token1: [symbol1, balance1],
@@ -31,7 +29,6 @@ export const loadExchangeBalances = createAsyncThunk("exchangeBalances/initBalan
       token3: [symbol3, balance3],
       token4: [symbol4, balance4],
       token5: [symbol5, balance5],
-      token6: [symbol6, balance6]
     }
 })
 
