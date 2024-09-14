@@ -5,7 +5,7 @@ const connectionAdpter = createEntityAdapter();
 
 const initialState = connectionAdpter.getInitialState({
     status: 'idle',
-    ethersConnection: null,
+    ethersConnection: {},
     network: {},
     account: "",
     balance: {}

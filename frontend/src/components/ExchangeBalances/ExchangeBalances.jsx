@@ -56,11 +56,6 @@ const data = [
     name: `${balanceSymbols[4]}`,
     balance: balance[4],
   },
-  {
-    key: '6',
-    name: `${balanceSymbols[5]}`,
-    balance: balance[5],
-  },
 ];
 
   return (
