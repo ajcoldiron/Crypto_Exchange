@@ -1,10 +1,10 @@
 import { Layout, Menu, Select } from 'antd'
 import { Content, Header } from 'antd/es/layout/layout'
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import styles from './LayoutWrapper.module.css'
 import { useSelector } from 'react-redux'
-import config from  '../../config.json'
+// import config from  '../../config.json'
 
 const LayoutWrapper = () => {
     const navigate = useNavigate();

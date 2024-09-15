@@ -47,18 +47,12 @@ const tokenSlice = createSlice({
             })
             .addCase(loadTokens.fulfilled, (state, action) => {
                 const tokens = action.payload
-                const tokenDictionary = {}
-                const tokenObject = Object.values(tokens)
 
-                const key = ['token', 'symbol']
-                const result = tokenObject.map(row =>
-                    row.reduce((acc, cur, i) =>
-                        (acc[key[i]] = cur, acc), {}))
-
-
-                result.forEach(cryptoValue => {
-                    tokenDictionary[cryptoValue.symbol] = cryptoValue
-                })
+                const tokenDictionary = Object.entries(tokens).reduce((acc, [key, value]) => {
+                    const [contract, symbol] = value;
+                    acc[symbol] = contract;
+                    return acc;
+                }, {});
 
                 state.entities = tokenDictionary
                 state.status = "idle"

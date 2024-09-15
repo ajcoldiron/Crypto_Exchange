@@ -32,7 +32,7 @@ export const transferTokens = createAsyncThunk("transfer/initTransfer", async (d
     
 
     
-    return ({ transferType, timestamp: moment(new Date).format("MM/DD/YYYY hh:mm"), transferAmount })
+    return ({ transferType, timestamp: moment(new Date()).format("MM/DD/YYYY hh:mm"), transferAmount })
 })
 
 export const subscribeToTransfers = createAsyncThunk("transfers/subscribe", (_, thunkAPI) => {

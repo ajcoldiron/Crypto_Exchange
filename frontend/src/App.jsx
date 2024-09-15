@@ -44,7 +44,7 @@ function App() {
     await dispatch(loadTokens({ provider: provider.payload, addresses }))
 
     const exchangeAddress = config[chainId.payload].exchange.address
-    const exchange = await dispatch(loadExchange({ provider: provider.payload, exchange: exchangeAddress }))
+    await dispatch(loadExchange({ provider: provider.payload, exchange: exchangeAddress }))
     dispatch(subscribeToTransfers())
     dispatch(subscribeToPurchase())
     dispatch(subscribeToFill())

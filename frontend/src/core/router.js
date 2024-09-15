@@ -4,7 +4,6 @@ import OrdersContainer from "../containers/OrdersContainer/OrdersContainer";
 import PurchaseContainer from "../containers/PurchaseContainer/PurchaseContainer";
 import SellContainer from "../containers/SellContainer/SellContainer";
 import AssetsContainer from "../containers/AssetsContainer/AssetsContainer"
-import Layout from "antd/es/layout/layout";
 import LayoutWrapper from "../components/LayoutWrapper/LayoutWrapper.jsx";
 
 const homepageLoader = () => {
