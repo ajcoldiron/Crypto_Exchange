@@ -24,7 +24,8 @@
     "react-scripts": "5.0.1",
     "redux-persist": "^6.0.0",
     "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "webpack-cli": "^5.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -51,7 +52,6 @@
     ]
   },
   "main": "webpack.config.js",
-  "devDependencies": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
