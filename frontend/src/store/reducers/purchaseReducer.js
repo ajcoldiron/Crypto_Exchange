@@ -39,7 +39,7 @@ export const subscribeToPurchase = createAsyncThunk("purchase/subscribe", (_, th
 })
 
 const purchaseSlice = createSlice({
-    name: 'exchange',
+    name: 'purchase',
     initialState,
     reducers: {
         purchaseSuccess: (state, action) => {

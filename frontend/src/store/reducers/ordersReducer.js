@@ -119,7 +119,7 @@ export const subscribeToCancel = createAsyncThunk("cancel/subscribe", (_, thunkA
 })
 
 const loadOrderSlice = createSlice({
-    name: 'exchange',
+    name: 'orders',
     initialState,
     reducers: {
         loadOrderSuccess: (state, action) => {

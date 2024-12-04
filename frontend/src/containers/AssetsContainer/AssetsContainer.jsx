@@ -13,11 +13,13 @@ const AssetsContainer = () => {
   const [transfer, setTransfer] = useState("")
   const [amount, setAmount] = useState(0)
 
-  const eth = useSelector(state => state.tokenReducers.entities?.ETH?.token)
-  const btc = useSelector(state => state.tokenReducers.entities?.BTC?.token)
-  const ltc = useSelector(state => state.tokenReducers.entities?.LTC?.token)
-  const xrp = useSelector(state => state.tokenReducers.entities?.XRP?.token)
-  const bnb = useSelector(state => state.tokenReducers.entities?.BNB?.token)
+  const cryptoContracts = useSelector(state => state.tokenReducers.entities)
+
+  const btc = useSelector(state => state.tokenReducers.entities?.BTC)
+  const ltc = useSelector(state => state.tokenReducers.entities?.LTC)
+  const xrp = useSelector(state => state.tokenReducers.entities?.XRP)
+  const bnb = useSelector(state => state.tokenReducers.entities?.BNB)
+  const eth = useSelector(state => state.tokenReducers.entities?.ETH)
 
   const [transferToken, setTransferToken] = useState({})
 
@@ -115,18 +117,10 @@ const AssetsContainer = () => {
   }
 
   const transferTokenHandler = (e) => {
-    if (e === 'eth') {
-      setTransferToken(eth)
-    } else if (e === 'btc') {
-      setTransferToken(btc)
-    } else if (e === 'ltc') {
-      setTransferToken(ltc)
-    } else if (e === 'bnb') {
-      setTransferToken(bnb)
-    } else if (e === 'xrp') {
-      setTransferToken(xrp)
-    } else {
-      setTransferToken(null)
+
+    if(!!cryptoContracts && e){
+      const correspondingContract = cryptoContracts[e]
+      setTransferToken(correspondingContract)
     }
   }
 
@@ -154,11 +148,11 @@ const AssetsContainer = () => {
               <Form>
                 <Form.Item label="Select">
                   <Select style={{ width: 200 }} onChange={(value) => transferTokenHandler(value)}>
-                    <Select.Option value="eth">Ethereum</Select.Option>
-                    <Select.Option value="btc">Bitcoin</Select.Option>
-                    <Select.Option value="xrp">Ripple</Select.Option>
-                    <Select.Option value="ltc">Litecoin</Select.Option>
-                    <Select.Option value="bnb">Binance Coin</Select.Option>
+                    <Select.Option value="ETH">Ethereum</Select.Option>
+                    <Select.Option value="BTC">Bitcoin</Select.Option>
+                    <Select.Option value="XRP">Ripple</Select.Option>
+                    <Select.Option value="LTC">Litecoin</Select.Option>
+                    <Select.Option value="BNB">Binance Coin</Select.Option>
                   </Select>
                 </Form.Item>
                 <Form.Item label="Transfer Type" name="layout">

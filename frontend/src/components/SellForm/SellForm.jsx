@@ -9,7 +9,7 @@ export default function PurchaseForm({
   allCryptos,
   sellCrypto,
   purchaseCrypto,
-  sellCryptoSymbol,
+  purchaseCryptoSymbol,
   totalPrice,
   amount,
   onPurchaseCoin,
@@ -116,7 +116,7 @@ export default function PurchaseForm({
       <Form.Item>
         <Typography label="Price">
           {!!purchaseCrypto && !!sellCrypto && !!amount ? (
-            <pre style={{ width: 200, marginLeft: "50px" }}>{Math.round(totalPrice * 100) / 100} {sellCryptoSymbol}</pre>
+            <pre style={{ width: 200, marginLeft: "50px" }}>{Math.round(totalPrice * 100) / 100} {purchaseCryptoSymbol}</pre>
           ) : !!purchaseCrypto && !!sellCrypto ? (
             <b style={{ marginLeft: "50px" }}>Select Sell Amount</b>
           ) : !!amount ? (

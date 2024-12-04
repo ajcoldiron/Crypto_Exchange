@@ -40,7 +40,7 @@ export const loadTokensBalances = createAsyncThunk("tokensBalances/initBalances"
 })
 
 const tokenBalanceSlice = createSlice({
-    name: 'token',
+    name: 'tokenBalance',
     initialState,
     reducers: {},
     extraReducers(builder) {

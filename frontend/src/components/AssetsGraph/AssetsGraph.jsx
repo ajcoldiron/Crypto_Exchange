@@ -13,11 +13,11 @@ const AssetsGraph = () => {
   
   const [graphTime, setGraphTime] = useState({ target: { value: "Year" } })
 
-  const eth = useSelector(state => state.tokenReducers.entities?.ETH?.token)
-  const btc = useSelector(state => state.tokenReducers.entities?.BTC?.token)
-  const ltc = useSelector(state => state.tokenReducers.entities?.LTC?.token)
-  const xrp = useSelector(state => state.tokenReducers.entities?.XRP?.token)
-  const bnb = useSelector(state => state.tokenReducers.entities?.BNB?.token)
+  const eth = useSelector(state => state.tokenReducers.entities?.ETH)
+  const btc = useSelector(state => state.tokenReducers.entities?.BTC)
+  const ltc = useSelector(state => state.tokenReducers.entities?.LTC)
+  const xrp = useSelector(state => state.tokenReducers.entities?.XRP)
+  const bnb = useSelector(state => state.tokenReducers.entities?.BNB)
   const account = useSelector(state => state.connectionReducers.account)
   const tokens = [eth, btc, ltc, xrp, bnb]
 

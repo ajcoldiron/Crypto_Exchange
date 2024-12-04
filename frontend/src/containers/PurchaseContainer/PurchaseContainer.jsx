@@ -48,6 +48,8 @@ const PurchaseContainer = () => {
     return cryptoId
   }
 
+  console.log(allCryptos)
+
   let purchaseCryptoPrice, sellCryptoPrice
   if (allCryptos && !!purchaseCryptoSymbol && !!sellCryptoSymbol) {
     let newPurchaseCryptoSymbol = purchaseCryptoSymbol.toLowerCase()
@@ -79,9 +81,9 @@ const PurchaseContainer = () => {
 
   const handleBuy = (e) => {
     e.preventDefault()
-    const purchaseCryptoThing = allCryptosTokens[purchaseCrypto.value].token
-    const sellCryptoThing = allCryptosTokens[sellCrypto.value].token
-    dispatch(purchase({ provider, exchange, tokens: [purchaseCryptoThing, sellCryptoThing], order }))
+    const purchaseCryptoContract = allCryptosTokens[purchaseCrypto.value]
+    const sellCryptoContract = allCryptosTokens[sellCrypto.value]
+    dispatch(purchase({ provider, exchange, tokens: [purchaseCryptoContract, sellCryptoContract], order }))
     setAmount(0)
     setPrice(0)
   }

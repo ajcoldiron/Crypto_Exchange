@@ -6,7 +6,7 @@ import moment from "moment"
 const transferAdpter = createEntityAdapter();
 
 const initialState = transferAdpter.getInitialState({
-    status: "not-loaded"
+    status: "not-loaded",
 })
 
 export const transferTokens = createAsyncThunk("transfer/initTransfer", async (data) => {
@@ -47,14 +47,14 @@ export const subscribeToTransfers = createAsyncThunk("transfers/subscribe", (_, 
 })
 
 const transferSlice = createSlice({
-    name: 'exchange',
+    name: 'transfer',
     initialState,
     reducers: {
         transferSuccess: (state, action) => {
             return {
-                ...state,
+                ...state, 
                 event: action.event
-            }
+            };
         }
     },
     extraReducers(builder) {

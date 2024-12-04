@@ -69,7 +69,7 @@ const SellContainer = () => {
   const [totalPrice, setTotalPrice] = useState(0)
   useEffect(() => {
     if (!!purchaseCryptoPrice && !!sellCryptoPrice && amount > 0) {
-      conversionRate = (purchaseCryptoPrice / sellCryptoPrice)
+      conversionRate = (sellCryptoPrice / purchaseCryptoPrice)
       setTotalPrice(Number(amount * conversionRate))
       setPrice(conversionRate)
     }
@@ -78,9 +78,9 @@ const SellContainer = () => {
 
   const handleSell = (e) => {
     e.preventDefault()
-    const purchaseCryptoThing = allCryptosTokens[purchaseCrypto.value].token
-    const sellCryptoThing = allCryptosTokens[sellCrypto.value].token
-    dispatch(purchase({ provider, exchange, tokens: [purchaseCryptoThing, sellCryptoThing], order }))
+    const purchaseCryptoContract = allCryptosTokens[purchaseCrypto.value]
+    const sellCryptoContract = allCryptosTokens[sellCrypto.value]
+    dispatch(purchase({ provider, exchange, tokens: [purchaseCryptoContract, sellCryptoContract], order }))
     setAmount(0)
     setPrice(0)
   }
@@ -107,7 +107,7 @@ const SellContainer = () => {
               allCryptos={allCryptos}
               purchaseCrypto={purchaseCrypto}
               sellCrypto={sellCrypto}
-              sellCryptoSymbol={sellCryptoSymbol}
+              purchaseCryptoSymbol={purchaseCryptoSymbol}
               amount={amount}
               onPurchaseCoin={handlePurchaseCoin}
               onSellCoin={handleSellCoin}
